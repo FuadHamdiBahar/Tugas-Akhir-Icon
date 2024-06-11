@@ -33,7 +33,38 @@ class ApiModel extends Model
                 ) raw
                 group by raw.origin, raw.terminating, raw.interface";
 
-        return DB::select($sql);
+        $data = DB::select($sql);
+        foreach ($data as $d) {
+            if (str_contains($d->interface, 'Interface 100GE')) {
+                $d->utilisation = $d->max / 1000000000;
+                $d->capacity =  100;
+            } elseif (str_contains($d->interface, 'Interface 50|100GE0')) {
+                $d->utilisation = $d->max / 1000000000;
+                $d->capacity =  100;
+            } elseif (str_contains($d->interface, 'Interface HundredGigE')) {
+                $d->utilisation = $d->max / 1000000000;
+                $d->capacity =  100;
+            } elseif (str_contains($d->interface, 'Interface et')) {
+                $d->utilisation = $d->max / 1000000000;
+                $d->capacity =  100;
+            } elseif (str_contains($d->interface, 'Interface GigabitEthernet')) {
+                $d->utilisation = $d->max / 100000000;
+                $d->capacity =  10;
+            } elseif (str_contains($d->interface, 'Interface Te')) {
+                $d->utilisation = $d->max / 100000000;
+                $d->capacity =  10;
+            } elseif (str_contains($d->interface, 'Interface TenGig')) {
+                $d->utilisation = $d->max / 100000000;
+                $d->capacity =  10;
+            } elseif (str_contains($d->interface, 'Interface xe')) {
+                $d->utilisation = $d->max / 100000000;
+                $d->capacity =  10;
+            } elseif (str_contains($d->interface, 'Interface GI')) {
+                $d->utilisation = $d->max / 10000000;
+                $d->capacity =  1;
+            }
+        }
+        return $data;
     }
 
     public static function queryTraffic($origin, $terminating, $start, $end, $type)
