@@ -3,19 +3,57 @@
 namespace App\Http\Controllers;
 
 use App\Models\ApiModel;
-use Illuminate\Http\Request;
+use App\Models\TrendModel;
 use Illuminate\Http\Response;
-use Illuminate\Support\Arr;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 
 class ApiController extends Controller
 {
+
+    // ring trends
+    public static function ringTrend($sbu)
+    {
+        $rings = TrendModel::getNumberOfRing($sbu, '2024');
+
+        // Iterate over the array and extract the 'ring' values
+        $flat = [];
+        foreach ($rings as $r) {
+            $flat[] = $r->ring;
+        }
+
+        // return $flat;
+
+        // merge
+        $merge = array();
+        foreach ($flat as $f) {
+            $result = TrendModel::getTrendsEachSbu($sbu, '2024', $f);
+            array_push($merge, $result);
+        }
+
+        // return $merge;
+
+        // transform
+        $transform = array();
+        foreach ($merge as $m) {
+            $temp = array();
+            $ring = '';
+            foreach ($m as $b) {
+                $ring = $b->ring;
+                array_push($temp, $b->traffic);
+            }
+            array_push($transform, [
+                'name' => $ring,
+                'data' => $temp
+            ]);
+        }
+
+        return $transform;
+    }
+
     // ring
-    public static function listOfMaxTrafficEachRing($sbu)
+    public static function listOfMaxTrafficEachRing($sbu, $month)
     {
         ini_set('max_execution_time', 60);
-        $start = '2024-05-01 00:00:00.000 +0700';
-        $end = '2024-05-31 23:59:59.000 +0700';
 
         // read file
         $path = public_path('ring utilisasi.xlsx');
@@ -33,7 +71,7 @@ class ApiController extends Controller
                     $sheet->getCell("C{$row}")->getValue(),
                     $sheet->getCell("D{$row}")->getValue(),
                     $sheet->getCell("B{$row}")->getValue(),
-                    self::convertNumToTextMonth(),
+                    $month,
 
                 );
                 // var_dump($sheet->getCell("C{$row}")->getValue());
@@ -98,24 +136,15 @@ class ApiController extends Controller
 
         // dd($resume);
         $result = array(
-            'date_range' => $start . ' to ' . $end,
-            'message' => 'success',
-            'status' => Response::HTTP_OK,
+            'month' => $month,
             'sbu' => $sbu,
             'data' => $resume
         );
         return $result;
     }
 
-    public static function convertNumToTextMonth()
-    {
-        $m = (int) date('m');
-        $listMonthName = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
-        return $listMonthName[$m - 1];
-    }
-
     // sbu
-    public static function listOfMaxTrafficEachSourceToDestination($sbu)
+    public static function listOfMaxTrafficEachSourceToDestination($sbu, $month)
     {
         ini_set('max_execution_time', 60);
 
@@ -138,7 +167,7 @@ class ApiController extends Controller
                     $sheet->getCell("C{$row}")->getValue(),
                     $sheet->getCell("D{$row}")->getValue(),
                     $sheet->getCell("B{$row}")->getValue(),
-                    self::convertNumToTextMonth(),
+                    $month,
                 );
                 // var_dump($sheet->getCell("C{$row}")->getValue());
                 array_push($merge, $data);
@@ -156,8 +185,6 @@ class ApiController extends Controller
         }
 
         $result = array(
-            'message' => 'success',
-            'status' => Response::HTTP_OK,
             'sbu' => $sbu,
             'data' => $flat
         );
