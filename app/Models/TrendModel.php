@@ -13,7 +13,7 @@ class TrendModel
             ring 
         from myapp.trends t 
         where sbu_name = '$sbu'
-        and `year` = $year
+        and `year` = '$year'
         group by ring 
         ";
         return DB::connection('second_db')->select($sql);
@@ -27,9 +27,18 @@ class TrendModel
             from
             myapp.trends t 
             where sbu_name = '$sbu'
-            and `year` = $year
-            and ring = $ring
+            and `year` = '$year'
+            and ring = '$ring'
         ";
+        return DB::connection('second_db')->select($sql);
+    }
+
+    public static function createTrend($sbu_name, $month, $year, $ring, $traffic)
+    {
+        $sql = "
+            INSERT INTO myapp.trends (sbu_name, month, year, ring, traffic) 
+            VALUES ('$sbu_name', '$month', '$year', '$ring', $traffic);
+            ";
         return DB::connection('second_db')->select($sql);
     }
 }

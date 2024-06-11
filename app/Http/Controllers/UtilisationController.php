@@ -8,9 +8,8 @@ class UtilisationController extends Controller
 {
     public function utilisation($sbu)
     {
-        $data = ApiController::listOfMaxTrafficEachSourceToDestination($sbu);
-        // return $data;
-
+        $month = RingController::convertNumToTextMonth();
+        $data = ApiController::listOfMaxTrafficEachSourceToDestination($sbu, $month);
         return view('utilisation', $data);
     }
 }
