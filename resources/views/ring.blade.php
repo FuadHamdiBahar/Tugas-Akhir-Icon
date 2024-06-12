@@ -45,7 +45,7 @@
         </div> --}}
 
         <div class="col-lg-6">
-            <table class="data-table table mb-0 tbl-server-info">
+            <table class="data-table table mb-0 tbl-server-info" id="table">
                 <thead class="bg-white text-uppercase">
                     <tr class="ligth ligth-data">
                         <th>Ring</th>
@@ -54,36 +54,13 @@
                     </tr>
                 </thead>
                 <tbody class="ligth-body">
-                    @foreach ($data as $d)
-                        <tr>
-                            <td>{{ $d['ring'] }}</td>
-                            <td>{{ $d['val'] }}</td>
-                            <td>{{ $d['utility'] }}</td>
-                        </tr>
-                    @endforeach
+
                 </tbody>
             </table>
         </div>
 
         <div class="col-lg-6">
-            <table class="data-table table mb-0 tbl-server-info">
-                <thead class="bg-white text-uppercase">
-                    <tr class="ligth ligth-data">
-                        <th>Ring</th>
-                        <th>Kapasitas</th>
-                        <th>Utilisasi (Gbps)</th>
-                    </tr>
-                </thead>
-                <tbody class="ligth-body">
-                    @foreach ($data as $d)
-                        <tr>
-                            <td>{{ $d['ring'] }}</td>
-                            {{-- <td>{{ $d['kapasitas'] }}</td> --}}
-                            <td>{{ number_format($d['val'] / 1000000000, 1) }}</td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+
         </div>
     </div>
 @endsection
@@ -91,74 +68,105 @@
 
 @section('script')
     <script type="text/javascript">
-        // Get the current path
-        var pathname = window.location.pathname;
-
-        // Split the path by '/' and get the last element
-        var parts = pathname.split('/');
-        var sbu = parts.pop() || parts.pop(); // Handle potential trailing slash
-
-        $.ajax({
-            type: 'GET',
-            url: '/api/trend/' + sbu,
-            success: function(data) {
-                var options = {
-                    chart: {
-                        // height: 328,
-                        type: 'line',
-                        zoom: {
-                            enabled: false
-                        },
-
-                    },
-                    stroke: {
-                        curve: 'smooth',
-                        width: 5
-                    },
-                    //colors: ["#3F51B5", '#2196F3'],
-                    series: data,
-                    title: {
-                        text: 'Media',
-                        align: 'left',
-                        offsetY: 25,
-                        offsetX: 20
-                    },
-                    subtitle: {
-                        text: 'Statistics',
-                        offsetY: 55,
-                        offsetX: 20
-                    },
-                    markers: {
-                        size: 6,
-                        strokeWidth: 0,
-                        hover: {
-                            size: 9
-                        }
-                    },
-                    grid: {
-                        show: true,
-                        padding: {
-                            bottom: 0
-                        }
-                    },
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov',
-                        'Dec'
-                    ],
-                    xaxis: {
-                        tooltip: {
-                            enabled: false
-                        }
-                    },
-                    legend: {
-                        position: 'top',
-                        horizontalAlign: 'right',
-                        offsetY: -20
-                    }
-                }
-
-                var chart = new ApexCharts(document.querySelector("#chart"), options);
-                chart.render();
-            }
+        $(document).ready(function() {
+            showTrend()
+            showTable()
         })
+
+        function showTable() {
+            $.ajax({
+                type: 'GET',
+                url: '/api/summary/sumbagut/jun',
+                success: function(data) {
+                    // console.log(data['data']);
+                    var resulttag = "";
+
+                    data['data'].forEach(element => {
+                        resulttag += "<tr>"
+                        resulttag += "<td>" + element.ring + "</td>"
+                        resulttag += "<td>" + element.val + "</td>"
+                        resulttag += "<td>" + (element.utility).toFixed(2) + "</td>"
+                        resulttag += "</tr>"
+                    });
+
+                    // then finally
+                    $("#table tbody").append(resulttag);
+                    // console.log(resulttag);
+                }
+            })
+        }
+
+        function showTrend() {
+            // Get the current path
+            var pathname = window.location.pathname;
+
+            // Split the path by '/' and get the last element
+            var parts = pathname.split('/');
+            var sbu = parts.pop() || parts.pop(); // Handle potential trailing slash
+
+            $.ajax({
+                type: 'GET',
+                url: '/api/trend/' + sbu,
+                success: function(data) {
+                    var options = {
+                        chart: {
+                            // height: 328,
+                            type: 'line',
+                            zoom: {
+                                enabled: false
+                            },
+
+                        },
+                        stroke: {
+                            curve: 'smooth',
+                            width: 5
+                        },
+                        //colors: ["#3F51B5", '#2196F3'],
+                        series: data,
+                        title: {
+                            text: 'Media',
+                            align: 'left',
+                            offsetY: 25,
+                            offsetX: 20
+                        },
+                        subtitle: {
+                            text: 'Statistics',
+                            offsetY: 55,
+                            offsetX: 20
+                        },
+                        markers: {
+                            size: 6,
+                            strokeWidth: 0,
+                            hover: {
+                                size: 9
+                            }
+                        },
+                        grid: {
+                            show: true,
+                            padding: {
+                                bottom: 0
+                            }
+                        },
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct',
+                            'Nov',
+                            'Dec'
+                        ],
+                        xaxis: {
+                            tooltip: {
+                                enabled: false
+                            }
+                        },
+                        legend: {
+                            position: 'top',
+                            horizontalAlign: 'right',
+                            offsetY: -20
+                        }
+                    }
+
+                    var chart = new ApexCharts(document.querySelector("#chart"), options);
+                    chart.render();
+                }
+            })
+        }
     </script>
 @endsection
