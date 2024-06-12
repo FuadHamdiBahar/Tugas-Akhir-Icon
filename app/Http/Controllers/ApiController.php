@@ -93,6 +93,7 @@ class ApiController extends Controller
 
         $resume = array();
         $val = 0;
+        $pembagi = 1;
         for ($r = 0; $r < count($flat); $r++) {
             // n - 1
             if ($r < count($flat) - 1) {
@@ -101,12 +102,13 @@ class ApiController extends Controller
                 // kalau ring n == n+1 jumlahkan
                 // kalau tidak catet teruse reset valnya
                 if ($current_ring == $next_ring) {
-                    $val += (int)$flat[$r]->max;
+                    $val += (int)$flat[$r]->utilisation;
                 } else {
-                    $val += (int)$flat[$r]->max;
+                    $val += (int)$flat[$r]->utilisation;
                     $resume[] = array(
                         'ring' => $current_ring,
-                        'val' => $val
+                        'val' => $val,
+                        'utility' => $val / $pembagi
                     );
                     $val = 0;
                 }
@@ -115,29 +117,25 @@ class ApiController extends Controller
                 $current_ring = $flat[$r]->ring;
                 $prev_ring = $flat[$r - 1]->ring;
                 if ($current_ring == $prev_ring) {
-                    $val += (int)$flat[$r]->max;
+                    $val += (int)$flat[$r]->utilisation;
                     $resume[] = array(
                         'ring' => $current_ring,
-                        'val' => $val
+                        'val' => $val,
+                        'utility' => $val / $pembagi
                     );
                 } else {
-                    $val = (int)$flat[$r]->max;
+                    $val = (int)$flat[$r]->utilisation;
                     $resume[] = array(
                         'ring' => $current_ring,
-                        'val' => $val
+                        'val' => $val,
+                        'utility' => $val / $pembagi
                     );
                 }
             }
+            $pembagi++;
         }
 
-        foreach ($resume as $item) {
-            $item['kapasitas'] = 1000; // You can set this to any value you need
-        }
-
-        // dd($resume);
         $result = array(
-            'month' => $month,
-            'sbu' => $sbu,
             'data' => $resume
         );
         return $result;
