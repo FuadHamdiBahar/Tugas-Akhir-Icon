@@ -16,8 +16,9 @@ class RingController extends Controller
     public function ring($sbu)
     {
         $month = self::convertNumToTextMonth();
-        $data = ApiController::listOfMaxTrafficEachRing($sbu, $month);
         $data['image'] = $sbu . '.png';
+        $data['date'] = date('d-m-Y');
+        $data['sbu_name'] = ucfirst($sbu);
         return view('ring', $data);
     }
 }
