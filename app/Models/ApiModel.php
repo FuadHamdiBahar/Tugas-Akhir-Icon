@@ -59,7 +59,7 @@ class ApiModel extends Model
             } elseif (str_contains($d->interface, 'Interface xe')) {
                 $d->utilisation = $d->max / 100000000;
                 $d->capacity =  10;
-            } elseif (str_contains($d->interface, 'Interface GI')) {
+            } elseif (str_contains($d->interface, 'Interface Gi')) {
                 $d->utilisation = $d->max / 10000000;
                 $d->capacity =  1;
             }
