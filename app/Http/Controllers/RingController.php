@@ -17,7 +17,8 @@ class RingController extends Controller
     {
         $month = self::convertNumToTextMonth();
         $data['image'] = $sbu . '.png';
-        $data['date'] = date('d-m-Y');
+        $data['date'] = date('F', strtotime(date('d-m-Y')));
+        $data['month'] = $month;
         $data['sbu_name'] = ucfirst($sbu);
         return view('ring', $data);
     }

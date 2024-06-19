@@ -10,6 +10,42 @@ use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 class ApiController extends Controller
 {
 
+    // ring link details
+    public static function ringLink($sbu)
+    {
+        // read file
+        $path = public_path('data utilisasi.xlsx');
+        $reader = new Xlsx();
+        $spreadsheet = $reader->load($path);
+        $sheet = $spreadsheet->getSheetByName($sbu);
+        $totalRows = $sheet->getHighestRow();
+
+        $merge = array();
+
+        $temp = [];
+        for ($row = 3; $row <= $totalRows; $row++) {
+            $current_ring = $sheet->getCell("B{$row}")->getValue();
+            $next_row = $row + 1;
+            $next_ring = $sheet->getCell("B{$next_row}")->getValue();
+
+            if (!empty($sheet->getCell("E{$row}")->getValue())) {
+                $origin = $sheet->getCell("E{$row}")->getValue();
+                // $pattern = "/-(.+)-\w+-/";
+                // preg_match_all($pattern, $origin, $matches);
+                array_push($temp, $origin);
+            }
+            if ($current_ring != $next_ring) {
+                array_push($merge, [
+                    'ring' => $current_ring,
+                    'link' => $temp
+                ]);
+                $temp = [];
+            }
+        }
+
+        return $merge;
+    }
+
     // ring trends
     public static function ringTrend($sbu)
     {
@@ -39,7 +75,7 @@ class ApiController extends Controller
             $ring = '';
             foreach ($m as $b) {
                 $ring = $b->ring;
-                array_push($temp, $b->traffic);
+                array_push($temp, number_format($b->traffic / 1000000000, 1));
             }
             array_push($transform, [
                 'name' => $ring,
@@ -93,7 +129,6 @@ class ApiController extends Controller
 
         $resume = array();
         $val = 0;
-        $pembagi = 1;
         for ($r = 0; $r < count($flat); $r++) {
             // n - 1
             if ($r < count($flat) - 1) {
@@ -102,37 +137,35 @@ class ApiController extends Controller
                 // kalau ring n == n+1 jumlahkan
                 // kalau tidak catet teruse reset valnya
                 if ($current_ring == $next_ring) {
-                    $val += (int)$flat[$r]->utilisation;
+                    $val += (int)$flat[$r]->max;
                 } else {
-                    $val += (int)$flat[$r]->utilisation;
+                    $val += (int)$flat[$r]->max;
                     $resume[] = array(
                         'ring' => $current_ring,
                         'val' => $val,
-                        'utility' => $val / $pembagi
+                        'utility' => $val
                     );
                     $val = 0;
                 }
-                // n
             } else {
                 $current_ring = $flat[$r]->ring;
                 $prev_ring = $flat[$r - 1]->ring;
                 if ($current_ring == $prev_ring) {
-                    $val += (int)$flat[$r]->utilisation;
+                    $val += (int)$flat[$r]->max;
                     $resume[] = array(
                         'ring' => $current_ring,
                         'val' => $val,
-                        'utility' => $val / $pembagi
+                        'utility' => $val
                     );
                 } else {
-                    $val = (int)$flat[$r]->utilisation;
+                    $val = (int)$flat[$r]->max;
                     $resume[] = array(
                         'ring' => $current_ring,
                         'val' => $val,
-                        'utility' => $val / $pembagi
+                        'utility' => $val
                     );
                 }
             }
-            $pembagi++;
         }
 
         $result = array(
@@ -189,24 +222,61 @@ class ApiController extends Controller
         return $result;
     }
 
-    public function listTraffic($origin, $terminating, $start, $end)
+    public function listTrafficMonth($origin, $terminating)
     {
-        $start .= ' 00:00:00.000 +0700';
-        $end .= ' 23:59:59.000 +0700';
-        // $origin = 'SBU-GI.ACEH-NE8000.M14-NPE-02';
-        // $terminating = 'SBU-SIGLI-NE8000.M14-UPE-04';
+        $in = ApiModel::queryTrafficMonth($origin, $terminating, 'Bits received');
+        $out = ApiModel::queryTrafficMonth($origin, $terminating, 'Bits sent');
 
-        $in = ApiModel::queryTraffic($origin, $terminating, $start, $end, 'Bits received');
-        $out = ApiModel::queryTraffic($origin, $terminating, $start, $end, 'Bits sent');
+        $merge = array();
+        $temp = array();
+        foreach ($in as $data) {
+            array_push($temp, $data->value_max);
+        }
 
-        $result = array(
-            'origin' => $origin,
-            'terminating' => $terminating,
-            'in' => $in,
-            'out' => $out,
-            'message' => 'success',
-            'status' => Response::HTTP_OK,
-        );
-        return $result;
+        array_push($merge, [
+            'name' => 'Inbound',
+            'data' => $temp
+        ]);
+
+        $temp = array();
+        foreach ($out as $data) {
+            array_push($temp, $data->value_max);
+        }
+
+        array_push($merge, [
+            'name' => 'Outbound',
+            'data' => $temp
+        ]);
+
+        return $merge;
+    }
+
+    public function listTrafficWeek($origin, $terminating)
+    {
+        $in = ApiModel::queryTrafficWeek($origin, $terminating, 'Bits received');
+        $out = ApiModel::queryTrafficWeek($origin, $terminating, 'Bits sent');
+
+        $merge = array();
+        $temp = array();
+        foreach ($in as $data) {
+            array_push($temp, $data->value_max);
+        }
+
+        array_push($merge, [
+            'name' => 'Inbound',
+            'data' => $temp
+        ]);
+
+        $temp = array();
+        foreach ($out as $data) {
+            array_push($temp, $data->value_max);
+        }
+
+        array_push($merge, [
+            'name' => 'Outbound',
+            'data' => $temp
+        ]);
+
+        return $merge;
     }
 }

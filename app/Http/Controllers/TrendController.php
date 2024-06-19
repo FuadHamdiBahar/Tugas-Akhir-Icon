@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\TrendModel;
-use Illuminate\Http\Request;
-use PhpOffice\PhpSpreadsheet\Shared\Trend\Trend;
 
 class TrendController extends Controller
 {
@@ -15,8 +13,19 @@ class TrendController extends Controller
         foreach ($listMonthName as $m) {
             $data = ApiController::listOfMaxTrafficEachRing($sbu, $m);
             foreach ($data['data'] as $d) {
-                TrendModel::createTrend($sbu, $m, '2024', $d['ring'], $d['val'] / 1000000000);
+                TrendModel::createTrend($sbu, $m, '2024', $d['ring'], $d['val']);
             }
+        }
+        return TRUE;
+    }
+
+    public function update($sbu)
+    {
+        $m = RingController::convertNumToTextMonth();
+        $data = ApiController::listOfMaxTrafficEachRing($sbu, 'jan');
+
+        foreach ($data['data'] as $ring) {
+            TrendModel::updateTrend($sbu, 'jan', $ring['ring'], $ring['val']);
         }
         return TRUE;
     }
