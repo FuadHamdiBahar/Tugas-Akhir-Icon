@@ -3,8 +3,8 @@
         <nav class="navbar navbar-expand-lg navbar-light p-0">
             <div class="iq-navbar-logo d-flex align-items-center justify-content-between">
                 <i class="ri-menu-line wrapper-menu"></i>
-                <a href="../backend/index.html" class="header-logo">
-                    <img src="../assets/images/logo.png" class="img-fluid rounded-normal" alt="logo">
+                <a href="/" class="header-logo">
+                    <img src="{{ asset('assets/images/logo.png') }}" class="img-fluid rounded-normal" alt="logo">
                     <h5 class="logo-title ml-3">POSDash</h5>
 
                 </a>
@@ -233,7 +233,8 @@
                         <li class="nav-item nav-icon dropdown caption-content">
                             <a href="#" class="search-toggle dropdown-toggle" id="dropdownMenuButton4"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img src="../assets/images/user/1.png" class="img-fluid rounded" alt="user">
+                                <img src="{{ asset('assets/images/user/1.png') }}" class="img-fluid rounded"
+                                    alt="user">
                             </a>
                             {{-- <div class="iq-sub-dropdown dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <div class="card shadow-none m-0">
