@@ -41,4 +41,12 @@ class TrendModel
             ";
         return DB::connection('second_db')->select($sql);
     }
+
+    public static function updateTrend($sbu_name, $month, $ring, $val)
+    {
+        $sql = "
+        update myapp.trends set traffic = $val where sbu_name = '$sbu_name' and `month` = '$month' and ring = '$ring'
+        ";
+        return DB::connection('second_db')->select($sql);
+    }
 }
