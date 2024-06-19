@@ -36,38 +36,29 @@ class ApiModel extends Model
         $data = DB::select($sql);
         foreach ($data as $d) {
             if (str_contains($d->interface, 'Interface 100GE')) {
-                $d->utilisation = $d->max / 1000000000;
-                $d->capacity =  100;
+                $d->capacity =  100000000000;
             } elseif (str_contains($d->interface, 'Interface 50|100GE0')) {
-                $d->utilisation = $d->max / 1000000000;
-                $d->capacity =  100;
+                $d->capacity =  100000000000;
             } elseif (str_contains($d->interface, 'Interface HundredGigE')) {
-                $d->utilisation = $d->max / 1000000000;
-                $d->capacity =  100;
+                $d->capacity =  100000000000;
             } elseif (str_contains($d->interface, 'Interface et')) {
-                $d->utilisation = $d->max / 1000000000;
-                $d->capacity =  100;
+                $d->capacity =  100000000000;
             } elseif (str_contains($d->interface, 'Interface GigabitEthernet')) {
-                $d->utilisation = $d->max / 100000000;
-                $d->capacity =  10;
+                $d->capacity =  10000000000;
             } elseif (str_contains($d->interface, 'Interface Te')) {
-                $d->utilisation = $d->max / 100000000;
-                $d->capacity =  10;
+                $d->capacity =  10000000000;
             } elseif (str_contains($d->interface, 'Interface TenGig')) {
-                $d->utilisation = $d->max / 100000000;
-                $d->capacity =  10;
+                $d->capacity =  10000000000;
             } elseif (str_contains($d->interface, 'Interface xe')) {
-                $d->utilisation = $d->max / 100000000;
-                $d->capacity =  10;
+                $d->capacity =  10000000000;
             } elseif (str_contains($d->interface, 'Interface Gi')) {
-                $d->utilisation = $d->max / 10000000;
-                $d->capacity =  1;
+                $d->capacity =  1000000000;
             }
         }
         return $data;
     }
 
-    public static function queryTraffic($origin, $terminating, $start, $end, $type)
+    public static function queryTrafficMonth($origin, $terminating, $type)
     {
         $sql = "
         select 
@@ -81,17 +72,41 @@ class ApiModel extends Model
             JOIN 
                 items i ON i.hostid = h.hostid 
             JOIN 
-                interface itf ON itf.interfaceid = i.interfaceid 
-            JOIN 
-                trends_uint tuj ON tuj.itemid = i.itemid 
+                trends_uint_jun tuj ON tuj.itemid = i.itemid 
             WHERE 
-                h.description LIKE '%$origin%'
+                h.\"name\" LIKE '%$origin%'
                 AND i.\"name\" LIKE '%$terminating%'
                 AND i.\"name\" LIKE '%$type%'
             ORDER BY 
-                tuj.clock DESC
+                tuj.clock ASC
+        ) rekap";
+
+        return DB::select($sql);
+    }
+
+    public static function queryTrafficWeek($origin, $terminating, $type)
+    {
+        $sql = "
+       select 
+            round(rekap.value_max / 1000000000, 1) as value_max, rekap.waktu
+        from (
+            SELECT 
+                to_timestamp(tuj.clock) as waktu, 
+                tuj.value_max
+            FROM 
+                hosts h 
+            JOIN 
+                items i ON i.hostid = h.hostid 
+            JOIN 
+                trends_uint_jun tuj ON tuj.itemid = i.itemid 
+            WHERE 
+                h.\"name\" LIKE '%$origin%'
+                AND i.\"name\" LIKE '%$terminating%'
+                AND i.\"name\" LIKE '%$type%'
+            ORDER BY 
+                tuj.clock ASC
         ) rekap
-        where rekap.waktu between '$start' and '$end'";
+        where rekap.waktu > current_date - interval '7 days'";
 
         return DB::select($sql);
     }
