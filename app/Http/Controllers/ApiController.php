@@ -30,8 +30,6 @@ class ApiController extends Controller
 
             if (!empty($sheet->getCell("E{$row}")->getValue())) {
                 $origin = $sheet->getCell("E{$row}")->getValue();
-                // $pattern = "/-(.+)-\w+-/";
-                // preg_match_all($pattern, $origin, $matches);
                 array_push($temp, $origin);
             }
             if ($current_ring != $next_ring) {
@@ -137,13 +135,13 @@ class ApiController extends Controller
                 // kalau ring n == n+1 jumlahkan
                 // kalau tidak catet teruse reset valnya
                 if ($current_ring == $next_ring) {
-                    $val += (int)$flat[$r]->max;
+                    $val += (int)$flat[$r]->traffic;
                 } else {
-                    $val += (int)$flat[$r]->max;
+                    $val += (int)$flat[$r]->traffic;
                     $resume[] = array(
-                        'ring' => $current_ring,
-                        'val' => $val,
-                        'utility' => $val
+                        'name' => $current_ring,
+                        'data' => $val,
+                        // 'utility' => $val
                     );
                     $val = 0;
                 }
@@ -151,27 +149,24 @@ class ApiController extends Controller
                 $current_ring = $flat[$r]->ring;
                 $prev_ring = $flat[$r - 1]->ring;
                 if ($current_ring == $prev_ring) {
-                    $val += (int)$flat[$r]->max;
+                    $val += (int)$flat[$r]->traffic;
                     $resume[] = array(
-                        'ring' => $current_ring,
-                        'val' => $val,
-                        'utility' => $val
+                        'name' => $current_ring,
+                        'data' => $val,
+                        // 'utility' => $val
                     );
                 } else {
-                    $val = (int)$flat[$r]->max;
+                    $val = (int)$flat[$r]->traffic;
                     $resume[] = array(
-                        'ring' => $current_ring,
-                        'val' => $val,
-                        'utility' => $val
+                        'name' => $current_ring,
+                        'data' => $val,
+                        // 'utility' => $val
                     );
                 }
             }
         }
 
-        $result = array(
-            'data' => $resume
-        );
-        return $result;
+        return $resume;
     }
 
     // sbu
@@ -217,7 +212,8 @@ class ApiController extends Controller
 
         $result = array(
             'sbu' => $sbu,
-            'data' => $flat
+            'data' => $flat,
+            'month' => date('F', strtotime(date('d-m-Y')))
         );
         return $result;
     }
@@ -229,8 +225,12 @@ class ApiController extends Controller
 
         $merge = array();
         $temp = array();
+        $max = 0;
         foreach ($in as $data) {
-            array_push($temp, $data->value_max);
+            if ($max < $data->traffic) {
+                $max = $data->traffic;
+            }
+            array_push($temp, $data->traffic);
         }
 
         array_push($merge, [
@@ -240,15 +240,21 @@ class ApiController extends Controller
 
         $temp = array();
         foreach ($out as $data) {
-            array_push($temp, $data->value_max);
+            if ($max < $data->traffic) {
+                $max = $data->traffic;
+            }
+            array_push($temp, $data->traffic);
         }
 
         array_push($merge, [
             'name' => 'Outbound',
-            'data' => $temp
+            'data' => $temp,
         ]);
 
-        return $merge;
+        $res['data'] = $merge;
+        $res['traffic'] = $max;
+
+        return $res;
     }
 
     public function listTrafficWeek($origin, $terminating)
@@ -258,8 +264,12 @@ class ApiController extends Controller
 
         $merge = array();
         $temp = array();
+        $max = 0;
         foreach ($in as $data) {
-            array_push($temp, $data->value_max);
+            if ($max < $data->traffic) {
+                $max = $data->traffic;
+            }
+            array_push($temp, $data->traffic);
         }
 
         array_push($merge, [
@@ -269,7 +279,10 @@ class ApiController extends Controller
 
         $temp = array();
         foreach ($out as $data) {
-            array_push($temp, $data->value_max);
+            if ($max < $data->traffic) {
+                $max = $data->traffic;
+            }
+            array_push($temp, $data->traffic);
         }
 
         array_push($merge, [
@@ -277,6 +290,9 @@ class ApiController extends Controller
             'data' => $temp
         ]);
 
-        return $merge;
+        $res['data'] = $merge;
+        $res['traffic'] = $max;
+
+        return $res;
     }
 }

@@ -14,7 +14,7 @@ class ApiModel extends Model
     {
         $sql = "
                 select 
-                    raw.origin, raw.terminating, raw.interface, max(raw.value_max), '$ring' as ring
+                    raw.origin, raw.terminating, raw.interface, max(raw.value_max) as traffic, '$ring' as ring
                 from (
                     select 
                         h.hostid, it.itemid, h.\"name\" as origin, it.interface, it.terminating, to_timestamp(t.clock) as waktu, t.value_max   
@@ -62,7 +62,7 @@ class ApiModel extends Model
     {
         $sql = "
         select 
-            round(rekap.value_max / 1000000000, 1) as value_max
+            round(rekap.value_max / 1000000000, 1) as traffic
         from (
             SELECT 
                 to_timestamp(tuj.clock) as waktu, 
@@ -88,7 +88,7 @@ class ApiModel extends Model
     {
         $sql = "
        select 
-            round(rekap.value_max / 1000000000, 1) as value_max, rekap.waktu
+            round(rekap.value_max / 1000000000, 1) as traffic, rekap.waktu
         from (
             SELECT 
                 to_timestamp(tuj.clock) as waktu, 

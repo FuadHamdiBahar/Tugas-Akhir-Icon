@@ -22,11 +22,12 @@ class TrendController extends Controller
     public function update($sbu)
     {
         $m = RingController::convertNumToTextMonth();
-        $data = ApiController::listOfMaxTrafficEachRing($sbu, 'jan');
+        $data = ApiController::listOfMaxTrafficEachRing($sbu, $m);
 
         foreach ($data['data'] as $ring) {
-            TrendModel::updateTrend($sbu, 'jan', $ring['ring'], $ring['val']);
+            TrendModel::updateTrend($sbu, $m, $ring['ring'], $ring['val']);
         }
-        return TRUE;
+        $out['message'] = 'Data have been updated';
+        return $out;
     }
 }

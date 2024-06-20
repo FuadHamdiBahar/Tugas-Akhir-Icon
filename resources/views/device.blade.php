@@ -2,6 +2,79 @@
 
 @section('body')
     <div class="row">
+        <div class="col-lg-4">
+            <div class="card card-transparent card-block card-stretch card-height border-none">
+                <div class="card-body p-0 mt-lg-2 mt-0">
+                    {{-- <h3 class="mb-3">Hi Graham, Good Morning</h3>
+                    <p class="mb-0 mr-4">Your dashboard gives you views of key performance or business
+                        process.</p> --}}
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-8">
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    <div class="card card-block card-stretch card-height">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-4 card-total-sale">
+                                <div class="icon iq-icon-box-2 bg-info-light">
+                                    {{-- <img src="{{ asset('assets/images/product/1.png') }}" class="img-fluid" alt="image"> --}}
+                                </div>
+                                <div>
+                                    <p class="mb-2">Month</p>
+                                    <h4>{{ $month }}</h4>
+                                </div>
+                            </div>
+                            {{-- <div class="iq-progress-bar mt-2">
+                                <span class="bg-info iq-progress progress-1" data-percent="85"
+                                    style="transition: width 2s ease 0s; width: 85%;">
+                                </span>
+                            </div> --}}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="card card-block card-stretch card-height">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-4 card-total-sale">
+                                <div class="icon iq-icon-box-2 bg-info-light">
+                                    {{-- <img src="{{ asset('assets/images/product/2.png') }}" class="img-fluid" alt="image"> --}}
+                                </div>
+                                <div>
+                                    <p class="mb-2">Max Traffic (month)</p>
+                                    <h4 id="traffic_month"></h4>
+                                </div>
+                            </div>
+                            {{-- <div class="iq-progress-bar mt-2">
+                                <span class="bg-danger iq-progress progress-1" data-percent="70"
+                                    style="transition: width 2s ease 0s; width: 70%;">
+                                </span>
+                            </div> --}}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="card card-block card-stretch card-height">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-4 card-total-sale">
+                                <div class="icon iq-icon-box-2 bg-warning-light">
+                                    {{-- <img src="{{ asset('assets/images/product/3.png') }}" class="img-fluid" alt="image"> --}}
+                                </div>
+                                <div>
+                                    <p class="mb-2">Max Traffic (week)</p>
+                                    <h4 id="traffic_week"></h4>
+                                </div>
+                            </div>
+                            {{-- <div class="iq-progress-bar mt-2">
+                                <span class="bg-success iq-progress progress-1" data-percent="75"
+                                    style="transition: width 2s ease 0s; width: 75%;">
+                                </span>
+                            </div> --}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="col-lg-6">
             <div class="chart" id="week"></div>
         </div>
@@ -27,9 +100,8 @@
                 url: '/api/trendmonth/' + origin + '/' + terminating,
                 type: 'GET',
                 success: function(data) {
-                    console.log(data);
                     var options = {
-                        series: data,
+                        series: data['data'],
                         chart: {
                             type: 'line',
                             zoom: {
@@ -79,6 +151,8 @@
 
                     var chart = new ApexCharts(document.querySelector("#month"), options);
                     chart.render();
+
+                    $('#traffic_month').text(data['traffic'] + ' Gbps')
                 }
             })
         }
@@ -88,12 +162,9 @@
                 url: '/api/trendweek/' + origin + '/' + terminating,
                 type: 'GET',
                 success: function(data) {
-                    let numbers = [];
-                    for (let i = 0; i < 300; i++) {
-                        numbers.push(i);
-                    }
+
                     var options = {
-                        series: data,
+                        series: data['data'],
                         chart: {
                             type: 'line',
                             zoom: {
@@ -141,6 +212,8 @@
 
                     var chart = new ApexCharts(document.querySelector("#week"), options);
                     chart.render();
+
+                    $('#traffic_week').text(data['traffic'] + ' Gbps')
                 }
             })
         }

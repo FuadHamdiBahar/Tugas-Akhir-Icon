@@ -6,7 +6,7 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between">
                     <div class="header-title">
-                        <h4 class="card-title">{{ ucfirst($sbu) }} Utilisation Summary</h4>
+                        <h4 class="card-title">{{ $sbu_name }} {{ $ring }} Utilisation Summary</h4>
                     </div>
                     <div class="card-header-toolbar d-flex align-items-center">
                         <h4><span class="badge badge-primary">{{ $month }}</span> </h4>

@@ -19,7 +19,7 @@ class RingController extends Controller
         $data['image'] = $sbu . '.png';
         $data['date'] = date('F', strtotime(date('d-m-Y')));
         $data['month'] = $month;
-        $data['sbu_name'] = ucfirst($sbu);
+        $data['sbu_name'] = $sbu;
         return view('ring', $data);
     }
 }

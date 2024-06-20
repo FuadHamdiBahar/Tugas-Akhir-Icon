@@ -10,7 +10,8 @@ class DeviceController extends Controller
     {
         $data = array(
             'origin' => $origin,
-            'terminating' => $terminating
+            'terminating' => $terminating,
+            'month' => date('F', strtotime(date('d-m-Y')))
         );
         return view('device', $data);
     }
