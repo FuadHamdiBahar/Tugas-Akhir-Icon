@@ -243,7 +243,7 @@ class ApiController extends Controller
         }
 
         array_push($merge, [
-            'name' => 'Inbound',
+            'name' => 'Bits received',
             'data' => $temp
         ]);
 
@@ -256,7 +256,7 @@ class ApiController extends Controller
         }
 
         array_push($merge, [
-            'name' => 'Outbound',
+            'name' => 'Bits sent',
             'data' => $temp,
         ]);
 
@@ -282,7 +282,7 @@ class ApiController extends Controller
         }
 
         array_push($merge, [
-            'name' => 'Inbound',
+            'name' => 'Bits received',
             'data' => $temp
         ]);
 
@@ -295,7 +295,7 @@ class ApiController extends Controller
         }
 
         array_push($merge, [
-            'name' => 'Outbound',
+            'name' => 'Bits sent',
             'data' => $temp
         ]);
 

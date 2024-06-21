@@ -14,7 +14,7 @@ class ApiModel extends Model
     {
         $sql = "
                 select 
-                    raw.origin, raw.terminating, raw.interface, max(raw.value_max) as traffic, '$ring' as ring
+                    raw.origin, '$terminating' as terminating, raw.interface, max(raw.value_max) as traffic, '$ring' as ring
                 from (
                     select 
                         h.hostid, it.itemid, h.\"name\" as origin, it.interface, it.terminating, to_timestamp(t.clock) as waktu, t.value_max   

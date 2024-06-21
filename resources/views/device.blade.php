@@ -5,8 +5,8 @@
         <div class="col-lg-4">
             <div class="card card-transparent card-block card-stretch card-height border-none">
                 <div class="card-body p-0 mt-lg-2 mt-0">
-                    {{-- <h3 class="mb-3">Hi Graham, Good Morning</h3>
-                    <p class="mb-0 mr-4">Your dashboard gives you views of key performance or business
+                    <h4 class="mb-3">{{ $origin }} link to {{ $terminating }}</h4>
+                    {{-- <p class="mb-0 mr-4">Your dashboard gives you views of key performance or business
                         process.</p> --}}
                 </div>
             </div>
@@ -75,10 +75,10 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-6">
+        <div class="col-lg-12">
             <div class="chart" id="week"></div>
         </div>
-        <div class="col-lg-6">
+        <div class="col-lg-12">
 
             <div class="chart" id="month"></div>
         </div>
@@ -103,6 +103,7 @@
                     var options = {
                         series: data['data'],
                         chart: {
+                            height: 300,
                             type: 'line',
                             zoom: {
                                 enabled: false
@@ -132,8 +133,6 @@
                             title: {
                                 text: 'Hour'
                             },
-                            tickAmount: 100,
-                            stepSize: 100
                         },
                         yaxis: {
                             title: {
@@ -167,6 +166,7 @@
                         series: data['data'],
                         chart: {
                             type: 'line',
+                            height: 300,
                             zoom: {
                                 enabled: false
                             },
@@ -189,9 +189,7 @@
                                 bottom: 0
                             }
                         },
-
                         xaxis: {
-
                             title: {
                                 text: 'Hour'
                             }

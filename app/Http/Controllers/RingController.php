@@ -19,7 +19,21 @@ class RingController extends Controller
         $data['image'] = $sbu . '.png';
         $data['date'] = date('F', strtotime(date('d-m-Y')));
         $data['month'] = $month;
-        $data['sbu_name'] = $sbu;
+
+        $sbu_ref = array(
+            'sumbagut' => 'Sumatra Bagian Utara',
+            'sumbagsel' => 'Sumatra Bagian Selatan',
+            'sumbagteng' => 'Sumatra Bagian Tengah',
+            'jakarta' => 'Jakarta',
+            'jabar' => 'Jawa Barat',
+            'jateng' => 'Jawa Tengah',
+            'jatim' => 'Jawa Timur',
+            'balnus' => 'Bali Nusa',
+            'kal' => 'Kalimantan',
+            'ibt' => 'Sulawesi',
+        );
+        $data['sbu_name'] = $sbu_ref[$sbu];
+        $data['sbu'] = $sbu;
         return view('ring', $data);
     }
 }

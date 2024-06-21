@@ -2,7 +2,7 @@
     <div class="iq-sidebar-logo d-flex align-items-center justify-content-between">
         <a href="/" class="header-logo">
             <img src="{{ asset('assets/images/logo.png') }}" class="img-fluid rounded-normal light-logo" alt="logo">
-            <h5 class="logo-title light-logo ml-3">POSDash</h5>
+            {{-- <h5 class="logo-title light-logo ml-3">PLN Icon PLus</h5> --}}
         </a>
         <div class="iq-menu-bt-sidebar ml-0">
             <i class="las la-bars wrapper-menu"></i>
@@ -11,7 +11,7 @@
     <div class="data-scrollbar" data-scroll="1">
         <nav class="iq-sidebar-menu">
             <ul id="iq-sidebar-toggle" class="iq-menu">
-                <li class="active">
+                <li class="{{ Request::path() == '/' ? 'active' : '' }}">
                     <a href="/" class="svg-icon">
                         <svg class="svg-icon" id="p-dash1" width="20" height="20"
                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -22,11 +22,11 @@
                             <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
                             <line x1="12" y1="22.08" x2="12" y2="12"></line>
                         </svg>
-                        <span class="ml-4">My Dashboards</span>
+                        <span class="ml-4">Dashboards</span>
                     </a>
                 </li>
 
-                <li class=" ">
+                <li class="{{ str_contains(Request::path(), 'utilisation') ? 'active' : '' }}">
                     <a href="#product" class="collapsed" data-toggle="collapse" aria-expanded="false">
                         <svg class="svg-icon" id="p-dash3" width="20" height="20"
                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -95,7 +95,7 @@
                         </li>
                     </ul>
                 </li>
-                <li class=" ">
+                <li class="{{ str_contains(Request::path(), 'ring') ? 'active' : '' }}">
                     <a href="#ring" class="collapsed" data-toggle="collapse" aria-expanded="false">
                         <svg class="svg-icon" id="p-dash7" width="20" height="20"
                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"

@@ -5,7 +5,7 @@
         <div class="col-lg-12">
             <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
                 <div>
-                    <h4 class="mb-3">{{ ucfirst($sbu_name) }} Ring Summary</h4>
+                    <h4 class="mb-3">Summary Distribution Ring {{ $sbu_name }}</h4>
                 </div>
                 <div>
                     {{-- <h4></h4> --}}
@@ -59,7 +59,7 @@
                 <thead class="bg-white text-uppercase">
                     <tr class="ligth ligth-data">
                         <th>Ring</th>
-                        <th>Utilisasi (Gbps)</th>
+                        <th>Utilisation (Gbps)</th>
                     </tr>
                 </thead>
                 <tbody class="ligth-body">
@@ -93,104 +93,106 @@
 @section('script')
     <script type="text/javascript">
         $(document).ready(function() {
-            let sbu = '{{ $sbu_name }}'.toLowerCase()
+            let sbu = '{{ $sbu }}'.toLowerCase()
             let month = '{{ $month }}'
+            let date = '{{ $date }}'
 
             showTrend(sbu)
-            showTable(sbu, month)
+            showTable(sbu, month, date)
             showLocation(sbu)
         })
 
-        function showTable(sbu, month) {
+        function showBar(data, date) {
+            const dataList = data.map(ring => (ring.data / 1000000000).toFixed(1));
+            const nameList = data.map(ring => ring.name);
+
+            var options = {
+                series: [{
+                    name: 'Bar',
+                    data: dataList
+                }],
+                chart: {
+                    height: 350,
+                    type: 'bar',
+                },
+                plotOptions: {
+                    bar: {
+                        borderRadius: 10,
+                        dataLabels: {
+                            position: 'top', // top, center, bottom
+                        },
+                    }
+                },
+                dataLabels: {
+                    enabled: true,
+                    formatter: function(val) {
+                        return val + "%";
+                    },
+                    offsetY: -20,
+                    style: {
+                        fontSize: '12px',
+                        colors: ["#304758"]
+                    }
+                },
+
+                xaxis: {
+                    categories: nameList,
+                    position: 'below',
+                    axisBorder: {
+                        show: false
+                    },
+                    axisTicks: {
+                        show: false
+                    },
+                    crosshairs: {
+                        fill: {
+                            type: 'gradient',
+                            gradient: {
+                                colorFrom: '#D8E3F0',
+                                colorTo: '#BED1E6',
+                                stops: [0, 100],
+                                opacityFrom: 0.4,
+                                opacityTo: 0.5,
+                            }
+                        }
+                    },
+                    tooltip: {
+                        enabled: true,
+                    }
+                },
+                yaxis: {
+                    axisBorder: {
+                        show: false
+                    },
+                    axisTicks: {
+                        show: false,
+                    },
+                    labels: {
+                        show: false,
+                        formatter: function(val) {
+                            return val + "%";
+                        }
+                    },
+                    title: {
+                        text: 'Percentage',
+                    },
+
+                },
+                title: {
+                    text: 'Max Traffic Each Ring in ' + date
+                },
+            };
+
+            var chart = new ApexCharts(document.querySelector("#barChart"), options);
+            chart.render();
+        }
+
+        function showTable(sbu, month, date) {
             $.ajax({
                 type: 'GET',
                 url: '/api/summary/' + sbu + '/' + month,
                 success: function(data) {
-                    const dataList = data.map(ring => (ring.data / 1000000000).toFixed(1));
-                    const nameList = data.map(ring => ring.name);
-
-                    var options = {
-                        series: [{
-                            name: 'Bar',
-                            data: dataList
-                        }],
-                        chart: {
-                            height: 350,
-                            type: 'bar',
-                        },
-                        plotOptions: {
-                            bar: {
-                                borderRadius: 10,
-                                dataLabels: {
-                                    position: 'top', // top, center, bottom
-                                },
-                            }
-                        },
-                        dataLabels: {
-                            enabled: true,
-                            formatter: function(val) {
-                                return val + "%";
-                            },
-                            offsetY: -20,
-                            style: {
-                                fontSize: '12px',
-                                colors: ["#304758"]
-                            }
-                        },
-
-                        xaxis: {
-                            categories: nameList,
-                            position: 'below',
-                            axisBorder: {
-                                show: false
-                            },
-                            axisTicks: {
-                                show: false
-                            },
-                            crosshairs: {
-                                fill: {
-                                    type: 'gradient',
-                                    gradient: {
-                                        colorFrom: '#D8E3F0',
-                                        colorTo: '#BED1E6',
-                                        stops: [0, 100],
-                                        opacityFrom: 0.4,
-                                        opacityTo: 0.5,
-                                    }
-                                }
-                            },
-                            tooltip: {
-                                enabled: true,
-                            }
-                        },
-                        yaxis: {
-                            axisBorder: {
-                                show: false
-                            },
-                            axisTicks: {
-                                show: false,
-                            },
-                            labels: {
-                                show: false,
-                                formatter: function(val) {
-                                    return val + "%";
-                                }
-                            }
-
-                        },
-                        // title: {
-                        //     text: 'Monthly Inflation in Argentina, 2002',
-                        //     floating: true,
-                        //     offsetY: 330,
-                        //     align: 'center',
-                        //     style: {
-                        //         color: '#444'
-                        //     }
-                        // }
-                    };
-
-                    var chart = new ApexCharts(document.querySelector("#barChart"), options);
-                    chart.render();
+                    showBar(data, date)
 
                     var resulttag = "";
 
@@ -228,7 +230,7 @@
                             curve: 'smooth',
                         },
                         title: {
-                            text: 'Page Statistics',
+                            text: 'Monthly Max Traffic Each Ring',
                             align: 'left'
                         },
                         legend: {

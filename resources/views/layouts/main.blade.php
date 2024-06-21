@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>POS Dash | Responsive Bootstrap 4 Admin Dashboard Template</title>
+    <title>PLN Icon Plus</title>
 
     <!-- Favicon -->
     {{-- {{ URL::asset('images/tutwuri.ico') }} --}}
