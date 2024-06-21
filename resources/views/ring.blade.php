@@ -286,7 +286,7 @@
                     data.forEach(element => {
                         resulttag += "<tr>"
                         resulttag += "<td>" + element.ring + "</td>"
-                        resulttag += "<td>" + element.link + "</td>"
+                        resulttag += "<td>" + element.location + "</td>"
                         resulttag +=
                             `<td>
                                 <a class="badge badge-info mr-2" data-toggle="tooltip" 

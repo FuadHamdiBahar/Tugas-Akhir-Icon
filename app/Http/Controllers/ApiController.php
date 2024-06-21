@@ -14,34 +14,43 @@ class ApiController extends Controller
     public static function ringLink($sbu)
     {
         // read file
-        $path = public_path('data utilisasi.xlsx');
+        $path = public_path('location utilisasi.xlsx');
         $reader = new Xlsx();
         $spreadsheet = $reader->load($path);
         $sheet = $spreadsheet->getSheetByName($sbu);
         $totalRows = $sheet->getHighestRow();
 
-        $merge = array();
+        // $merge = array();
+        // $temp = [];
+        // for ($row = 3; $row <= $totalRows; $row++) {
+        //     $current_ring = $sheet->getCell("B{$row}")->getValue();
+        //     $next_row = $row + 1;
+        //     $next_ring = $sheet->getCell("B{$next_row}")->getValue();
+        //     if (!empty($sheet->getCell("E{$row}")->getValue())) {
+        //         $origin = $sheet->getCell("E{$row}")->getValue();
+        //         array_push($temp, $origin);
+        //     }
+        //     if ($current_ring != $next_ring) {
+        //         array_push($merge, [
+        //             'ring' => $current_ring,
+        //             'link' => $temp
+        //         ]);
+        //         $temp = [];
+        //     }
+        // }
 
-        $temp = [];
+        $temp = array();
         for ($row = 3; $row <= $totalRows; $row++) {
-            $current_ring = $sheet->getCell("B{$row}")->getValue();
-            $next_row = $row + 1;
-            $next_ring = $sheet->getCell("B{$next_row}")->getValue();
-
-            if (!empty($sheet->getCell("E{$row}")->getValue())) {
-                $origin = $sheet->getCell("E{$row}")->getValue();
-                array_push($temp, $origin);
-            }
-            if ($current_ring != $next_ring) {
-                array_push($merge, [
-                    'ring' => $current_ring,
-                    'link' => $temp
-                ]);
-                $temp = [];
-            }
+            $ring = $sheet->getCell("B{$row}")->getValue();
+            $location = $sheet->getCell("C{$row}")->getValue();
+            array_push($temp, [
+                'ring' => $ring,
+                'location' => $location
+            ]);
         }
 
-        return $merge;
+
+        return $temp;
     }
 
     // ring trends
