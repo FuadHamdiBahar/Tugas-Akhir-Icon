@@ -84,8 +84,9 @@
     </div>
 
     <div class="col-lg-12">
-        <small>*Click this link if the line chart is not synchronized with ring table. <a
-                href="/updatetrend/{{ $sbu_name }}">Update.</a></small>
+        <small>*Click this link if the line chart is not synchronized with ring table <a
+                href="/updatetrend/{{ $sbu }}">Update.</a> If the summary of this month is not added <a
+                href="/createtrend/{{ $sbu }}">Create</a>.</small>
     </div>
 @endsection
 

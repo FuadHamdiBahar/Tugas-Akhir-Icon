@@ -9,23 +9,27 @@ class TrendController extends Controller
     public function index($sbu)
     {
 
-        $listMonthName = ['jan', 'feb', 'mar', 'apr', 'may', 'jun'];
+        // $listMonthName = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul'];
+        $listMonthName = ['jul'];
         foreach ($listMonthName as $m) {
             $data = ApiController::listOfMaxTrafficEachRing($sbu, $m);
-            foreach ($data['data'] as $d) {
-                TrendModel::createTrend($sbu, $m, '2024', $d['ring'], $d['val']);
+            // return $data;
+            foreach ($data as $d) {
+                TrendModel::createTrend($sbu, $m, '2024', $d['name'], $d['data']);
             }
         }
-        return TRUE;
+        $out['message'] = 'Data have been created';
+        return $out;
     }
 
     public function update($sbu)
     {
+        // return $sbu;
         $m = RingController::convertNumToTextMonth();
         $data = ApiController::listOfMaxTrafficEachRing($sbu, $m);
 
-        foreach ($data['data'] as $ring) {
-            TrendModel::updateTrend($sbu, $m, $ring['ring'], $ring['val']);
+        foreach ($data as $ring) {
+            TrendModel::updateTrend($sbu, $m, $ring['name'], $ring['data']);
         }
         $out['message'] = 'Data have been updated';
         return $out;

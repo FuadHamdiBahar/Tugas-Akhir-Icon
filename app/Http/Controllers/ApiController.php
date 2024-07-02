@@ -142,7 +142,7 @@ class ApiController extends Controller
                 $current_ring = $flat[$r]->ring;
                 $next_ring = $flat[$r + 1]->ring;
                 // kalau ring n == n+1 jumlahkan
-                // kalau tidak catet teruse reset valnya
+                // kalau tidak catet terus reset valnya
                 if ($current_ring == $next_ring) {
                     $val += (int)$flat[$r]->traffic;
                 } else {
@@ -229,8 +229,9 @@ class ApiController extends Controller
 
     public function listTrafficMonth($origin, $terminating)
     {
-        $in = ApiModel::queryTrafficMonth($origin, $terminating, 'Bits received');
-        $out = ApiModel::queryTrafficMonth($origin, $terminating, 'Bits sent');
+        $month = RingController::convertNumToTextMonth();
+        $in = ApiModel::queryTrafficMonth($origin, $terminating, 'Bits received', $month);
+        $out = ApiModel::queryTrafficMonth($origin, $terminating, 'Bits sent', $month);
 
         $merge = array();
         $temp = array();
@@ -262,14 +263,16 @@ class ApiController extends Controller
 
         $res['data'] = $merge;
         $res['traffic'] = $max;
+        $res['month'] = $month;
 
         return $res;
     }
 
     public function listTrafficWeek($origin, $terminating)
     {
-        $in = ApiModel::queryTrafficWeek($origin, $terminating, 'Bits received');
-        $out = ApiModel::queryTrafficWeek($origin, $terminating, 'Bits sent');
+        $month = RingController::convertNumToTextMonth();
+        $in = ApiModel::queryTrafficWeek($origin, $terminating, 'Bits received', $month);
+        $out = ApiModel::queryTrafficWeek($origin, $terminating, 'Bits sent', $month);
 
         $merge = array();
         $temp = array();

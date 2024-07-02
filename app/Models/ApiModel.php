@@ -58,7 +58,7 @@ class ApiModel extends Model
         return $data;
     }
 
-    public static function queryTrafficMonth($origin, $terminating, $type)
+    public static function queryTrafficMonth($origin, $terminating, $type, $month)
     {
         $sql = "
         select 
@@ -72,7 +72,7 @@ class ApiModel extends Model
             JOIN 
                 items i ON i.hostid = h.hostid 
             JOIN 
-                trends_uint_jun tuj ON tuj.itemid = i.itemid 
+                trends_uint_$month tuj ON tuj.itemid = i.itemid 
             WHERE 
                 h.\"name\" LIKE '%$origin%'
                 AND i.\"name\" LIKE '%$terminating%'
@@ -84,7 +84,7 @@ class ApiModel extends Model
         return DB::select($sql);
     }
 
-    public static function queryTrafficWeek($origin, $terminating, $type)
+    public static function queryTrafficWeek($origin, $terminating, $type, $month)
     {
         $sql = "
        select 
@@ -98,7 +98,7 @@ class ApiModel extends Model
             JOIN 
                 items i ON i.hostid = h.hostid 
             JOIN 
-                trends_uint_jun tuj ON tuj.itemid = i.itemid 
+                trends_uint_$month tuj ON tuj.itemid = i.itemid 
             WHERE 
                 h.\"name\" LIKE '%$origin%'
                 AND i.\"name\" LIKE '%$terminating%'
