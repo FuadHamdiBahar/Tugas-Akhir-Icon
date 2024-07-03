@@ -6,6 +6,37 @@ use Illuminate\Support\Facades\DB;
 
 class TrendModel
 {
+    public static function getTopFive()
+    {
+        $sql = "
+        select 
+            lower(concat(t.sbu_name, ' ', t.ring)) as name, format(t.traffic / 1000000000, 1) as traffic  
+        from myapp.trends t 
+        where t.`month` = 'jul'
+        order by t.traffic desc
+        limit 5
+        ";
+        return DB::connection('second_db')->select($sql);
+    }
+
+    public static function topEachSBU()
+    {
+        $sql = "
+            select 
+                lower(concat(t.sbu_name, ' ', t.ring)) as name, format(t.traffic / 1000000000, 1) as traffic  
+            from (
+                select 
+                    sbu_name, max(t.traffic) as traffic  
+                from myapp.trends t 
+                where t.`month` = 'jul'
+                group by sbu_name
+            ) raw 
+            join myapp.trends t on t.traffic = raw.traffic
+        ";
+
+        return DB::connection('second_db')->select($sql);
+    }
+
     public static function getNumberOfRing($sbu, $year)
     {
         $sql = "

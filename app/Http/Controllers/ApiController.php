@@ -9,6 +9,39 @@ use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 
 class ApiController extends Controller
 {
+    public function topEachSBU()
+    {
+        $query = TrendModel::topEachSBU();
+        $traffic = [];
+        $name = [];
+
+        foreach ($query as $q) {
+
+            array_push($traffic, $q->traffic);
+            array_push($name, $q->name);
+        }
+
+        $data['data'] = $traffic;
+        $data['name'] = $name;
+
+        return $data;
+    }
+
+    public function top()
+    {
+        $query = TrendModel::getTopFive();
+        $traffic = [];
+        $name = [];
+
+        foreach ($query as $q) {
+            array_push($traffic, $q->traffic);
+            array_push($name, $q->name);
+        }
+
+        $data['data'] = $traffic;
+        $data['name'] = $name;
+        return $data;
+    }
 
     // ring link details
     public static function ringLink($sbu)
