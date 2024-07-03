@@ -2,18 +2,28 @@
 
 @section('body')
     <div class="row">
-        <div class="col-lg-4">
+        <div class="col-lg-8">
             <div class="card card-transparent card-block card-stretch card-height border-none">
                 <div class="card-body p-0 mt-lg-2 mt-0">
                     <h3 class="mb-3">Hi, Good Morning</h3>
                     <p class="mb-0 mr-4">Your dashboard gives you views of key performance or business
-                        process.</p>
+                        process.
+                        Please read the <a href="/documentation">documentation</a> for more information.</p>
                 </div>
             </div>
         </div>
-        <div class="col-lg-8">
+        <div class="col-lg-4">
             <div class="row">
-                <div class="col-lg-4 col-md-4">
+                <div class="d-flex align-items-center mb-4 card-total-sale">
+                    <div class="icon iq-icon-box-2 bg-info-light">
+                    </div>
+                    <div>
+                        <p class="mb-2">Date</p>
+                        <h4>{{ date('d-m-Y') }}</h4>
+                    </div>
+                </div>
+
+                {{-- <div class="col-lg-4 col-md-4">
                     <div class="card card-block card-stretch card-height">
                         <div class="card-body">
                             <div class="d-flex align-items-center mb-4 card-total-sale">
@@ -52,50 +62,37 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-4 col-md-4">
+                </div> --}}
+                {{-- <div class="col-lg-12 col-md-12">
                     <div class="card card-block card-stretch card-height">
                         <div class="card-body">
-                            <div class="d-flex align-items-center mb-4 card-total-sale">
-                                <div class="icon iq-icon-box-2 bg-success-light">
-                                    <img src="../assets/images/product/3.png" class="img-fluid" alt="image">
-                                </div>
-                                <div>
-                                    <p class="mb-2">Product Sold</p>
-                                    <h4>4589 M</h4>
-                                </div>
-                            </div>
-                            <div class="iq-progress-bar mt-2">
-                                <span class="bg-success iq-progress progress-1" data-percent="75"
-                                    style="transition: width 2s ease 0s; width: 75%;">
-                                </span>
-                            </div>
                         </div>
                     </div>
-                </div>
+                </div> --}}
             </div>
         </div>
 
-        <div class="col-lg-12 mb-3">
-            <p>
-                Please read the <a href="/documentation">documentation</a> for more information.
-            </p>
-        </div>
+
         <div class="col-lg-4">
-            <div class="card car-transparent">
-                <div class="card-body p-0">
-                    <div class="profile-image position-relative p-1 m-1" id="chart">
-                    </div>
-                </div>
+            <div class="profile-image position-relative p-1 m-1" id="chart">
             </div>
+            {{-- <div class="card car-transparent">
+                <div class="card-body p-0">
+                </div>
+            </div> --}}
         </div>
 
         <div class="col-lg-8">
-            <div class="card car-transparent">
+            <div class="profile-image position-relative p-1 m-1" id="topEachSBU">
+            </div>
+            {{-- <div class="card car-transparent">
                 <div class="card-body p-0">
-                    <div class="profile-image position-relative p-1 m-1" id="topEachSBU">
-                    </div>
                 </div>
+            </div> --}}
+        </div>
+
+        <div class="col-lg-6">
+            <div class="profile-image position-relative p-1 m-1" id="topEachMonth">
             </div>
         </div>
     </div>
@@ -107,10 +104,43 @@
         $(document).ready(function() {
             topFive();
             topEachSBU();
+            // topEachMonth();
         })
 
+        function topEachMonth() {
+            $.ajax({
+                type: 'GET',
+                url: '/api/topMonth',
+                success: function(data) {
+                    console.log(data);
+
+                    var options = {
+                        series: [{
+                            name: 'Actual',
+                            data: data['traffic']
+                        }],
+                        chart: {
+                            height: 350,
+                            type: 'bar'
+                        },
+                        xaxis: {
+                            categories: data['month']
+                        },
+                        dataLabels: {
+                            enabled: false,
+                            formatter: function(val) {
+                                return val
+                            },
+                        },
+                    };
+
+                    var chart = new ApexCharts(document.querySelector("#topEachMonth"), options);
+                    chart.render();
+                }
+            })
+        }
+
         function topEachSBU() {
-            ;
             $.ajax({
                 type: 'GET',
                 url: '/api/topSbu',
@@ -164,6 +194,9 @@
                                         opacityTo: 0.5,
                                     }
                                 }
+                            },
+                            labels: {
+                                rotate: -90
                             },
                             tooltip: {
                                 enabled: true,

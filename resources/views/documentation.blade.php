@@ -41,16 +41,19 @@
                     <h1 class="logo">
                         <a href="/">
                             <img src="assets/images/logo.png" alt="logo" class="logo-img">
-                            <span class="text-highlight"><b>POSDash</b></span><span class="text-bold ml-3">Docs</span>
+                        </a>
+                        <a href="/documentation">
+                            <span class="text-highlight"><b>Web Monitoring</b></span><span class="text-bold">
+                                Docs</span>
                         </a>
                     </h1>
 
                 </div><!--//branding-->
 
-                <ol class="breadcrumb">
+                {{-- <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="/">Home</a></li>
                     <li class="breadcrumb-item active">Quick Start</li>
-                </ol>
+                </ol> --}}
 
             </div><!--//container-->
         </header><!--//header-->
@@ -73,8 +76,8 @@
                                                                 href="https://github.com/FuadHamdiBahar"
                                                                 target="_blank">Fuad Hamdi Bahar</a></li>
                                                         <li><strong>Project Github : </strong> <a
-                                                                href="https://iqonic.desky.support/"
-                                                                target="_blank">https://github.com/FuadHamdiBahar/Tugas-Akhir-Icon</a>
+                                                                href="https://github.com/FuadHamdiBahar/Tugas-Akhir-Icon"
+                                                                target="_blank">Tugas Akhir Prajabatan PLN 85</a>
                                                         </li>
                                                     </ul>
                                                 </div>

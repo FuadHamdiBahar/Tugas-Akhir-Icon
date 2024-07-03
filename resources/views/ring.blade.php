@@ -180,7 +180,7 @@
 
                 },
                 title: {
-                    text: 'Max Traffic Each Ring in ' + date
+                    text: 'Utilization Percentage Each Ring in ' + date
                 },
             };
 
@@ -216,35 +216,82 @@
                 success: function(data) {
                     console.log(data);
 
+
                     var options = {
-                        series: [{
-                            data: [400, 430, 448, 470, 540, 580, 690, 1100, 1200, 1380]
-                        }],
+                        series: data,
                         chart: {
-                            type: 'bar',
-                            height: 350
-                        },
-                        plotOptions: {
-                            bar: {
-                                borderRadius: 4,
-                                borderRadiusApplication: 'end',
-                                horizontal: true,
-                            }
+                            height: 350,
+                            type: 'line',
+                            zoom: {
+                                enabled: false
+                            },
                         },
                         dataLabels: {
                             enabled: false
                         },
+                        stroke: {
+                            width: 3,
+                            curve: 'smooth',
+                        },
+                        title: {
+                            text: 'Max Traffic Each Ring',
+                            align: 'left'
+                        },
+                        legend: {
+                            tooltipHoverFormatter: function(val, opts) {
+                                return val + ' - <strong>' + opts.w.globals.series[opts.seriesIndex][
+                                    opts.dataPointIndex
+                                ] + '</strong>'
+                            }
+                        },
+                        markers: {
+                            size: 0,
+                            hover: {
+                                sizeOffset: 6
+                            }
+                        },
                         xaxis: {
-                            categories: ['South Korea', 'Canada', 'United Kingdom', 'Netherlands', 'Italy',
-                                'France', 'Japan',
-                                'United States', 'China', 'Germany'
+                            categories: ['01 Jan', '02 Jan', '03 Jan', '04 Jan', '05 Jan', '06 Jan',
+                                '07 Jan', '08 Jan', '09 Jan',
+                                '10 Jan', '11 Jan', '12 Jan'
                             ],
+                        },
+                        yaxis: {
+                            title: {
+                                text: 'Giga bits per second'
+                            }
+                        },
+                        tooltip: {
+                            y: [{
+                                    title: {
+                                        formatter: function(val) {
+                                            return val + " (mins)"
+                                        }
+                                    }
+                                },
+                                {
+                                    title: {
+                                        formatter: function(val) {
+                                            return val + " per session"
+                                        }
+                                    }
+                                },
+                                {
+                                    title: {
+                                        formatter: function(val) {
+                                            return val;
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        grid: {
+                            borderColor: '#f1f1f1',
                         }
                     };
 
                     var chart = new ApexCharts(document.querySelector("#chart"), options);
                     chart.render();
-
 
                 }
             })

@@ -37,6 +37,24 @@ class TrendModel
         return DB::connection('second_db')->select($sql);
     }
 
+    public static function topEachMonth()
+    {
+        $sql = "
+       select 
+            lower(concat(t.sbu_name, ' ', t.ring)) as name, t.month, format(t.traffic / 1000000000, 1) as traffic
+        from (
+            select 
+                t.`month`, max(t.traffic) as traffic
+            from
+                myapp.trends t 
+            where t.year = 2024
+            group by t.`month`  
+        ) raw
+        join myapp.trends t on t.traffic = raw.traffic
+        ";
+        return DB::connection('second_db')->select($sql);
+    }
+
     public static function getNumberOfRing($sbu, $year)
     {
         $sql = "

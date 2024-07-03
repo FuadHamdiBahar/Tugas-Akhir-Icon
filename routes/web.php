@@ -32,6 +32,7 @@ Route::prefix('/api')->group(function () {
 
     Route::get('/top', [ApiController::class, 'top']);
     Route::get('/topSbu', [ApiController::class, 'topEachSBU']);
+    Route::get('/topMonth', [ApiController::class, 'topEachMonth']);
 });
 
 // run it when it needs

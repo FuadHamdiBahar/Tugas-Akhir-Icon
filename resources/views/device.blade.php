@@ -57,7 +57,7 @@
                     <div class="card card-block card-stretch card-height">
                         <div class="card-body">
                             <div class="d-flex align-items-center mb-4 card-total-sale">
-                                <div class="icon iq-icon-box-2 bg-warning-light">
+                                <div class="icon iq-icon-box-2 bg-info-light">
                                     {{-- <img src="{{ asset('assets/images/product/3.png') }}" class="img-fluid" alt="image"> --}}
                                 </div>
                                 <div>
@@ -90,7 +90,7 @@
         $(document).ready(function() {
             let origin = '{{ $origin }}'
             let terminating = '{{ $terminating }}'
-            monthWeek(origin, terminating)
+            weekTrend(origin, terminating)
             monthTrend(origin, terminating)
         })
 
@@ -133,6 +133,10 @@
                             title: {
                                 text: 'Hour'
                             },
+                            labels: {
+                                rotate: -90,
+                                show: false,
+                            },
                         },
                         yaxis: {
                             title: {
@@ -156,7 +160,7 @@
             })
         }
 
-        function monthWeek(origin, terminating) {
+        function weekTrend(origin, terminating) {
             $.ajax({
                 url: '/api/trendweek/' + origin + '/' + terminating,
                 type: 'GET',
@@ -192,7 +196,18 @@
                         xaxis: {
                             title: {
                                 text: 'Hour'
-                            }
+                            },
+                            labels: {
+                                rotate: -90,
+                                show: false,
+                                // formatter: function(val) {
+                                //     if (val % 24 == 0) {
+                                //         return 1
+                                //     }
+                                //     return ''
+                                // }
+                            },
+
                         },
                         yaxis: {
                             title: {

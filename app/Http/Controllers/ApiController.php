@@ -9,6 +9,32 @@ use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 
 class ApiController extends Controller
 {
+    function getMonthIndex($month)
+    {
+        $months = ["jan" => 1, "feb" => 2, "mar" => 3, "apr" => 4, "may" => 5, "jun" => 6, "jul" => 7, "aug" => 8, "sep" => 9, "oct" => 10, "nov" => 11, "dec" => 12];
+        return $months[$month];
+    }
+
+    public function topEachMonth()
+    {
+        $query = TrendModel::topEachMonth();
+        usort($query, function ($a, $b) {
+            return $this->getMonthIndex($a->month) - $this->getMonthIndex($b->month);
+        });
+
+        $month = [];
+        $traffic = [];
+
+        foreach ($query as $q) {
+            array_push($month, $q->month);
+            array_push($traffic, $q->traffic);
+        }
+
+        $data['month'] = $month;
+        $data['traffic'] = $traffic;
+        return $data;
+    }
+
     public function topEachSBU()
     {
         $query = TrendModel::topEachSBU();
@@ -306,6 +332,7 @@ class ApiController extends Controller
         $month = RingController::convertNumToTextMonth();
         $in = ApiModel::queryTrafficWeek($origin, $terminating, 'Bits received', $month);
         $out = ApiModel::queryTrafficWeek($origin, $terminating, 'Bits sent', $month);
+        // return $out;
 
         $merge = array();
         $temp = array();
