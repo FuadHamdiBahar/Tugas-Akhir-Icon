@@ -39,7 +39,7 @@
             <div class="container">
                 <div class="branding">
                     <h1 class="logo">
-                        <a href="index.html">
+                        <a href="/">
                             <img src="assets/images/logo.png" alt="logo" class="logo-img">
                             <span class="text-highlight"><b>POSDash</b></span><span class="text-bold ml-3">Docs</span>
                         </a>
@@ -48,7 +48,7 @@
                 </div><!--//branding-->
 
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
                     <li class="breadcrumb-item active">Quick Start</li>
                 </ol>
 
@@ -69,34 +69,20 @@
                                             <div class="col-md-12 full">
                                                 <div class="intro1">
                                                     <ul>
-                                                        <li><strong>Item Name : </strong>POSDash | HTML Inventory Admin
-                                                            Template</li>
-                                                        <li><strong>Item Version : </strong> v 1.0</li>
                                                         <li><strong>Author : </strong> <a
-                                                                href="https://themeforest.net/user/iqonicdesign/portfolio"
-                                                                target="_blank">Iqonic Design</a></li>
-                                                        <li><strong>Support Forum : </strong> <a
+                                                                href="https://github.com/FuadHamdiBahar"
+                                                                target="_blank">Fuad Hamdi Bahar</a></li>
+                                                        <li><strong>Project Github : </strong> <a
                                                                 href="https://iqonic.desky.support/"
-                                                                target="_blank">https://iqonic.desky.support/</a></li>
-                                                        <li><strong>License : </strong> <a
-                                                                href="https://themeforest.net/licenses/standard"
-                                                                target="_blank">Themeforest License</a></li>
+                                                                target="_blank">https://github.com/FuadHamdiBahar/Tugas-Akhir-Icon</a>
+                                                        </li>
                                                     </ul>
                                                 </div>
                                                 <hr>
                                                 <div>
-                                                    <p>First of all, Thank you so much for purchasing this template and
-                                                        for being my loyal customer.</p>
-                                                    <p>This documentation is to help you regarding each step of
-                                                        customization. Please go through the documentation carefully to
-                                                        understand how this template is made and how to edit it
-                                                        properly. Basic HTML and CSS knowledge is required to customize
-                                                        this template. You may learn basics <a
-                                                            href="https://www.w3schools.com/" target="_blank">here</a>,
-                                                        <a href="https://developer.mozilla.org/"
-                                                            target="_blank">here</a> and <a
-                                                            href="http://learn.shayhowe.com/html-css/building-your-first-web-page/"
-                                                            target="_blank">here</a>.
+                                                    <p>First of all, Thank you so much for reading this documentation.
+                                                        This documentation is to help you understanding all features
+                                                        provided.
                                                     </p>
                                                 </div>
                                             </div>
@@ -110,8 +96,8 @@
                                         <h2 class="sub-title">Quick Start
                                             <hr>
                                         </h2>
-                                        <p>Get details about Requirements, Basic Installation, Structure, Color mode,
-                                            Logo, favicon and loader setup your project with easy steps.</p>
+                                        <p>We provide few features that may helpful to understand how the recent
+                                            condition of our network utilization.</p>
                                     </div>
                                     <!-- end col -->
                                 </div>
@@ -119,248 +105,73 @@
                                 <div class="row">
                                     <div class="col-md-12 full">
                                         <section class="section" id="requirements">
-                                            <h4>File Structure</h4>
-                                            <p>Here is the <strong>general File structure of the template:</strong></p>
+                                            <h4>Features Structure</h4>
+                                            <p>Here are the <strong>general features structure of the website</strong>
+                                            </p>
                                             <div class="row">
                                                 <div class="col-md-12">
-                                                    <div>
-                                                        <ul id="myfiles">
-                                                            <li><i class="fa fa-folder-open mr-2"
-                                                                    aria-hidden="true"></i><span>html</span>
-                                                                <ul class="list-inline">
-                                                                    <li><i class="fa fa-folder-open mr-2"
-                                                                            aria-hidden="true"></i><span>assets</span>
-                                                                        <ul>
-                                                                            <li><i class="fa fa-folder-open mr-2"
-                                                                                    aria-hidden="true"></i><span>css</span>
-                                                                            </li>
-                                                                            <li><i class="fa fa-folder-open mr-2"
-                                                                                    aria-hidden="true"></i><span>js</span>
-                                                                            </li>
-                                                                            <li><i class="fa fa-folder-open mr-2"
-                                                                                    aria-hidden="true"></i><span>images</span>
-                                                                            </li>
-                                                                            <li><i class="fa fa-folder-open mr-2"
-                                                                                    aria-hidden="true"></i><span>vendor</span>
-                                                                            </li>
-                                                                        </ul>
-                                                                    </li>
-                                                                    <li><i class="fa fa-folder-open mr-2"
-                                                                            aria-hidden="true"></i><span>app</span>
-                                                                        <ul>
-                                                                            <li><i class="fa fa-file mr-2"
-                                                                                    aria-hidden="true"></i><span>all app
-                                                                                    html pages</span></li>
-                                                                        </ul>
-                                                                    </li>
-                                                                    <li><i class="fa fa-folder-open mr-2"
-                                                                            aria-hidden="true"></i><span>backend</span>
-                                                                        <ul>
-                                                                            <li><i class="fa fa-file mr-2"
-                                                                                    aria-hidden="true"></i><span>all
-                                                                                    backend html pages</span></li>
-                                                                        </ul>
-                                                                    </li>
-                                                                </ul>
-                                                            </li>
-                                                            <li><i class="fa fa-folder-open mr-2"
-                                                                    aria-hidden="true"></i><span>documentation</span>
-                                                                <ul>
-                                                                    <li><i class="fa fa-folder-open mr-2"
-                                                                            aria-hidden="true"></i><span>asset</span>
-                                                                    </li>
-                                                                    <li><i class="fa fa-file mr-2"
-                                                                            aria-hidden="true"></i><span>index.html</span>
-                                                                    </li>
-                                                                </ul>
-                                                            </li>
-                                                        </ul>
-                                                        </li>
-                                                        </ul>
-                                                    </div>
+                                                    <img src="{{ asset('assets/images/documentation/features.png') }}"
+                                                        alt="" srcset="" class="img-fluid">
                                                 </div>
                                             </div>
                                         </section>
                                         <div id="basic-installation" class="section-block">
-                                            <h2 class="section-title">Installation</h2>
-                                            <h3 class="block-title py-2">Basic Installation</h3>
-                                            <p>Steps to be followed for getting started with the template:</p>
-                                            <div class="row">
-                                                <div class="col-md-12 col-12">
-                                                    <h4 id="html-install">HTML</h4>
-                                                    <ol>
-                                                        <li>Open <span class="text-red">HTML</span> folder to find all
-                                                            the Template files.</li>
-                                                        <li>You need to upload these files using FTP on your server.
-                                                        </li>
-                                                        <li>
-                                                            Make sure you maintain the structure while uploading the
-                                                            required files/folders:
-                                                            <ul class="mt-2">
-                                                                <li><i class="fa fa-folder-open"
-                                                                        aria-hidden="true"></i><span
-                                                                        class="text-highlight"> HTML/assets/css</span>
-                                                                    - Stylesheet Folders</li>
-                                                                <li><i class="fa fa-folder-open"
-                                                                        aria-hidden="true"></i><span
-                                                                        class="text-highlight">
-                                                                        HTML/assets/images</span> - Image Folders</li>
-                                                                <li><i class="fa fa-folder-open"
-                                                                        aria-hidden="true"></i><span
-                                                                        class="text-highlight"> HTML/assets/js</span> -
-                                                                    Javacript Folders</li>
-                                                                <li><i class="fa fa-folder-open"
-                                                                        aria-hidden="true"></i><span
-                                                                        class="text-highlight">
-                                                                        HTML/assets/vendor</span> - Vendor Folder</li>
-                                                                <li><i class="fa fa-folder-open"
-                                                                        aria-hidden="true"></i><span
-                                                                        class="text-highlight"> HTML/app</span> - App
-                                                                    Folder</li>
-                                                                <li><i class="fa fa-folder-open"
-                                                                        aria-hidden="true"></i><span
-                                                                        class="text-highlight">
-                                                                        HTML/backend/index.html</span> - Index
-                                                                    File/Homepage</li>
-                                                            </ul>
-                                                            Other files can be used according to your convenience.
-                                                        </li>
-                                                        <li>Now that you have followed these steps, your basic
-                                                            installation is complete and ready to flaunt your site to
-                                                            the world.</li>
-                                                    </ol>
-                                                </div>
-                                            </div><!--//row-->
+                                            <h2 class="section-title">The Features</h2>
+                                            <h3 class="block-title py-2">Dashboard</h3>
+                                            <p>Dashboard will provide you a brief of network utilization. On this page,
+                                                We create two bar charts, the first one will show you top 5 rings which
+                                                has the highest traffic on this month. The second bar chart will be
+                                                looking similiar to the first one, the difference is that the second bar
+                                                chart depict you the largest traffic of ring each sbu. We also add some
+                                                details such
+                                                as date and link to the documentation page</p>
+                                            <img src="{{ asset('assets/images/documentation/dashboard.png') }}"
+                                                alt="" srcset="" class="img-fluid">
                                         </div><!--//section-block-->
                                         <div id="basic-structure" class="section-block">
-                                            <h3 class="block-title">HTML Structure</h3>
-                                            <p>Here is the <strong>general HTML structure of the template:</strong></p>
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <pre><code class="language-markup">
-&lt;!DOCTYPE html&gt;
-&lt;html lang=&quot;en&quot;&gt;
-&lt;head&gt;
-[Page meta, page css, page js files, page title etc...]
-&lt;/head&gt;
-<p> &lt;body&gt;
+                                            <h3 class="block-title">SBU</h3>
+                                            <p>By this page, you will see a list of link to devices. The list has 7
+                                                columns, they are Ring, Origin, Interface, Terminating, Capacity, Max
+                                                Traffic (Gbps) and Action. Click view action to see further details
+                                                about the link to device.</p>
+                                            <img src="{{ asset('assets/images/documentation/sbu.png') }}" alt=""
+                                                srcset="" class="img-fluid">
 
-   &lt;!-- preloader --&gt;
-   &lt;div  id=&quot;loading&quot; &gt; [LOADER CONTENT] &lt;/div&gt;
-   &lt;!--preloader --&gt;
-
-   &lt;!--header --&gt;
-   &lt;header&gt;
-</p>
-<p> &lt;/header&gt;
-   &lt;!--header --&gt;
-
-   &lt;!--main-content- --&gt;
-   &lt;div class=&quot;main-content&quot; &gt;
-   &lt;!--Section 1- --&gt;
-   &lt;section&gt;
-   [SECTION 1 CONTENT]   
-   &lt;/section&gt;
-   &lt;!--Section 1- --&gt;
-    &lt;!--Section 2- --&gt;
-   &lt;section&gt;
-   [SECTION 2 CONTENT]   
-   &lt;/section&gt;
-   &lt;!--Section 2- --&gt;
-   &lt;div&gt;
-   &lt;!--main-content- --&gt;
-   &lt;!--footer- --&gt;
-   &lt;footer class=&quot;iq-footer2&quot; &gt;
-   [FOOTER_CONTENT]   
-   &lt;/footer&gt;
-   &lt;!--footer- --&gt;
-  [PAGE JAVASCRIPTS HERE]   
- &lt;/body&gt;
-&lt;/html&gt;
-</p>
-                                        </code>
-                                    </pre>
-                                                </div>
-                                            </div>
                                         </div><!--//section-block-->
                                         <div id="basic-css" class="section-block">
-                                            <h3 class="block-title">CSS Structure</h3>
-                                            <p>Here is the <strong>general CSS structure of the template:</strong></p>
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <pre><code class="language-markup">
-&lt;!-- Backend CSS --&gt;
-&lt;link rel="stylesheet" href=".../assets/css/backend.min.css"&gt;
+                                            <h3 class="block-title">Ring</h3>
+                                            <p>Comapared to other features, ring contains more information than the
+                                                others. Ring will show you three different pieces of
+                                                information and three different kinds of chart. It contains line chart,
+                                                bar chart and also list.
+                                            </p>
+                                            <p>The line chart is trying to plot the trend of traffic of ring in every
+                                                single month. On the right of line chart, there is a bar chart that plot
+                                                the percentage of traffic of ring on current month. After that, there
+                                                are 2 lists, the first one indicate the highest traffic of ring on
+                                                current month and the other one tell about the location of each ring.
+                                            </p>
 
-&lt;!-- fontawesome CSS --&gt;
-&lt;link rel="stylesheet" type="assets/vendor/@fortawesome/fontawesome-free/css/all.min.css"&gt;
+                                            <img src="{{ asset('assets/images/documentation/ring.png') }}"
+                                                alt="" srcset="" class="img-fluid">
 
-&lt;!-- line-awesome CSS --&gt;
-&lt;link rel="stylesheet" href=".../assets/vendor/line-awesome/dist/line-awesome/css/line-awesome.min.css"&gt;
-
-&lt;!-- remixicon CSS --&gt;
-&lt;link rel="stylesheet" href=".../assets/vendor/remixicon/fonts/remixicon.css"&gt;
-
-&lt;!-- dripicons CSS --&gt;
-&lt;link rel="stylesheet" href="...assets/vendor/@icon/dripicons/dripicons.css"&gt;
-                                            </code>
-                                        </pre>
-                                                </div>
-                                            </div>
                                         </div><!--//section-block css-->
 
                                         <div id="basic-js" class="section-block">
-                                            <h3 class="block-title">Javascript Structure</h3>
-                                            <p>Here is the <strong>general Javascript structure of the
-                                                    template:</strong></p>
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <pre><code class="language-markup">
-&lt;!-- Backend-bundle JS --&gt;
-&lt;script src="../assets/js/backend-bundle.min.js" &gt;&lt;/script&gt;
+                                            <h3 class="block-title">Traffic</h3>
+                                            <p>In order to understand where all the data come from, traffic feature is
+                                                the answer of this question. In this page, we can see lot of details
+                                                provided. There are informations about link to device name, current
+                                                month, max traffic on the current month and max traffic on current week.
+                                            </p>
+                                            <p>Underneath those informations, we add two line charts that will plot
+                                                traffic utilization in range of a week and a month respectively.</p>
+                                            <img src="{{ asset('assets/images/documentation/traffic.png') }}"
+                                                alt="" srcset="" class="img-fluid">
 
-&lt;!-- Ionicons  --&gt;
-&lt;script src="../assets/vendor/ionicons/dist/ionicons.js"&gt;&lt;/script&gt;
-
-&lt;!--  Flextree --&gt;
-&lt;script src="../assets/js/flex-tree.min.js" &gt;&lt;/script&gt;
-&lt;script src="../assets/js/tree.js" &gt;&lt;/script&gt;
-
-&lt;!-- Table Treeview Javascript --&gt;
-&lt;script src="../assets/js/table-treeview.js"&gt;&lt;/script&gt;
-
-&lt;!-- Masonary Javascript --&gt;
-&lt;script src="../assets/js/masonry.pkgd.min.js"&gt;&lt;/script&gt;
-&lt;script src="../assets/js/imagesloaded.pkgd.min.js"&gt;&lt;/script&gt;
-
-&lt;!-- Mapbox Javascript --&gt;
-&lt;script src="../assets/js/mapbox-gl.js"&gt;&lt;/script&gt;
-&lt;script src="../assets/js/mapbox.js"&gt;&lt;/script&gt;
-
-&lt;!-- SweetAlert Javascript --&gt;
-&lt;script src="../assets/js/sweetalert.js"&gt;&lt;/script&gt;
-
-&lt;!-- Vectoe Map Javascript --&gt;
-&lt;script src="../assets/js/vector-map-custom.js"&gt;&lt;/script&gt;
-
-&lt;!--  Customizer Javascript  --&gt;
-&lt;script src="../assets/js/customizer.js" &gt;&lt;/script&gt;
-
-&lt;!-- Chart Custom JavaScript --&gt;
-&lt;script src="../assets/js/chart-custom.js"&gt;&lt;/script&gt;
-
-&lt;!-- Slider JavaScript --&gt;
-&lt;script src="../assets/js/slider.js"&gt;&lt;/script&gt;
-
-&lt;!-- App JavaScript --&gt;
-&lt;script src="../assets/js/app.js"&gt;&lt;/script&gt;
-                                        </code></pre>
-
-                                                </div>
-                                            </div>
                                         </div><!--//section-block Javascript Structure-->
 
-                                        <div id="basic-favicon" class="section-block">
+                                        {{-- <div id="basic-favicon" class="section-block">
                                             <h3 class="block-title">For Favicon icon</h3>
                                             <p>Favicon is an icon associated with the URL that is displayed at various
                                                 places, such as in a browser’s address bar or next to the site name in a
@@ -371,9 +182,9 @@
                                                     <pre><code class="language-markup">&lt;link rel=&quot;shortcut icon&quot; href=&quot;images/favicon.ico&quot;&gt;</code></pre>
                                                 </div>
                                             </div>
-                                        </div><!--//section-block favicon-->
+                                        </div><!--//section-block favicon--> --}}
 
-                                        <div id="basic-loading" class="section-block">
+                                        {{-- <div id="basic-loading" class="section-block">
                                             <h3 class="block-title">For Page Loading Transitions</h3>
                                             <p>Page Loading Transitions are enabled by default. If you wish to disable
                                                 the page loading transition you can simply delete with the help of below
@@ -387,8 +198,8 @@
 
                                                 </div>
                                             </div>
-                                        </div><!--//section-block loading-->
-                                        <div id="basic-logo" class="section-block">
+                                        </div><!--//section-block loading--> --}}
+                                        {{-- <div id="basic-logo" class="section-block">
                                             <h3 class="block-title">For Logo</h3>
                                             <p>The Logo Container can be found in the Header Container - <span
                                                     class="atv"> #header</span>. Replace <span
@@ -405,8 +216,8 @@
 
                                                 </div>
                                             </div>
-                                        </div><!--//section-block logo-->
-                                        <div id="basic-fonts" class="section-block">
+                                        </div><!--//section-block logo--> --}}
+                                        {{-- <div id="basic-fonts" class="section-block">
                                             <h3 class="block-title">For Changing Fonts</h3>
                                             <p> You can add or change the site font from all fonts (used from <a
                                                     href="https://www.google.com/fonts"> Google Web Font Services</a>).
@@ -438,10 +249,10 @@
 
                                                 </div>
                                             </div>
-                                        </div><!--//section-block fonts-->
+                                        </div><!--//section-block fonts--> --}}
 
                             </section><!--//doc-section-->
-                            <section id="helper-section" class="doc-section">
+                            {{-- <section id="helper-section" class="doc-section">
                                 <h2 class="section-title">Helper classes</h2>
 
                                 <div id="basic-padding" class="section-block">
@@ -560,8 +371,9 @@
                                         </div>
                                     </div>
                                 </div>
-                            </section><!--//doc-section-->
-                            <section id="basic-components" class="doc-section">
+                            </section><!--//doc-section--> --}}
+
+                            {{-- <section id="basic-components" class="doc-section">
                                 <h2 class="section-title">Bootstrap Components</h2>
                                 <div class="section-block">
                                     <div class="row">
@@ -599,9 +411,9 @@
                                         </div>
                                     </div>
                                 </div>
-                            </section><!--//doc-section-->
+                            </section><!--//doc-section--> --}}
 
-                            <section id="basic-sliders" class="doc-section">
+                            {{-- <section id="basic-sliders" class="doc-section">
                                 <h2 class="section-title">For Sliders</h2>
                                 <div class="section-block">
                                     <p>There are 2 different sliders with variety of options. You can apply these
@@ -613,8 +425,9 @@
                                                 Slider</strong></li>
                                     </ul>
                                 </div><!--//section-block-->
-                            </section><!--//doc-section-->
-                            <section id="basic-source" class="doc-section">
+                            </section><!--//doc-section--> --}}
+
+                            {{-- <section id="basic-source" class="doc-section">
                                 <h2 class="section-title">Source & Credits</h2>
                                 <div class="section-block">
                                     <p>All images and videos are for preview purposes only and are not included in the
@@ -650,7 +463,7 @@
                                         <li><a href="https://www.google.com/fonts">Google Fonts</a></li>
                                     </ul>
                                 </div><!--//section-block-->
-                            </section><!--//doc-section-->
+                            </section><!--//doc-section--> --}}
 
                         </div><!--//content-inner-->
                     </div><!--//doc-content-->
@@ -661,19 +474,19 @@
                                 <a class="font-weight-bolder nav-link scrollto" href="#quick-start-section">Quick
                                     Start</a>
                                 <nav class="doc-sub-menu nav flex-column">
-                                    <a class="nav-link scrollto" href="#basic-installation">Basic Installation</a>
-                                    <a class="nav-link scrollto" href="#basic-structure">HTML Structure</a>
-                                    <a class="nav-link scrollto" href="#basic-css">CSS Structure</a>
-                                    <a class="nav-link scrollto" href="#basic-js">Javascript Structure</a>
-                                    <a class="nav-link scrollto" href="#basic-favicon">For Favicon icon</a>
+                                    <a class="nav-link scrollto" href="#basic-installation">Dashboard</a>
+                                    <a class="nav-link scrollto" href="#basic-structure">SBU</a>
+                                    <a class="nav-link scrollto" href="#basic-css">Ring</a>
+                                    <a class="nav-link scrollto" href="#basic-js">Traffic</a>
+                                    {{-- <a class="nav-link scrollto" href="#basic-favicon">For Favicon icon</a>
                                     <a class="nav-link scrollto" href="#basic-loading">For Page Loading
                                         Transitions</a>
                                     <a class="nav-link scrollto" href="#basic-logo">For Logo</a>
-                                    <a class="nav-link scrollto" href="#basic-fonts">For Changing Fonts</a>
+                                    <a class="nav-link scrollto" href="#basic-fonts">For Changing Fonts</a> --}}
                                 </nav><!--//nav-->
-                                <a class="font-weight-bolder nav-link scrollto" href="#helper-section">Helper
-                                    classes</a>
-                                <nav class="doc-sub-menu nav flex-column">
+                                {{-- <a class="font-weight-bolder nav-link scrollto" href="#helper-section">Helper
+                                    classes</a> --}}
+                                {{-- <nav class="doc-sub-menu nav flex-column">
                                     <a class="nav-link scrollto" href="#basic-padding">For section padding</a>
                                     <a class="nav-link scrollto" href="#basic-color">For Text color</a>
                                     <a class="nav-link scrollto" href="#basic-background">For Background color</a>
@@ -685,7 +498,7 @@
                                     Components</a>
                                 <a class="font-weight-bolder nav-link scrollto" href="#basic-sliders">For Sliders</a>
                                 <a class="font-weight-bolder nav-link scrollto" href="#basic-source">Source &
-                                    Credits</a>
+                                    Credits</a> --}}
                             </nav><!--//doc-menu-->
 
                         </div>
