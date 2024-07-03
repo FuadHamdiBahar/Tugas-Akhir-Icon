@@ -18,6 +18,8 @@ Route::get('/device/{origin}/{terminating}', [DeviceController::class, 'index'])
 
 Route::get('/ring/{sbu}', [RingController::class, 'ring'])->name('ring');
 
+Route::get('/documentation', [DashboardController::class, 'documentation'])->name('documentation');
+
 
 // myApi
 Route::prefix('/api')->group(function () {
@@ -26,6 +28,10 @@ Route::prefix('/api')->group(function () {
     Route::get('/link/{sbu}', [ApiController::class, 'ringLink']);
     Route::get('/trendmonth/{origin}/{terminating}', [ApiController::class, 'listTrafficMonth']);
     Route::get('/trendweek/{origin}/{terminating}', [ApiController::class, 'listTrafficWeek']);
+
+
+    Route::get('/top', [ApiController::class, 'top']);
+    Route::get('/topSbu', [ApiController::class, 'topEachSBU']);
 });
 
 // run it when it needs
