@@ -6,6 +6,36 @@ use Illuminate\Support\Facades\DB;
 
 class TrendModel
 {
+    public static function monthDifference($before, $current)
+    {
+        $sql = "
+        select
+            lower(concat(cur.sbu_name, ' ', cur.ring)) as name,
+            format(cur.traffic / 1000000000, 1) as cur_traffic,
+            format(bef.traffic / 1000000000, 1) AS bef_traffic
+        FROM (
+            SELECT 
+                t.sbu_name, 
+                t.ring, 
+                t.traffic 
+            FROM (
+                SELECT 
+                    sbu_name, 
+                    MAX(traffic) AS traffic
+                FROM myapp.trends 
+                WHERE `month` = '$current'
+                GROUP BY sbu_name 
+            ) raw 
+            JOIN myapp.trends t ON t.sbu_name = raw.sbu_name AND t.traffic = raw.traffic
+        ) cur 
+        JOIN myapp.trends bef 
+        ON cur.sbu_name = bef.sbu_name 
+        AND bef.`month` = '$before' 
+        AND bef.ring = cur.ring
+        ";
+        return DB::connection('second_db')->select($sql);
+    }
+
     public static function getTopFive()
     {
         $sql = "

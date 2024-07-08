@@ -19,7 +19,7 @@
                     </div>
                     <div>
                         <p class="mb-2">Date</p>
-                        <h4>{{ date('d-m-Y') }}</h4>
+                        <h4>{{ date('d M Y') }}</h4>
                     </div>
                 </div>
 
@@ -95,43 +95,137 @@
             <div class="profile-image position-relative p-1 m-1" id="topEachMonth">
             </div>
         </div>
+        <div class="col-lg-6"></div>
+
+        <div class="col-lg-12">
+            <div class="profile-image position-relative p-1 m-1" id="monthDifference">
+            </div>
+        </div>
     </div>
 @endsection
 
 
 @section('script')
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script>
         $(document).ready(function() {
-            topFive();
-            topEachSBU();
-            // topEachMonth();
+            var month = "{{ date('F') }}"
+            var year = "{{ date('Y') }}"
+            topFive(month);
+            topEachSBU(month);
+            topEachMonth(year);
+            monthDifference(month);
         })
 
-        function topEachMonth() {
+        function monthDifference(month) {
+            $.ajax({
+                type: 'GET',
+                url: '/api/diff',
+                success: function(data) {
+                    var options = {
+                        series: data['data'],
+                        chart: {
+                            type: 'bar',
+                            height: 400
+                        },
+
+                        dataLabels: {
+                            enabled: true
+                        },
+                        xaxis: {
+                            categories: data['name'],
+                            labels: {
+                                rotate: -90,
+                            }
+                        },
+                        yaxis: {
+                            title: {
+                                text: 'Giga bits per second'
+                            }
+                        },
+                        tooltip: {
+                            y: {
+                                formatter: function(val) {
+                                    return val + " Gbps"
+                                }
+                            }
+                        },
+                        legend: {
+                            show: false
+                        }
+                    };
+
+                    var chart = new ApexCharts(document.querySelector("#monthDifference"), options);
+                    chart.render();
+                }
+            })
+
+        }
+
+        function topEachMonth(year) {
             $.ajax({
                 type: 'GET',
                 url: '/api/topMonth',
                 success: function(data) {
-                    console.log(data);
 
                     var options = {
                         series: [{
-                            name: 'Actual',
+                            name: 'Servings',
                             data: data['traffic']
                         }],
-                        chart: {
-                            height: 350,
-                            type: 'bar'
+                        annotations: {
+                            points: data['points']
                         },
-                        xaxis: {
-                            categories: data['month']
+                        chart: {
+                            height: 400,
+                            type: 'bar',
+                        },
+                        plotOptions: {
+                            bar: {
+                                borderRadius: 10,
+                                columnWidth: '50%',
+                            }
                         },
                         dataLabels: {
-                            enabled: false,
-                            formatter: function(val) {
-                                return val
+                            enabled: false
+                        },
+                        stroke: {
+                            width: 0
+                        },
+                        grid: {
+                            row: {
+                                colors: ['#fff', '#f2f2f2']
+                            }
+                        },
+                        xaxis: {
+                            labels: {
+                                rotate: -45
+                            },
+                            categories: data['month'],
+                            tickPlacement: 'on'
+                        },
+                        yaxis: {
+                            title: {
+                                text: 'Giga bits per second',
                             },
                         },
+                        title: {
+                            text: 'The Highest Ring Traffic Each Month in 2024',
+                            align: 'center'
+                        }
+                        // fill: {
+                        //     type: 'gradient',
+                        //     gradient: {
+                        //         shade: 'light',
+                        //         type: "horizontal",
+                        //         shadeIntensity: 0.25,
+                        //         gradientToColors: undefined,
+                        //         inverseColors: true,
+                        //         opacityFrom: 0.85,
+                        //         opacityTo: 0.85,
+                        //         stops: [50, 0, 100]
+                        //     },
+                        // }
                     };
 
                     var chart = new ApexCharts(document.querySelector("#topEachMonth"), options);
@@ -140,19 +234,20 @@
             })
         }
 
-        function topEachSBU() {
+        function topEachSBU(month) {
             $.ajax({
                 type: 'GET',
                 url: '/api/topSbu',
                 success: function(data) {
+                    console.log(data);
                     var options = {
                         series: [{
-                            name: 'Inflation',
-                            data: data['data']
+                            name: 'Current',
+                            data: data,
                         }],
                         chart: {
                             height: 400,
-                            type: 'bar',
+                            type: 'bar'
                         },
                         plotOptions: {
                             bar: {
@@ -162,6 +257,7 @@
                                 },
                             }
                         },
+                        // colors: ['#00E396'],
                         dataLabels: {
                             enabled: true,
                             formatter: function(val) {
@@ -173,61 +269,19 @@
                                 colors: ["#304758"]
                             }
                         },
-
-                        xaxis: {
-                            categories: data['name'],
-                            position: 'bottom',
-                            axisBorder: {
-                                show: false
-                            },
-                            axisTicks: {
-                                show: false
-                            },
-                            crosshairs: {
-                                fill: {
-                                    type: 'gradient',
-                                    gradient: {
-                                        colorFrom: '#D8E3F0',
-                                        colorTo: '#BED1E6',
-                                        stops: [0, 100],
-                                        opacityFrom: 0.4,
-                                        opacityTo: 0.5,
-                                    }
-                                }
-                            },
-                            labels: {
-                                rotate: -90
-                            },
-                            tooltip: {
-                                enabled: true,
-                            }
-                        },
                         yaxis: {
-                            axisBorder: {
-                                show: false
-                            },
-                            axisTicks: {
-                                show: false,
-                            },
-                            labels: {
-                                show: false,
-                                formatter: function(val) {
-                                    return val + "Gbps";
-                                }
-                            },
                             title: {
                                 text: 'Giga bits per second'
                             }
-
+                        },
+                        xaxis: {
+                            labels: {
+                                rotate: -90
+                            }
                         },
                         title: {
-                            text: 'Top Highest Ring Traffic Each SBU',
-                            floating: true,
-                            // offsetY: 330,
-                            align: 'center',
-                            style: {
-                                color: '#444'
-                            }
+                            text: 'Top Highest Traffic Ring Each SBU in ' + month,
+                            align: 'center'
                         }
                     };
 
@@ -238,7 +292,7 @@
 
         }
 
-        function topFive() {
+        function topFive(month) {
 
             $.ajax({
                 type: 'GET',
@@ -246,39 +300,46 @@
                 success: function(data) {
                     var options = {
                         series: [{
-                            data: data['data']
+                            name: 'Actual',
+                            data: data,
                         }],
                         chart: {
-                            type: 'bar',
-                            height: 400
+                            height: 400,
+                            type: 'bar'
                         },
                         plotOptions: {
                             bar: {
-                                borderRadius: 4,
-                                borderRadiusApplication: 'end',
                                 horizontal: true,
                             }
                         },
                         dataLabels: {
-                            enabled: false
-                        },
-                        xaxis: {
-                            categories: data['name'],
-                            title: {
-                                text: 'Giga bits per second',
+                            formatter: function(val, opt) {
+                                const goals =
+                                    opt.w.config.series[opt.seriesIndex].data[opt.dataPointIndex]
+                                    .goals
+
+                                if (goals && goals.length) {
+                                    // return `${val} / ${goals[0].value}`
+                                    return `${val} Gbps`
+                                }
+                                return val
                             }
                         },
                         title: {
-                            text: 'Top 5 Highest Traffic Ring',
+                            text: 'Top 5 Highest Traffic Ring in ' + month,
                             align: 'center'
                         },
+                        xaxis: {
+                            title: {
+                                text: 'Giga bits per second'
+                            }
+                        }
                     };
 
                     var chart = new ApexCharts(document.querySelector("#chart"), options);
                     chart.render();
                 }
             })
-
         }
     </script>
 @endsection

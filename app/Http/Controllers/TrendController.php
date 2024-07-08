@@ -26,7 +26,7 @@ class TrendController extends Controller
     {
         // return $sbu;
         $m = RingController::convertNumToTextMonth();
-        $data = ApiController::listOfMaxTrafficEachRing($sbu, $m);
+        $data = ApiController::sumOfMaxTrafficEachRing($sbu, $m);
 
         foreach ($data as $ring) {
             TrendModel::updateTrend($sbu, $m, $ring['name'], $ring['data']);

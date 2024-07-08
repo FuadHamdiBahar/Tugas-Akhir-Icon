@@ -15,6 +15,30 @@ class ApiController extends Controller
         return $months[$month];
     }
 
+    public function monthDifference()
+    {
+        $query = TrendModel::monthDifference('jun', 'jul');
+
+
+        $cur['name'] = 'jun';
+        $bef['name'] = 'jul';
+        $t1 = [];
+        $t2 = [];
+        $name = [];
+        foreach ($query as $q) {
+            array_push($t1, $q->cur_traffic);
+            array_push($t2, $q->bef_traffic);
+            array_push($name, $q->name);
+        }
+
+        $cur['data'] = $t1;
+        $bef['data'] = $t2;
+
+        $res['data'] = [$cur, $bef];
+        $res['name'] = $name;
+        return $res;
+    }
+
     public function topEachMonth()
     {
         $query = TrendModel::topEachMonth();
@@ -24,49 +48,72 @@ class ApiController extends Controller
 
         $month = [];
         $traffic = [];
-
+        $points = [];
         foreach ($query as $q) {
             array_push($month, $q->month);
             array_push($traffic, $q->traffic);
+
+            // sulap hahah
+            $temp['x'] = $q->month;
+            $t['text'] = $q->name;
+            $t['offsetY'] = 0;
+            $temp['label'] = $t;
+            array_push($points, $temp);
+            // sampai sini sulapnya
         }
+
+
 
         $data['month'] = $month;
         $data['traffic'] = $traffic;
+        $data['points'] = $points;
+
         return $data;
     }
 
     public function topEachSBU()
     {
         $query = TrendModel::topEachSBU();
-        $traffic = [];
-        $name = [];
+        $result = [];
 
         foreach ($query as $q) {
+            $temp['x'] = $q->name;
+            $temp['y'] = $q->traffic;
+            $goals['name'] = 'Expected';
+            $goals['value'] = 100;
+            $goals['strokeColor'] = '#FF0000';
+            $goals['strokeHeight'] = 2;
+            $goals['strokeDashArray'] = 2;
 
-            array_push($traffic, $q->traffic);
-            array_push($name, $q->name);
+            $temp['goals'] = [$goals];
+
+            array_push($result, $temp);
         }
 
-        $data['data'] = $traffic;
-        $data['name'] = $name;
-
-        return $data;
+        return $result;
     }
 
     public function top()
     {
         $query = TrendModel::getTopFive();
-        $traffic = [];
-        $name = [];
 
+        $result = [];
         foreach ($query as $q) {
-            array_push($traffic, $q->traffic);
-            array_push($name, $q->name);
+            $temp['x'] = $q->name;
+            $temp['y'] = (float) $q->traffic;
+
+            $goals['name'] = 'Expected';
+            $goals['value'] = 100;
+            $goals['strokeColor'] = '#FF0000';
+            $goals['strokeWidth'] = 2;
+            $goals['strokeDashArray'] = 2;
+
+            $temp['goals'] = [$goals];
+
+            array_push($result, $temp);
         }
 
-        $data['data'] = $traffic;
-        $data['name'] = $name;
-        return $data;
+        return $result;
     }
 
     // ring link details
@@ -136,6 +183,7 @@ class ApiController extends Controller
 
         // transform
         $transform = array();
+        $month = array();
         foreach ($merge as $m) {
             $temp = array();
             $ring = '';
@@ -147,7 +195,12 @@ class ApiController extends Controller
                 'name' => $ring,
                 'data' => $temp
             ]);
+
+            // array_push($month, $m->month);
         }
+
+        // $res['data'] = $transform;
+        // $res['month'] = $month;
 
         return $transform;
     }
@@ -181,9 +234,6 @@ class ApiController extends Controller
             }
         }
 
-        // check missing sbu ring max
-        // dd($merge);
-
         $flat = array();
         foreach ($merge as $hosts) {
             foreach ($hosts as $h) {
@@ -191,8 +241,13 @@ class ApiController extends Controller
             }
         }
 
-        // dd($flat);
+        // check missing sbu ring max
+        return $flat;
+    }
 
+    public static function sumOfMaxTrafficEachRing($sbu, $month)
+    {
+        $flat = self::listOfMaxTrafficEachRing($sbu, $month);
         $resume = array();
         $val = 0;
         for ($r = 0; $r < count($flat); $r++) {
@@ -336,11 +391,13 @@ class ApiController extends Controller
 
         $merge = array();
         $temp = array();
+        $time = array();
         $max = 0;
         foreach ($in as $data) {
             if ($max < $data->traffic) {
                 $max = $data->traffic;
             }
+            array_push($time, $data->time);
             array_push($temp, $data->traffic);
         }
 
@@ -364,6 +421,7 @@ class ApiController extends Controller
 
         $res['data'] = $merge;
         $res['traffic'] = $max;
+        $res['time'] = $time;
 
         return $res;
     }

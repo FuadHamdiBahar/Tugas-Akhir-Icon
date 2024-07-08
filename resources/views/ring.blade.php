@@ -54,12 +54,14 @@
             </div>
         </div> --}}
 
-        <div class="col-lg-3">
+        <div class="col-lg-6">
             <table class="data-table table mb-0 tbl-server-info" id="table">
                 <thead class="bg-white text-uppercase">
                     <tr class="ligth ligth-data">
                         <th>Ring</th>
+                        <th>Interface</th>
                         <th>Utilisation (Gbps)</th>
+                        <th>Capacity (Gbps)</th>
                     </tr>
                 </thead>
                 <tbody class="ligth-body">
@@ -68,7 +70,7 @@
             </table>
         </div>
 
-        <div class="col-lg-9">
+        <div class="col-lg-6">
             <table class="table" id="tableLink">
                 <thead>
                     <tr class="ligth">
@@ -99,108 +101,119 @@
             let date = '{{ $date }}'
 
             showTrend(sbu)
+            showBar(sbu, month, date)
             showTable(sbu, month, date)
             showLocation(sbu)
         })
 
-        function showBar(data, date) {
-            const dataList = data.map(ring => (ring.data / 1000000000).toFixed(1));
-            const nameList = data.map(ring => ring.name);
+        function showBar(sbu, month, date) {
+            $.ajax({
+                url: '/api/summary/' + sbu + '/' + month,
+                type: 'GET',
+                success: function(data) {
+                    const dataList = data.map(ring => (ring.data / 1000000000).toFixed(1));
+                    const nameList = data.map(ring => ring.name);
 
-            var options = {
-                series: [{
-                    name: 'Bar',
-                    data: dataList
-                }],
-                chart: {
-                    height: 350,
-                    type: 'bar',
-                },
-                plotOptions: {
-                    bar: {
-                        borderRadius: 10,
-                        dataLabels: {
-                            position: 'top', // top, center, bottom
+                    var options = {
+                        series: [{
+                            name: 'Bar',
+                            data: dataList
+                        }],
+                        chart: {
+                            height: 350,
+                            type: 'bar',
                         },
-                    }
-                },
-                dataLabels: {
-                    enabled: true,
-                    formatter: function(val) {
-                        return val + "%";
-                    },
-                    offsetY: -20,
-                    style: {
-                        fontSize: '12px',
-                        colors: ["#304758"]
-                    }
-                },
-
-                xaxis: {
-                    categories: nameList,
-                    position: 'below',
-                    axisBorder: {
-                        show: false
-                    },
-                    axisTicks: {
-                        show: false
-                    },
-                    crosshairs: {
-                        fill: {
-                            type: 'gradient',
-                            gradient: {
-                                colorFrom: '#D8E3F0',
-                                colorTo: '#BED1E6',
-                                stops: [0, 100],
-                                opacityFrom: 0.4,
-                                opacityTo: 0.5,
+                        plotOptions: {
+                            bar: {
+                                borderRadius: 10,
+                                dataLabels: {
+                                    position: 'top', // top, center, bottom
+                                },
                             }
-                        }
-                    },
-                    tooltip: {
-                        enabled: true,
-                    }
-                },
-                yaxis: {
-                    axisBorder: {
-                        show: false
-                    },
-                    axisTicks: {
-                        show: false,
-                    },
-                    labels: {
-                        show: false,
-                        formatter: function(val) {
-                            return val + "%";
-                        }
-                    },
-                    title: {
-                        text: 'Percentage',
-                    },
+                        },
+                        dataLabels: {
+                            enabled: true,
+                            formatter: function(val) {
+                                return val + "%";
+                            },
+                            offsetY: -20,
+                            style: {
+                                fontSize: '12px',
+                                colors: ["#304758"]
+                            }
+                        },
 
-                },
-                title: {
-                    text: 'Utilization Percentage Each Ring in ' + date
-                },
-            };
+                        xaxis: {
+                            categories: nameList,
+                            position: 'below',
+                            axisBorder: {
+                                show: false
+                            },
+                            axisTicks: {
+                                show: false
+                            },
+                            crosshairs: {
+                                fill: {
+                                    type: 'gradient',
+                                    gradient: {
+                                        colorFrom: '#D8E3F0',
+                                        colorTo: '#BED1E6',
+                                        stops: [0, 100],
+                                        opacityFrom: 0.4,
+                                        opacityTo: 0.5,
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                enabled: true,
+                            }
+                        },
+                        yaxis: {
+                            axisBorder: {
+                                show: false
+                            },
+                            axisTicks: {
+                                show: false,
+                            },
+                            labels: {
+                                show: false,
+                                formatter: function(val) {
+                                    return val + "%";
+                                }
+                            },
+                            title: {
+                                text: 'Percentage',
+                            },
 
-            var chart = new ApexCharts(document.querySelector("#barChart"), options);
-            chart.render();
+                        },
+                        title: {
+                            text: 'Utilization Percentage Each Ring in ' + date
+                        },
+                    };
+
+                    var chart = new ApexCharts(document.querySelector("#barChart"), options);
+                    chart.render();
+                }
+            })
+
         }
 
         function showTable(sbu, month, date) {
             $.ajax({
                 type: 'GET',
-                url: '/api/summary/' + sbu + '/' + month,
+                url: '/api/list/' + sbu + '/' + month,
                 success: function(data) {
-                    showBar(data, date)
+                    // showBar(data, date)
+                    console.log(data);
 
                     var resulttag = "";
 
                     data.forEach(element => {
                         resulttag += "<tr>"
-                        resulttag += "<td>" + element.name + "</td>"
-                        resulttag += "<td>" + (element.data / 1000000000).toFixed(1) + "</td>"
+                        resulttag += "<td>" + element.ring + "</td>"
+                        resulttag += "<td>" + element.interface + "</td>"
+                        resulttag += "<td>" + (element.traffic / 1000000000).toFixed(1) + "</td>"
+                        resulttag += "<td>" + (element.capacity / 1000000000).toFixed(1) + "</td>"
                         resulttag += "</tr>"
                     });
 
@@ -251,10 +264,7 @@
                             }
                         },
                         xaxis: {
-                            categories: ['01 Jan', '02 Jan', '03 Jan', '04 Jan', '05 Jan', '06 Jan',
-                                '07 Jan', '08 Jan', '09 Jan',
-                                '10 Jan', '11 Jan', '12 Jan'
-                            ],
+                            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
                         },
                         yaxis: {
                             title: {

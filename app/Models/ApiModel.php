@@ -62,7 +62,7 @@ class ApiModel extends Model
     {
         $sql = "
         select 
-            round(rekap.value_max / 1000000000, 1) as traffic
+            round(rekap.value_max / 1000000000, 1) as traffic, to_char(rekap.waktu, 'DD-MM-YYYY') as date, to_char(rekap.waktu, 'HH24:MI') as time
         from (
             SELECT 
                 to_timestamp(tuj.clock) as waktu, 
@@ -88,7 +88,7 @@ class ApiModel extends Model
     {
         $sql = "
        select 
-            round(rekap.value_max / 1000000000, 1) as traffic, rekap.waktu
+            round(rekap.value_max / 1000000000, 1) as traffic, to_char(rekap.waktu, 'DD-MM-YYYY') as date, to_char(rekap.waktu, 'HH24:MI') as time
         from (
             SELECT 
                 to_timestamp(tuj.clock) as waktu, 

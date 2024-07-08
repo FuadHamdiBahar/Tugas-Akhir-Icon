@@ -122,12 +122,13 @@
                                             <h2 class="section-title">The Features</h2>
                                             <h3 class="block-title py-2">Dashboard</h3>
                                             <p>Dashboard will provide you a brief of network utilization. On this page,
-                                                We create two bar charts, the first one will show you top 5 rings which
-                                                has the highest traffic on this month. The second bar chart will be
+                                                We create three bar charts, the first one will show you top 5 rings
+                                                which has the highest traffic on this month. The next bar chart will be
                                                 looking similiar to the first one, the difference is that the second bar
-                                                chart depict you the largest traffic of ring each sbu. We also add some
-                                                details such
-                                                as date and link to the documentation page</p>
+                                                chart depict you the largest traffic of ring each sbu. The last bar
+                                                describe the highest traffic of ring compared to all sbu's rings in
+                                                every month. We also add some details such as date and link to the
+                                                documentation page</p>
                                             <img src="{{ asset('assets/images/documentation/dashboard.png') }}"
                                                 alt="" srcset="" class="img-fluid">
                                         </div><!--//section-block-->

@@ -129,7 +129,7 @@
                         },
 
                         xaxis: {
-                            // categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+                            // categories: data['time'],
                             title: {
                                 text: 'Hour'
                             },
@@ -137,6 +137,7 @@
                                 rotate: -90,
                                 show: false,
                             },
+
                         },
                         yaxis: {
                             title: {
@@ -165,7 +166,7 @@
                 url: '/api/trendweek/' + origin + '/' + terminating,
                 type: 'GET',
                 success: function(data) {
-
+                    console.log(data);
                     var options = {
                         series: data['data'],
                         chart: {
@@ -194,18 +195,13 @@
                             }
                         },
                         xaxis: {
+                            categories: data['time'],
                             title: {
                                 text: 'Hour'
                             },
                             labels: {
                                 rotate: -90,
-                                show: false,
-                                // formatter: function(val) {
-                                //     if (val % 24 == 0) {
-                                //         return 1
-                                //     }
-                                //     return ''
-                                // }
+                                show: true,
                             },
 
                         },

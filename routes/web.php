@@ -24,7 +24,8 @@ Route::get('/documentation', [DashboardController::class, 'documentation'])->nam
 // myApi
 Route::prefix('/api')->group(function () {
     Route::get('/trend/{sbu}', [ApiController::class, 'ringTrend']);
-    Route::get('/summary/{sbu}/{month}', [ApiController::class, 'listOfMaxTrafficEachRing']);
+    Route::get('/list/{sbu}/{month}', [ApiController::class, 'listOfMaxTrafficEachRing']);
+    Route::get('/summary/{sbu}/{month}', [ApiController::class, 'sumOfMaxTrafficEachRing']);
     Route::get('/link/{sbu}', [ApiController::class, 'ringLink']);
     Route::get('/trendmonth/{origin}/{terminating}', [ApiController::class, 'listTrafficMonth']);
     Route::get('/trendweek/{origin}/{terminating}', [ApiController::class, 'listTrafficWeek']);
@@ -33,6 +34,7 @@ Route::prefix('/api')->group(function () {
     Route::get('/top', [ApiController::class, 'top']);
     Route::get('/topSbu', [ApiController::class, 'topEachSBU']);
     Route::get('/topMonth', [ApiController::class, 'topEachMonth']);
+    Route::get('/diff', [ApiController::class, 'monthDifference']);
 });
 
 // run it when it needs
