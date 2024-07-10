@@ -24,7 +24,7 @@
             </div>
         </div> --}}
 
-        <div class="col-lg-6">
+        <div class="col-lg-4">
             <div class="card car-transparent">
                 <div class="card-body p-0">
                     <div class="profile-image position-relative p-1 m-1" id="chart">
@@ -33,7 +33,16 @@
             </div>
         </div>
 
-        <div class="col-lg-6">
+        <div class="col-lg-4">
+            <div class="card car-transparent">
+                <div class="card-body p-0">
+                    <div class="profile-image position-relative p-1 m-1" id="weeklyTrend">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
             <div class="card car-transparent">
                 <div class="card-body p-0">
                     <div class="profile-image position-relative p-1 m-1" id="barChart">
@@ -41,6 +50,8 @@
                 </div>
             </div>
         </div>
+
+
 
         {{-- <div class="col-lg-6">
             <div class="card card-block card-stretch card-height">
@@ -100,11 +111,98 @@
             let month = '{{ $month }}'
             let date = '{{ $date }}'
 
-            showTrend(sbu)
+            showTrend(sbu, month)
+            showWeeklyTrend(sbu)
             showBar(sbu, month, date)
             showTable(sbu, month, date)
             showLocation(sbu)
         })
+
+        function showWeeklyTrend(sbu) {
+            $.ajax({
+                type: 'GET',
+                url: '/api/weekly/' + sbu,
+                success: function(data) {
+                    console.log(data);
+                    var options = {
+                        series: data,
+                        chart: {
+                            height: 350,
+                            type: 'line',
+                            zoom: {
+                                enabled: false
+                            },
+                        },
+                        dataLabels: {
+                            enabled: false
+                        },
+                        stroke: {
+                            width: 3,
+                            curve: 'smooth',
+                        },
+                        title: {
+                            text: 'Page Statistics',
+                            align: 'left'
+                        },
+                        legend: {
+                            tooltipHoverFormatter: function(val, opts) {
+                                return val + ' - <strong>' + opts.w.globals.series[opts.seriesIndex][
+                                    opts.dataPointIndex
+                                ] + '</strong>'
+                            }
+                        },
+                        markers: {
+                            size: 0,
+                            hover: {
+                                sizeOffset: 6
+                            }
+                        },
+                        xaxis: {
+                            categories: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5'],
+                        },
+                        yaxis: {
+                            text: {
+                                title: 'Giga bits per second'
+                            }
+                        },
+                        title: {
+                            text: 'Max Traffic In Last 4 Weeks',
+                            align: 'left'
+                        },
+                        tooltip: {
+                            y: [{
+                                    title: {
+                                        formatter: function(val) {
+                                            return val + " (mins)"
+                                        }
+                                    }
+                                },
+                                {
+                                    title: {
+                                        formatter: function(val) {
+                                            return val + " per session"
+                                        }
+                                    }
+                                },
+                                {
+                                    title: {
+                                        formatter: function(val) {
+                                            return val;
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        grid: {
+                            borderColor: '#f1f1f1',
+                        }
+                    };
+
+                    var chart = new ApexCharts(document.querySelector("#weeklyTrend"), options);
+                    chart.render();
+                }
+            })
+        }
 
         function showBar(sbu, month, date) {
             $.ajax({
@@ -203,9 +301,6 @@
                 type: 'GET',
                 url: '/api/list/' + sbu + '/' + month,
                 success: function(data) {
-                    // showBar(data, date)
-                    console.log(data);
-
                     var resulttag = "";
 
                     data.forEach(element => {
@@ -222,14 +317,11 @@
             })
         }
 
-        function showTrend(sbu) {
+        function showTrend(sbu, month) {
             $.ajax({
                 type: 'GET',
                 url: '/api/trend/' + sbu,
                 success: function(data) {
-                    console.log(data);
-
-
                     var options = {
                         series: data,
                         chart: {
@@ -247,7 +339,7 @@
                             curve: 'smooth',
                         },
                         title: {
-                            text: 'Max Traffic Each Ring',
+                            text: 'Max Traffic Each Ring in ' + month,
                             align: 'left'
                         },
                         legend: {

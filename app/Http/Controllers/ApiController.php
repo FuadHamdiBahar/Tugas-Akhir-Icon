@@ -17,8 +17,13 @@ class ApiController extends Controller
 
     public function monthDifference()
     {
-        $query = TrendModel::monthDifference('jun', 'jul');
+        $curm = (int) date('m');
+        $befm = RingController::convertNumToTextMonth($curm - 1);
+        $curm = RingController::convertNumToTextMonth($curm);
 
+        $query = TrendModel::monthDifference($befm, $curm);
+
+        // return $query;
 
         $cur['name'] = 'jun';
         $bef['name'] = 'jul';
@@ -205,6 +210,38 @@ class ApiController extends Controller
         return $transform;
     }
 
+    // weekly trends
+    public static function weeklyTrend($sbu)
+    {
+        $cw = (int) date('W');
+        $fw = $cw - 3;
+
+        $ringList = TrendModel::getWeeklyNumberOfRing($sbu);
+
+        $merge = [];
+        foreach ($ringList as $rl) {
+            $query = TrendModel::getWeeklyTrend($sbu, $rl->ring, $fw, $cw);
+            array_push($merge, $query);
+        }
+
+        // return $merge;
+
+        $res = [];
+        foreach ($merge as $items) {
+            $traffic = [];
+            $name = '';
+            foreach ($items as $i) {
+                array_push($traffic, number_format($i->traffic / 1000000000, 1));
+                $name = $i->ring;
+            }
+            $temp['name'] = $name;
+            $temp['data'] = $traffic;
+
+            array_push($res, $temp);
+        }
+        return $res;
+    }
+
     // ring
     public static function listOfMaxTrafficEachRing($sbu, $month)
     {
@@ -343,7 +380,8 @@ class ApiController extends Controller
 
     public function listTrafficMonth($origin, $terminating)
     {
-        $month = RingController::convertNumToTextMonth();
+        $m = (int) date('m');
+        $month = RingController::convertNumToTextMonth($m);
         $in = ApiModel::queryTrafficMonth($origin, $terminating, 'Bits received', $month);
         $out = ApiModel::queryTrafficMonth($origin, $terminating, 'Bits sent', $month);
 
@@ -384,7 +422,8 @@ class ApiController extends Controller
 
     public function listTrafficWeek($origin, $terminating)
     {
-        $month = RingController::convertNumToTextMonth();
+        $m = (int) date('m');
+        $month = RingController::convertNumToTextMonth($m);
         $in = ApiModel::queryTrafficWeek($origin, $terminating, 'Bits received', $month);
         $out = ApiModel::queryTrafficWeek($origin, $terminating, 'Bits sent', $month);
         // return $out;

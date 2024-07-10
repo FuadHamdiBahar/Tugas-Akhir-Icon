@@ -6,16 +6,16 @@ use Illuminate\Http\Request;
 
 class RingController extends Controller
 {
-    public static function convertNumToTextMonth()
+    public static function convertNumToTextMonth($m)
     {
-        $m = (int) date('m');
         $listMonthName = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
         return $listMonthName[$m - 1];
     }
 
     public function ring($sbu)
     {
-        $month = self::convertNumToTextMonth();
+        $m = (int) date('m');
+        $month = self::convertNumToTextMonth($m);
         $data['image'] = $sbu . '.png';
         $data['date'] = date('F', strtotime(date('d-m-Y')));
         $data['month'] = $month;
