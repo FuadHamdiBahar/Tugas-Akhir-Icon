@@ -82,7 +82,7 @@
             </div> --}}
         </div>
 
-        <div class="col-lg-8">
+        <div class="col-lg-4">
             <div class="profile-image position-relative p-1 m-1" id="topEachSBU">
             </div>
             {{-- <div class="card car-transparent">
@@ -90,16 +90,22 @@
                 </div>
             </div> --}}
         </div>
+        <div class="col-lg-4">
+            <div class="profile-image position-relative p-1 m-1" id="utilized">
+            </div>
+        </div>
 
         <div class="col-lg-6">
             <div class="profile-image position-relative p-1 m-1" id="topEachMonth">
             </div>
         </div>
-        <div class="col-lg-6"></div>
+        <div class="col-lg-6">
+        </div>
 
         <div class="col-lg-12">
             <div class="profile-image position-relative p-1 m-1" id="monthDifference">
             </div>
+
         </div>
     </div>
 @endsection
@@ -113,9 +119,55 @@
             var year = "{{ date('Y') }}"
             topFive(month);
             topEachSBU(month);
+            utilized();
+            // monthDifference(month);
             topEachMonth(year);
-            monthDifference(month);
         })
+
+        function utilized() {
+            var options = {
+                series: [45, 55],
+                chart: {
+                    width: 400,
+                    type: 'donut',
+                },
+                plotOptions: {
+                    pie: {
+                        startAngle: 0,
+                        endAngle: 360
+                    }
+                },
+                dataLabels: {
+                    enabled: true
+                },
+                // fill: {
+                //     type: 'gradient',
+                // },
+                legend: {
+                    formatter: function(val, opts) {
+                        return val + " - " + opts.w.globals.series[opts.seriesIndex]
+                    }
+                },
+                title: {
+                    text: 'Gradient Donut with custom Start-angle'
+                },
+                labels: ['utilized', 'idle'],
+                // responsive: [{
+                //     breakpoint: 400,
+                //     options: {
+                //         chart: {
+                //             width: 200
+                //         },
+                //         legend: {
+                //             position: 'bottom'
+                //         }
+                //     }
+                // }]
+            };
+
+            var chart = new ApexCharts(document.querySelector("#utilized"), options);
+            chart.render();
+        }
 
         function monthDifference(month) {
             $.ajax({
@@ -151,7 +203,7 @@
                             }
                         },
                         legend: {
-                            show: false
+                            show: true
                         }
                     };
 
@@ -240,48 +292,101 @@
                 url: '/api/topSbu',
                 success: function(data) {
                     console.log(data);
+                    // var options = {
+                    //     series: [{
+                    //         name: 'Current',
+                    //         data: data,
+                    //     }],
+                    //     chart: {
+                    //         height: 400,
+                    //         type: 'bar'
+                    //     },
+                    //     plotOptions: {
+                    //         bar: {
+                    //             borderRadius: 10,
+                    //             dataLabels: {
+                    //                 position: 'top', // top, center, bottom
+                    //             },
+                    //         }
+                    //     },
+                    //     // colors: ['#00E396'],
+                    //     dataLabels: {
+                    //         enabled: true,
+                    //         formatter: function(val) {
+                    //             return val + "Gbps";
+                    //         },
+                    //         offsetY: -20,
+                    //         style: {
+                    //             fontSize: '12px',
+                    //             colors: ["#304758"]
+                    //         }
+                    //     },
+                    //     yaxis: {
+                    //         title: {
+                    //             text: 'Giga bits per second'
+                    //         }
+                    //     },
+                    //     xaxis: {
+                    //         labels: {
+                    //             rotate: -90
+                    //         }
+                    //     },
+                    //     title: {
+                    //         text: 'Top Highest Traffic Ring Each SBU in ' + month,
+                    //         align: 'center'
+                    //     }
+                    // };
+
                     var options = {
-                        series: [{
-                            name: 'Current',
-                            data: data,
-                        }],
+                        series: data['data'],
                         chart: {
                             height: 400,
-                            type: 'bar'
+                            type: 'radar',
+                        },
+                        dataLabels: {
+                            enabled: true
                         },
                         plotOptions: {
-                            bar: {
-                                borderRadius: 10,
-                                dataLabels: {
-                                    position: 'top', // top, center, bottom
-                                },
-                            }
-                        },
-                        // colors: ['#00E396'],
-                        dataLabels: {
-                            enabled: true,
-                            formatter: function(val) {
-                                return val + "Gbps";
-                            },
-                            offsetY: -20,
-                            style: {
-                                fontSize: '12px',
-                                colors: ["#304758"]
-                            }
-                        },
-                        yaxis: {
-                            title: {
-                                text: 'Giga bits per second'
-                            }
-                        },
-                        xaxis: {
-                            labels: {
-                                rotate: -90
+                            radar: {
+                                size: 140,
+                                polygons: {
+                                    strokeColors: '#e9e9e9',
+                                    fill: {
+                                        colors: ['#f8f8f8', '#fff']
+                                    }
+                                }
                             }
                         },
                         title: {
-                            text: 'Top Highest Traffic Ring Each SBU in ' + month,
-                            align: 'center'
+                            text: 'Radar with Polygon Fill'
+                        },
+                        // colors: ['#FF4560'],
+                        // markers: {
+                        //     size: 4,
+                        //     colors: ['#fff'],
+                        //     strokeColor: '#FF4560',
+                        //     strokeWidth: 2,
+                        // },
+                        tooltip: {
+                            y: {
+                                formatter: function(val) {
+                                    return val
+                                }
+                            }
+                        },
+                        xaxis: {
+                            categories: data['categories']
+                        },
+                        yaxis: {
+                            labels: {
+                                formatter: function(val, i) {
+                                    if (i % 2 === 0) {
+                                        return val
+                                    } else {
+                                        return ''
+                                    }
+                                }
+                            }
                         }
                     };
 

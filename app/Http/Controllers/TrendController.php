@@ -43,7 +43,7 @@ class TrendController extends Controller
         ini_set('max_execution_time', 60);
         $m = (int) date('m');
         $month = RingController::convertNumToTextMonth($m);
-        $month = 'jul';
+        $month = 'jun';
 
         // read file
         $path = public_path('ring utilisasi.xlsx');
@@ -94,6 +94,6 @@ class TrendController extends Controller
             }
         }
 
-        return 'BERHASIL';
+        return 'BERHASIL ' . $month;
     }
 }

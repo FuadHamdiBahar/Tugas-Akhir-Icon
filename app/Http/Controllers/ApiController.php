@@ -6,6 +6,7 @@ use App\Models\ApiModel;
 use App\Models\TrendModel;
 use Illuminate\Http\Response;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
+use DateTime;
 
 class ApiController extends Controller
 {
@@ -81,19 +82,41 @@ class ApiController extends Controller
         $query = TrendModel::topEachSBU();
         $result = [];
 
-        foreach ($query as $q) {
-            $temp['x'] = $q->name;
-            $temp['y'] = $q->traffic;
-            $goals['name'] = 'Expected';
-            $goals['value'] = 100;
-            $goals['strokeColor'] = '#FF0000';
-            $goals['strokeHeight'] = 2;
-            $goals['strokeDashArray'] = 2;
+        // spyder style
+        $temp['name'] = 'Actual';
+        $temp['data'] = [];
 
-            $temp['goals'] = [$goals];
-
-            array_push($result, $temp);
+        $categories = [];
+        foreach ($query as $item) {
+            array_push($temp['data'], (int) $item->traffic);
+            array_push($categories, $item->name);
         }
+
+        $traffic = [];
+        array_push($traffic, $temp);
+
+        $temp['name'] = 'Expected';
+        $temp['data'] = [100, 100, 100, 100, 100, 100, 100, 100, 100, 100];
+
+        array_push($traffic, $temp);
+
+        $result['data'] = $traffic;
+        $result['categories'] = $categories;
+
+        // bar chart style
+        // foreach ($query as $q) {
+        //     $temp['x'] = $q->name;
+        //     $temp['y'] = $q->traffic;
+        //     $goals['name'] = 'Expected';
+        //     $goals['value'] = 100;
+        //     $goals['strokeColor'] = '#FF0000';
+        //     $goals['strokeHeight'] = 2;
+        //     $goals['strokeDashArray'] = 2;
+
+        //     $temp['goals'] = [$goals];
+
+        //     array_push($result, $temp);
+        // }
 
         return $result;
     }
@@ -210,10 +233,23 @@ class ApiController extends Controller
         return $transform;
     }
 
+    public static function getLastDateOfWeek($week)
+    {
+        // Create a DateTime object for the first day of the given week and year
+        $date = new DateTime();
+        $date->setISODate(date("Y"), $week);
+
+        // Modify the date to get the last day of the week (Sunday)
+        $date->modify('+6 days');
+
+        // Return the formatted date
+        return $date->format('d-m');
+    }
+
     // weekly trends
     public static function weeklyTrend($sbu)
     {
-        $cw = (int) date('W');
+        $cw = (int) date('W') - 1;
         $fw = $cw - 3;
 
         $ringList = TrendModel::getWeeklyNumberOfRing($sbu);
@@ -226,7 +262,7 @@ class ApiController extends Controller
 
         // return $merge;
 
-        $res = [];
+        $data = [];
         foreach ($merge as $items) {
             $traffic = [];
             $name = '';
@@ -237,8 +273,15 @@ class ApiController extends Controller
             $temp['name'] = $name;
             $temp['data'] = $traffic;
 
-            array_push($res, $temp);
+            array_push($data, $temp);
         }
+
+        $categories = [];
+        for ($i = $fw; $i <= $cw; $i++) {
+            array_push($categories, self::getLastDateOfWeek($i));
+        }
+        $res['data'] = $data;
+        $res['categories'] = $categories;
         return $res;
     }
 

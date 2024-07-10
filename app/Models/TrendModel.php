@@ -16,6 +16,7 @@ class TrendModel
         AND wt.week_number  <= 28
         and wt.sbu_name = '$sbu'
         group by wt.ring 
+        order by wt.ring
         ";
 
         return DB::connection('second_db')->select($sql);
@@ -125,6 +126,7 @@ class TrendModel
         where sbu_name = '$sbu'
         and `year` = '$year'
         group by ring 
+        order by ring
         ";
         return DB::connection('second_db')->select($sql);
     }

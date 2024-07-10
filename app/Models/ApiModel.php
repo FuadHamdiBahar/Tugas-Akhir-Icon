@@ -115,23 +115,28 @@ class ApiModel extends Model
     {
         $sql = "
             select 
-                raw.origin, raw.terminating, '$ring' as ring, raw.week_number, MAX(raw.value_max) as traffic
+                * 
             from (
                 select 
-                    to_timestamp(t.clock), to_char(to_timestamp(t.clock), 'IW') as week_number, 
-                    h.\"name\" as origin, '$terminating' as terminating,
-                    t.value_max  
-                from hosts h 
-                join (
+                    raw.origin, raw.terminating, '$ring' as ring, cast(raw.week_number as integer), MAX(raw.value_max) as traffic
+                from (
                     select 
-                        it.itemid, it.hostid, it.\"name\"
-                    from items it where it.\"name\" LIKE '%Bits sent%' OR it.name LIKE '%Bits received%'
-                ) i on h.hostid = i.hostid
-                join trends_uint_$month t on i.itemid = t.itemid  
-                where h.name LIKE '%$origin%'
-                AND i.name LIKE '%$terminating%'
-            ) raw
-            group by raw.week_number, raw.origin, raw.terminating
+                        to_timestamp(t.clock), to_char(to_timestamp(t.clock), 'IW') as week_number, 
+                        h.\"name\" as origin, '$terminating' as terminating,
+                        t.value_max  
+                    from hosts h 
+                    join (
+                        select 
+                            it.itemid, it.hostid, it.\"name\"
+                        from items it where it.\"name\" LIKE '%Bits sent%' OR it.name LIKE '%Bits received%'
+                    ) i on h.hostid = i.hostid
+                    join trends_uint_$month t on i.itemid = t.itemid  
+                    where h.name LIKE '%$origin%'
+                    AND i.name LIKE '%$terminating%'
+                ) raw
+                group by raw.week_number, raw.origin, raw.terminating
+            ) res 
+            where res.week_number < date_part('week', current_date)
         ";
 
         return DB::select($sql);

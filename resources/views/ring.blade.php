@@ -125,7 +125,7 @@
                 success: function(data) {
                     console.log(data);
                     var options = {
-                        series: data,
+                        series: data['data'],
                         chart: {
                             height: 350,
                             type: 'line',
@@ -151,6 +151,9 @@
                                 ] + '</strong>'
                             }
                         },
+                        colors: ['#FF5733', '#33FF57', '#3357FF', '#F1C40F', '#8E44AD', '#2980B9',
+                            '#2ECC71', '#E74C3C', '#ECF0F1', '#34495E'
+                        ],
                         markers: {
                             size: 0,
                             hover: {
@@ -158,7 +161,7 @@
                             }
                         },
                         xaxis: {
-                            categories: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5'],
+                            categories: data['categories'],
                         },
                         yaxis: {
                             text: {
@@ -171,27 +174,12 @@
                         },
                         tooltip: {
                             y: [{
-                                    title: {
-                                        formatter: function(val) {
-                                            return val + " (mins)"
-                                        }
-                                    }
-                                },
-                                {
-                                    title: {
-                                        formatter: function(val) {
-                                            return val + " per session"
-                                        }
-                                    }
-                                },
-                                {
-                                    title: {
-                                        formatter: function(val) {
-                                            return val;
-                                        }
+                                title: {
+                                    formatter: function(val) {
+                                        return val;
                                     }
                                 }
-                            ]
+                            }]
                         },
                         grid: {
                             borderColor: '#f1f1f1',
@@ -342,6 +330,9 @@
                             text: 'Max Traffic Each Ring in ' + month,
                             align: 'left'
                         },
+                        colors: ['#FF5733', '#33FF57', '#3357FF', '#F1C40F', '#8E44AD', '#2980B9',
+                            '#2ECC71', '#E74C3C', '#ECF0F1', '#34495E'
+                        ],
                         legend: {
                             tooltipHoverFormatter: function(val, opts) {
                                 return val + ' - <strong>' + opts.w.globals.series[opts.seriesIndex][
@@ -365,27 +356,12 @@
                         },
                         tooltip: {
                             y: [{
-                                    title: {
-                                        formatter: function(val) {
-                                            return val + " (mins)"
-                                        }
-                                    }
-                                },
-                                {
-                                    title: {
-                                        formatter: function(val) {
-                                            return val + " per session"
-                                        }
-                                    }
-                                },
-                                {
-                                    title: {
-                                        formatter: function(val) {
-                                            return val;
-                                        }
+                                title: {
+                                    formatter: function(val) {
+                                        return val;
                                     }
                                 }
-                            ]
+                            }]
                         },
                         grid: {
                             borderColor: '#f1f1f1',
