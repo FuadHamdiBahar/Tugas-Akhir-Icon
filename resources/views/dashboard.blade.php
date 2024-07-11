@@ -119,54 +119,61 @@
             var year = "{{ date('Y') }}"
             topFive(month);
             topEachSBU(month);
-            utilized();
+            utilized(year, month);
             // monthDifference(month);
             topEachMonth(year);
         })
 
-        function utilized() {
-            var options = {
-                series: [45, 55],
-                chart: {
-                    width: 400,
-                    type: 'donut',
-                },
-                plotOptions: {
-                    pie: {
-                        startAngle: 0,
-                        endAngle: 360
-                    }
-                },
-                dataLabels: {
-                    enabled: true
-                },
-                // fill: {
-                //     type: 'gradient',
-                // },
-                legend: {
-                    formatter: function(val, opts) {
-                        return val + " - " + opts.w.globals.series[opts.seriesIndex]
-                    }
-                },
-                title: {
-                    text: 'Gradient Donut with custom Start-angle'
-                },
-                labels: ['utilized', 'idle'],
-                // responsive: [{
-                //     breakpoint: 400,
-                //     options: {
-                //         chart: {
-                //             width: 200
-                //         },
-                //         legend: {
-                //             position: 'bottom'
-                //         }
-                //     }
-                // }]
-            };
+        function utilized(year, month) {
+            $.ajax({
+                url: '/api/totalUtilization/2024/jul',
+                type: 'GET',
+                success: function(data) {
+                    console.log(data);
+                    var options = {
+                        series: data,
+                        chart: {
+                            width: 400,
+                            type: 'donut',
+                        },
+                        plotOptions: {
+                            pie: {
+                                startAngle: 0,
+                                endAngle: 360
+                            }
+                        },
+                        dataLabels: {
+                            enabled: true
+                        },
+                        // fill: {
+                        //     type: 'gradient',
+                        // },
+                        legend: {
+                            formatter: function(val, opts) {
+                                return val + " - " + opts.w.globals.series[opts.seriesIndex]
+                            }
+                        },
+                        title: {
+                            text: 'Gradient Donut with custom Start-angle'
+                        },
+                        labels: ['utilized', 'idle'],
+                        // responsive: [{
+                        //     breakpoint: 400,
+                        //     options: {
+                        //         chart: {
+                        //             width: 200
+                        //         },
+                        //         legend: {
+                        //             position: 'bottom'
+                        //         }
+                        //     }
+                        // }]
+                    };
 
-            var chart = new ApexCharts(document.querySelector("#utilized"), options);
-            chart.render();
+                    var chart = new ApexCharts(document.querySelector("#utilized"), options);
+                    chart.render();
+                }
+            })
         }
 
         function monthDifference(month) {

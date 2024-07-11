@@ -135,8 +135,7 @@ class ApiModel extends Model
                     AND i.name LIKE '%$terminating%'
                 ) raw
                 group by raw.week_number, raw.origin, raw.terminating
-            ) res 
-            where res.week_number < date_part('week', current_date)
+            ) res   
         ";
 
         return DB::select($sql);

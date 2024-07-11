@@ -6,6 +6,37 @@ use Illuminate\Support\Facades\DB;
 
 class TrendModel
 {
+    public static function getTotalUtilization($year, $month)
+    {
+        $sql = "
+        select 
+            sum(u.value) / sum(i.capacity) as utilized, (sum(i.capacity) - sum(u.value)) / sum(i.capacity) as idle 
+        from myapp.hosts h 
+        join myapp.interfaces i on i.hostid = h.hostid  
+        join myapp.utilization u on u.interfaceid = i.interfaceid 
+        where i.capacity >= 100000000000
+        and h.status = 1
+        and u.`year` = $year
+        and u.`month` = '$month'
+        and u.value != 0
+        ";
+
+        return DB::connection('second_db')->select($sql);
+    }
+    public static function getUtilizationList($sbu, $month)
+    {
+        $sql = "
+        select 
+            h.ring, h.origin, h.terminating, i.interface_name, i.capacity, u.value  
+        from myapp.hosts h 
+        join myapp.interfaces i on i.hostid = h.hostid 
+        join myapp.utilization u on u.interfaceid = i.interfaceid 
+        where h.sbu_name = '$sbu'
+        and u.`month` = '$month'";
+
+        return DB::connection('second_db')->select($sql);
+    }
+
     public static function getWeeklyNumberOfRing($sbu)
     {
         $sql = "

@@ -152,7 +152,7 @@
                             }
                         },
                         colors: ['#FF5733', '#33FF57', '#3357FF', '#F1C40F', '#8E44AD', '#2980B9',
-                            '#2ECC71', '#E74C3C', '#ECF0F1', '#34495E'
+                            '#2ECC71', '#E74C3C', '#000347', '#34495E'
                         ],
                         markers: {
                             size: 0,
@@ -294,8 +294,8 @@
                     data.forEach(element => {
                         resulttag += "<tr>"
                         resulttag += "<td>" + element.ring + "</td>"
-                        resulttag += "<td>" + element.interface + "</td>"
-                        resulttag += "<td>" + (element.traffic / 1000000000).toFixed(1) + "</td>"
+                        resulttag += "<td>" + element.interface_name + "</td>"
+                        resulttag += "<td>" + (element.value / 1000000000).toFixed(1) + "</td>"
                         resulttag += "<td>" + (element.capacity / 1000000000).toFixed(1) + "</td>"
                         resulttag += "</tr>"
                     });
@@ -331,7 +331,7 @@
                             align: 'left'
                         },
                         colors: ['#FF5733', '#33FF57', '#3357FF', '#F1C40F', '#8E44AD', '#2980B9',
-                            '#2ECC71', '#E74C3C', '#ECF0F1', '#34495E'
+                            '#2ECC71', '#E74C3C', '#000347', '#34495E'
                         ],
                         legend: {
                             tooltipHoverFormatter: function(val, opts) {

@@ -7,9 +7,23 @@ use App\Models\TrendModel;
 use Illuminate\Http\Response;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use DateTime;
+use PhpOffice\PhpSpreadsheet\Shared\Trend\Trend;
 
 class ApiController extends Controller
 {
+    public function totalUtilization($year, $month)
+    {
+        $query = TrendModel::getTotalUtilization($year, $month);
+
+        $res = [];
+        foreach ($query as $q) {
+            array_push($res, (float) number_format($q->utilized * 100, 1));
+            array_push($res, (float) number_format($q->idle * 100, 1));
+        }
+
+        return $res;
+    }
+
     function getMonthIndex($month)
     {
         $months = ["jan" => 1, "feb" => 2, "mar" => 3, "apr" => 4, "may" => 5, "jun" => 6, "jul" => 7, "aug" => 8, "sep" => 9, "oct" => 10, "nov" => 11, "dec" => 12];
@@ -249,7 +263,7 @@ class ApiController extends Controller
     // weekly trends
     public static function weeklyTrend($sbu)
     {
-        $cw = (int) date('W') - 1;
+        $cw = (int) date('W');
         $fw = $cw - 3;
 
         $ringList = TrendModel::getWeeklyNumberOfRing($sbu);
@@ -285,62 +299,30 @@ class ApiController extends Controller
         return $res;
     }
 
-    // ring
+    // ring baru
     public static function listOfMaxTrafficEachRing($sbu, $month)
     {
-        ini_set('max_execution_time', 60);
+        $query = TrendModel::getUtilizationList($sbu, $month);
 
-        // read file
-        $path = public_path('ring utilisasi.xlsx');
-        $reader = new Xlsx();
-        $spreadsheet = $reader->load($path);
-        $sheet = $spreadsheet->getSheetByName($sbu);
-        $totalRows = $sheet->getHighestRow();
-
-        // new array to merge
-        $merge = array();
-
-        for ($row = 3; $row <= $totalRows; $row++) {
-            if (!empty($sheet->getCell("C{$row}")->getValue())) {
-                $data = ApiModel::queryMaxTrafficEachSourceToDestination(
-                    $sheet->getCell("C{$row}")->getValue(),
-                    $sheet->getCell("D{$row}")->getValue(),
-                    $sheet->getCell("B{$row}")->getValue(),
-                    $month,
-
-                );
-                // var_dump($sheet->getCell("C{$row}")->getValue());
-                array_push($merge, $data);
-            }
-        }
-
-        $flat = array();
-        foreach ($merge as $hosts) {
-            foreach ($hosts as $h) {
-                $flat[] = $h;
-            }
-        }
-
-        // check missing sbu ring max
-        return $flat;
+        return $query;
     }
 
     public static function sumOfMaxTrafficEachRing($sbu, $month)
     {
-        $flat = self::listOfMaxTrafficEachRing($sbu, $month);
+        $query = TrendModel::getUtilizationList($sbu, $month);
         $resume = array();
         $val = 0;
-        for ($r = 0; $r < count($flat); $r++) {
+        for ($r = 0; $r < count($query); $r++) {
             // n - 1
-            if ($r < count($flat) - 1) {
-                $current_ring = $flat[$r]->ring;
-                $next_ring = $flat[$r + 1]->ring;
+            if ($r < count($query) - 1) {
+                $current_ring = $query[$r]->ring;
+                $next_ring = $query[$r + 1]->ring;
                 // kalau ring n == n+1 jumlahkan
                 // kalau tidak catet terus reset valnya
                 if ($current_ring == $next_ring) {
-                    $val += (int)$flat[$r]->traffic;
+                    $val += (int)$query[$r]->value;
                 } else {
-                    $val += (int)$flat[$r]->traffic;
+                    $val += (int)$query[$r]->value;
                     $resume[] = array(
                         'name' => $current_ring,
                         'data' => $val,
@@ -349,17 +331,17 @@ class ApiController extends Controller
                     $val = 0;
                 }
             } else {
-                $current_ring = $flat[$r]->ring;
-                $prev_ring = $flat[$r - 1]->ring;
+                $current_ring = $query[$r]->ring;
+                $prev_ring = $query[$r - 1]->ring;
                 if ($current_ring == $prev_ring) {
-                    $val += (int)$flat[$r]->traffic;
+                    $val += (int)$query[$r]->value;
                     $resume[] = array(
                         'name' => $current_ring,
                         'data' => $val,
                         // 'utility' => $val
                     );
                 } else {
-                    $val = (int)$flat[$r]->traffic;
+                    $val = (int)$query[$r]->value;
                     $resume[] = array(
                         'name' => $current_ring,
                         'data' => $val,
@@ -371,6 +353,92 @@ class ApiController extends Controller
 
         return $resume;
     }
+    // ring lama
+    // public static function listOfMaxTrafficEachRing($sbu, $month)
+    // {
+    //     ini_set('max_execution_time', 60);
+
+    //     // read file
+    //     $path = public_path('ring utilisasi.xlsx');
+    //     $reader = new Xlsx();
+    //     $spreadsheet = $reader->load($path);
+    //     $sheet = $spreadsheet->getSheetByName($sbu);
+    //     $totalRows = $sheet->getHighestRow();
+
+    //     // new array to merge
+    //     $merge = array();
+
+    //     for ($row = 3; $row <= $totalRows; $row++) {
+    //         if (!empty($sheet->getCell("C{$row}")->getValue())) {
+    //             $data = ApiModel::queryMaxTrafficEachSourceToDestination(
+    //                 $sheet->getCell("C{$row}")->getValue(),
+    //                 $sheet->getCell("D{$row}")->getValue(),
+    //                 $sheet->getCell("B{$row}")->getValue(),
+    //                 $month,
+
+    //             );
+    //             // var_dump($sheet->getCell("C{$row}")->getValue());
+    //             array_push($merge, $data);
+    //         }
+    //     }
+
+    //     $flat = array();
+    //     foreach ($merge as $hosts) {
+    //         foreach ($hosts as $h) {
+    //             $flat[] = $h;
+    //         }
+    //     }
+
+    //     // check missing sbu ring max
+    //     return $flat;
+    // }
+
+    // public static function sumOfMaxTrafficEachRing($sbu, $month)
+    // {
+    //     $flat = self::listOfMaxTrafficEachRing($sbu, $month);
+    // $resume = array();
+    // $val = 0;
+    // for ($r = 0; $r < count($flat); $r++) {
+    //     // n - 1
+    //     if ($r < count($flat) - 1) {
+    //         $current_ring = $flat[$r]->ring;
+    //         $next_ring = $flat[$r + 1]->ring;
+    //         // kalau ring n == n+1 jumlahkan
+    //         // kalau tidak catet terus reset valnya
+    //         if ($current_ring == $next_ring) {
+    //             $val += (int)$flat[$r]->traffic;
+    //         } else {
+    //             $val += (int)$flat[$r]->traffic;
+    //             $resume[] = array(
+    //                 'name' => $current_ring,
+    //                 'data' => $val,
+    //                 // 'utility' => $val
+    //             );
+    //             $val = 0;
+    //         }
+    //     } else {
+    //         $current_ring = $flat[$r]->ring;
+    //         $prev_ring = $flat[$r - 1]->ring;
+    //         if ($current_ring == $prev_ring) {
+    //             $val += (int)$flat[$r]->traffic;
+    //             $resume[] = array(
+    //                 'name' => $current_ring,
+    //                 'data' => $val,
+    //                 // 'utility' => $val
+    //             );
+    //         } else {
+    //             $val = (int)$flat[$r]->traffic;
+    //             $resume[] = array(
+    //                 'name' => $current_ring,
+    //                 'data' => $val,
+    //                 // 'utility' => $val
+    //             );
+    //         }
+    //     }
+    // }
+
+    // return $resume;
+    // }
 
     // sbu
     public static function listOfMaxTrafficEachSourceToDestination($sbu, $month)
