@@ -100,6 +100,8 @@
             </div>
         </div>
         <div class="col-lg-6">
+            <div class="profile-image position-relative p-1 m-1" id="utilizedEachMonth">
+            </div>
         </div>
 
         <div class="col-lg-12">
@@ -120,9 +122,62 @@
             topFive(month);
             topEachSBU(month);
             utilized(year, month);
-            // monthDifference(month);
             topEachMonth(year);
+            utilizedEachMont(year)
+            monthDifference(month);
         })
+
+        function utilizedEachMont(year) {
+            $.ajax({
+                type: 'GET',
+                url: '/api/totalUtilization/' + year,
+                success: function(data) {
+                    var options = {
+                        series: [{
+                            name: 'Utilized',
+                            data: data['utilized']
+                        }, {
+                            name: 'Idle',
+                            data: data['idle']
+                        }],
+                        chart: {
+                            type: 'bar',
+                            height: 350,
+                            stacked: true,
+                            stackType: '100%'
+                        },
+                        responsive: [{
+                            breakpoint: 480,
+                            options: {
+                                legend: {
+                                    position: 'bottom',
+                                    offsetX: -10,
+                                    offsetY: 0
+                                }
+                            }
+                        }],
+                        xaxis: {
+                            categories: data['categories'],
+                        },
+                        fill: {
+                            opacity: 1
+                        },
+                        legend: {
+                            position: 'bottom',
+                            // offsetX: 0,
+                            // offsetY: 50
+                        },
+                        title: {
+                            text: 'National Utilization Every Month in ' + year,
+                            align: 'center',
+                        }
+                    };
+
+                    var chart = new ApexCharts(document.querySelector("#utilizedEachMonth"), options);
+                    chart.render();
+                }
+            })
+        }
 
         function utilized(year, month) {
             $.ajax({
@@ -133,7 +188,7 @@
                     var options = {
                         series: data,
                         chart: {
-                            width: 400,
+                            width: 500,
                             type: 'donut',
                         },
                         plotOptions: {
@@ -151,12 +206,14 @@
                         legend: {
                             formatter: function(val, opts) {
                                 return val + " - " + opts.w.globals.series[opts.seriesIndex]
-                            }
+                            },
+                            position: 'bottom',
                         },
                         title: {
-                            text: 'Gradient Donut with custom Start-angle'
+                            text: 'National Utilization in ' + year,
+                            align: 'center',
                         },
-                        labels: ['utilized', 'idle'],
+                        labels: ['Utilized', 'Idle'],
                         // responsive: [{
                         //     breakpoint: 400,
                         //     options: {
@@ -211,6 +268,9 @@
                         },
                         legend: {
                             show: true
+                        },
+                        title: {
+                            text: 'Traffic Increase Of The Highest Traffic Each SBU in ' + month
                         }
                     };
 
@@ -270,7 +330,7 @@
                         },
                         title: {
                             text: 'The Highest Ring Traffic Each Month in 2024',
-                            align: 'center'
+                            align: 'center',
                         }
                         // fill: {
                         //     type: 'gradient',
@@ -299,51 +359,6 @@
                 url: '/api/topSbu',
                 success: function(data) {
                     console.log(data);
-                    // var options = {
-                    //     series: [{
-                    //         name: 'Current',
-                    //         data: data,
-                    //     }],
-                    //     chart: {
-                    //         height: 400,
-                    //         type: 'bar'
-                    //     },
-                    //     plotOptions: {
-                    //         bar: {
-                    //             borderRadius: 10,
-                    //             dataLabels: {
-                    //                 position: 'top', // top, center, bottom
-                    //             },
-                    //         }
-                    //     },
-                    //     // colors: ['#00E396'],
-                    //     dataLabels: {
-                    //         enabled: true,
-                    //         formatter: function(val) {
-                    //             return val + "Gbps";
-                    //         },
-                    //         offsetY: -20,
-                    //         style: {
-                    //             fontSize: '12px',
-                    //             colors: ["#304758"]
-                    //         }
-                    //     },
-                    //     yaxis: {
-                    //         title: {
-                    //             text: 'Giga bits per second'
-                    //         }
-                    //     },
-                    //     xaxis: {
-                    //         labels: {
-                    //             rotate: -90
-                    //         }
-                    //     },
-                    //     title: {
-                    //         text: 'Top Highest Traffic Ring Each SBU in ' + month,
-                    //         align: 'center'
-                    //     }
-                    // };
-
                     var options = {
                         series: data['data'],
                         chart: {
@@ -365,7 +380,7 @@
                             }
                         },
                         title: {
-                            text: 'Radar with Polygon Fill'
+                            text: 'The Highest Traffic Each SBU in ' + month
                         },
                         // colors: ['#FF4560'],
                         // markers: {

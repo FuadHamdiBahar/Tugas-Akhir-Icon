@@ -40,75 +40,76 @@ Route::prefix('/api')->group(function () {
     Route::get('/topMonth', [ApiController::class, 'topEachMonth']);
     Route::get('/diff', [ApiController::class, 'monthDifference']);
     Route::get('/totalUtilization/{year}/{month}', [ApiController::class, 'totalUtilization']);
+    Route::get('/totalUtilization/{year}', [ApiController::class, 'totalUtilizationEachMonth']);
 });
 
 // run it when it needs
-Route::get('/createtrend/{sbu}', [TrendController::class, 'create']);
-Route::get('/updatetrend/{sbu}', [TrendController::class, 'update']);
+// Route::get('/createtrend/{sbu}', [TrendController::class, 'create']);
+// Route::get('/updatetrend/{sbu}', [TrendController::class, 'update']);
 
-Route::get('/createweeklytrend/{sbu}', [TrendController::class, 'createWeeklyTrend']);
-Route::get('/createutil/{sbu}', function ($sbu) {
-    ini_set('max_execution_time', 180);
-    $months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul'];
+// Route::get('/createweeklytrend/{sbu}', [TrendController::class, 'createWeeklyTrend']);
+// Route::get('/createutil/{sbu}', function ($sbu) {
+//     ini_set('max_execution_time', 180);
+//     $months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul'];
 
-    foreach ($months as $month) {
-        // ambil hostnya
-        $sql = "
-            select ring, origin, terminating from myapp.hosts h 
-            where h.status = 1 and h.sbu_name = '$sbu'
-        ";
+//     foreach ($months as $month) {
+//         // ambil hostnya
+//         $sql = "
+//             select ring, origin, terminating from myapp.hosts h 
+//             where h.status = 1 and h.sbu_name = '$sbu'
+//         ";
 
-        $hosts = DB::connection('second_db')->select($sql);
+//         $hosts = DB::connection('second_db')->select($sql);
 
-        // ambil trafficnya
-        $merge = array();
-        foreach ($hosts as $h) {
-            $data = ApiModel::queryMaxTrafficEachSourceToDestination(
-                $h->origin,
-                $h->terminating,
-                $h->ring,
-                $month,
+//         // ambil trafficnya
+//         $merge = array();
+//         foreach ($hosts as $h) {
+//             $data = ApiModel::queryMaxTrafficEachSourceToDestination(
+//                 $h->origin,
+//                 $h->terminating,
+//                 $h->ring,
+//                 $month,
 
-            );
-            // var_dump($sheet->getCell("C{$row}")->getValue());
-            array_push($merge, $data);
-        }
+//             );
+//             // var_dump($sheet->getCell("C{$row}")->getValue());
+//             array_push($merge, $data);
+//         }
 
-        // flat biar gampang
-        $flat = array();
-        foreach ($merge as $hosts) {
-            foreach ($hosts as $h) {
-                $flat[] = $h;
-            }
-        }
+//         // flat biar gampang
+//         $flat = array();
+//         foreach ($merge as $hosts) {
+//             foreach ($hosts as $h) {
+//                 $flat[] = $h;
+//             }
+//         }
 
-        // mencari interfaces
-        foreach ($flat as $f) {
-            $sql = "
-                select 
-                    i.interfaceid 
-                from myapp.hosts h 
-                join myapp.interfaces i on h.hostid = i.hostid 
-                where h.origin = '$f->origin'
-                and h.terminating = '$f->terminating'
-                and i.interface_name ='$f->interface'
-                and h.sbu_name = '$sbu'";
+//         // mencari interfaces
+//         foreach ($flat as $f) {
+//             $sql = "
+//                 select 
+//                     i.interfaceid 
+//                 from myapp.hosts h 
+//                 join myapp.interfaces i on h.hostid = i.hostid 
+//                 where h.origin = '$f->origin'
+//                 and h.terminating = '$f->terminating'
+//                 and i.interface_name ='$f->interface'
+//                 and h.sbu_name = '$sbu'";
 
-            $interfaces =  DB::connection('second_db')->select($sql);
+//             $interfaces =  DB::connection('second_db')->select($sql);
 
-            // save to each interface
-            foreach ($interfaces as $interface) {
-                $sql = "
-                    insert into myapp.utilization (interfaceid, `year`, `month`, value)
-                    values ($interface->interfaceid, 2024, '$month', $f->traffic);
-                ";
-                DB::connection('second_db')->select($sql);
-            }
-        }
-    }
+//             // save to each interface
+//             foreach ($interfaces as $interface) {
+//                 $sql = "
+//                     insert into myapp.utilization (interfaceid, `year`, `month`, value)
+//                     values ($interface->interfaceid, 2024, '$month', $f->traffic);
+//                 ";
+//                 DB::connection('second_db')->select($sql);
+//             }
+//         }
+//     }
 
-    return 'MENYALA';
-});
+//     return 'MENYALA';
+// });
 
 // mytestroute
 Route::get('/tes/{sbu}', [ApiController::class, 'listOfMaxTrafficEachRing']);

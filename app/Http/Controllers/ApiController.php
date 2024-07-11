@@ -11,6 +11,24 @@ use PhpOffice\PhpSpreadsheet\Shared\Trend\Trend;
 
 class ApiController extends Controller
 {
+    public function totalUtilizationEachMonth($year)
+    {
+        $months = TrendModel::getTotalUtilizationEachMonth($year);
+
+        $idle = [];
+        $utilized = [];
+        $categories = [];
+        foreach ($months as $month) {
+            array_push($idle, $month->idle);
+            array_push($utilized, $month->utilized);
+            array_push($categories, $month->month);
+        }
+
+        $res['idle'] = $idle;
+        $res['utilized'] = $utilized;
+        $res['categories'] = $categories;
+        return $res;
+    }
     public function totalUtilization($year, $month)
     {
         $query = TrendModel::getTotalUtilization($year, $month);

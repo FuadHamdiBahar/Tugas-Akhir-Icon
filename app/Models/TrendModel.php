@@ -6,6 +6,24 @@ use Illuminate\Support\Facades\DB;
 
 class TrendModel
 {
+    public static function getTotalUtilizationEachMonth($year)
+    {
+        $sql = "
+        select 
+            u.year, 
+            u.`month`, 
+            round((sum(u.value) / sum(i.capacity)) * 100, 1) as utilized, 
+            100 - round((sum(u.value) / sum(i.capacity)) * 100, 1) as idle 
+        from myapp.hosts h 
+        join myapp.interfaces i on i.hostid = h.hostid 
+        join myapp.utilization u on u.interfaceid = i.interfaceid
+        where h.status = 1
+        and u.`year` = $year
+        and i.capacity >= 100000000000
+        and u.value != 0
+        group by u.year, u.`month`";
+        return DB::connection('second_db')->select($sql);
+    }
     public static function getTotalUtilization($year, $month)
     {
         $sql = "
@@ -23,6 +41,7 @@ class TrendModel
 
         return DB::connection('second_db')->select($sql);
     }
+
     public static function getUtilizationList($sbu, $month)
     {
         $sql = "
