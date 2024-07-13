@@ -222,48 +222,55 @@ class ApiController extends Controller
     // ring trends
     public static function ringTrend($sbu)
     {
-        $rings = TrendModel::getNumberOfRing($sbu, '2024');
-
-        // Iterate over the array and extract the 'ring' values
-        $flat = [];
-        foreach ($rings as $r) {
-            $flat[] = $r->ring;
-        }
-
-        // return $flat;
-
-        // merge
-        $merge = array();
-        foreach ($flat as $f) {
-            $result = TrendModel::getTrendsEachSbu($sbu, '2024', $f);
-            array_push($merge, $result);
-        }
-
-        // return $merge;
-
-        // transform
-        $transform = array();
-        $month = array();
-        foreach ($merge as $m) {
-            $temp = array();
-            $ring = '';
-            foreach ($m as $b) {
-                $ring = $b->ring;
-                array_push($temp, number_format($b->traffic / 1000000000, 1));
-            }
-            array_push($transform, [
-                'name' => $ring,
-                'data' => $temp
-            ]);
-
-            // array_push($month, $m->month);
-        }
-
-        // $res['data'] = $transform;
-        // $res['month'] = $month;
-
-        return $transform;
+        $month = date('m');
+        $month = RingController::convertNumToTextMonth($month);
+        $query = TrendModel::getRingTrend($sbu, $month);
+        return $query;
     }
+    // public static function ringTrend($sbu)
+    // {
+    //     $rings = TrendModel::getNumberOfRing($sbu, '2024');
+
+    //     // Iterate over the array and extract the 'ring' values
+    //     $flat = [];
+    //     foreach ($rings as $r) {
+    //         $flat[] = $r->ring;
+    //     }
+
+    //     // return $flat;
+
+    //     // merge
+    //     $merge = array();
+    //     foreach ($flat as $f) {
+    //         $result = TrendModel::getTrendsEachSbu($sbu, '2024', $f);
+    //         array_push($merge, $result);
+    //     }
+
+    //     // return $merge;
+
+    //     // transform
+    //     $transform = array();
+    //     $month = array();
+    //     foreach ($merge as $m) {
+    //         $temp = array();
+    //         $ring = '';
+    //         foreach ($m as $b) {
+    //             $ring = $b->ring;
+    //             array_push($temp, number_format($b->traffic / 1000000000, 1));
+    //         }
+    //         array_push($transform, [
+    //             'name' => $ring,
+    //             'data' => $temp
+    //         ]);
+
+    //         // array_push($month, $m->month);
+    //     }
+
+    //     // $res['data'] = $transform;
+    //     // $res['month'] = $month;
+
+    //     return $transform;
+    // }
 
     public static function getLastDateOfWeek($week)
     {
@@ -283,93 +290,67 @@ class ApiController extends Controller
     {
         $cw = (int) date('W');
         $fw = $cw - 3;
-
-        $ringList = TrendModel::getWeeklyNumberOfRing($sbu);
-
-        $merge = [];
-        foreach ($ringList as $rl) {
-            $query = TrendModel::getWeeklyTrend($sbu, $rl->ring, $fw, $cw);
-            array_push($merge, $query);
+        $rings = TrendModel::getWeeklyTrend($sbu, $fw, $cw);
+        foreach ($rings as $ring) {
+            $ring->data = explode(',', $ring->data);
         }
-
-        // return $merge;
-
-        $data = [];
-        foreach ($merge as $items) {
-            $traffic = [];
-            $name = '';
-            foreach ($items as $i) {
-                array_push($traffic, number_format($i->traffic / 1000000000, 1));
-                $name = $i->ring;
-            }
-            $temp['name'] = $name;
-            $temp['data'] = $traffic;
-
-            array_push($data, $temp);
-        }
-
-        $categories = [];
-        for ($i = $fw; $i <= $cw; $i++) {
-            array_push($categories, self::getLastDateOfWeek($i));
-        }
-        $res['data'] = $data;
-        $res['categories'] = $categories;
+        $res['data'] = $rings;
         return $res;
     }
+    // public static function weeklyTrend($sbu)
+    // {
+    //     $cw = (int) date('W');
+    //     $fw = $cw - 3;
+
+    //     $ringList = TrendModel::getWeeklyNumberOfRing($sbu);
+
+    //     $merge = [];
+    //     foreach ($ringList as $rl) {
+    //         $query = TrendModel::getWeeklyTrend($sbu, $rl->ring, $fw, $cw);
+    //         array_push($merge, $query);
+    //     }
+
+    //     // return $merge;
+
+    //     $data = [];
+    //     foreach ($merge as $items) {
+    //         $traffic = [];
+    //         $name = '';
+    //         foreach ($items as $i) {
+    //             array_push($traffic, number_format($i->traffic / 1000000000, 1));
+    //             $name = $i->ring;
+    //         }
+    //         $temp['name'] = $name;
+    //         $temp['data'] = $traffic;
+
+    //         array_push($data, $temp);
+    //     }
+
+    //     $categories = [];
+    //     for ($i = $fw; $i <= $cw; $i++) {
+    //         array_push($categories, self::getLastDateOfWeek($i));
+    //     }
+    //     $res['data'] = $data;
+    //     $res['categories'] = $categories;
+    //     return $res;
+    // }
 
     // ring baru
-    public static function listOfMaxTrafficEachRing($sbu, $month)
+    public static function listOfMaxTrafficEachRing($sbu)
     {
+        $month = date('m');
+        $month = RingController::convertNumToTextMonth($month);
         $query = TrendModel::getUtilizationList($sbu, $month);
 
         return $query;
     }
 
-    public static function sumOfMaxTrafficEachRing($sbu, $month)
+    public static function sumOfMaxTrafficEachRing($sbu)
     {
-        $query = TrendModel::getUtilizationList($sbu, $month);
-        $resume = array();
-        $val = 0;
-        for ($r = 0; $r < count($query); $r++) {
-            // n - 1
-            if ($r < count($query) - 1) {
-                $current_ring = $query[$r]->ring;
-                $next_ring = $query[$r + 1]->ring;
-                // kalau ring n == n+1 jumlahkan
-                // kalau tidak catet terus reset valnya
-                if ($current_ring == $next_ring) {
-                    $val += (int)$query[$r]->value;
-                } else {
-                    $val += (int)$query[$r]->value;
-                    $resume[] = array(
-                        'name' => $current_ring,
-                        'data' => $val,
-                        // 'utility' => $val
-                    );
-                    $val = 0;
-                }
-            } else {
-                $current_ring = $query[$r]->ring;
-                $prev_ring = $query[$r - 1]->ring;
-                if ($current_ring == $prev_ring) {
-                    $val += (int)$query[$r]->value;
-                    $resume[] = array(
-                        'name' => $current_ring,
-                        'data' => $val,
-                        // 'utility' => $val
-                    );
-                } else {
-                    $val = (int)$query[$r]->value;
-                    $resume[] = array(
-                        'name' => $current_ring,
-                        'data' => $val,
-                        // 'utility' => $val
-                    );
-                }
-            }
-        }
-
-        return $resume;
+        $month = date('m');
+        $month = RingController::convertNumToTextMonth($month);
+        $query = TrendModel::getRingTrend($sbu, $month);
+        return $query;
     }
     // ring lama
     // public static function listOfMaxTrafficEachRing($sbu, $month)

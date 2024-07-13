@@ -28,8 +28,8 @@ Route::get('/documentation', [DashboardController::class, 'documentation'])->nam
 Route::prefix('/api')->group(function () {
     Route::get('/trend/{sbu}', [ApiController::class, 'ringTrend']);
     Route::get('/weekly/{sbu}', [ApiController::class, 'weeklyTrend']);
-    Route::get('/list/{sbu}/{month}', [ApiController::class, 'listOfMaxTrafficEachRing']);
-    Route::get('/summary/{sbu}/{month}', [ApiController::class, 'sumOfMaxTrafficEachRing']);
+    Route::get('/list/{sbu}', [ApiController::class, 'listOfMaxTrafficEachRing']);
+    Route::get('/summary/{sbu}', [ApiController::class, 'sumOfMaxTrafficEachRing']);
     Route::get('/link/{sbu}', [ApiController::class, 'ringLink']);
     Route::get('/trendmonth/{origin}/{terminating}', [ApiController::class, 'listTrafficMonth']);
     Route::get('/trendweek/{origin}/{terminating}', [ApiController::class, 'listTrafficWeek']);
@@ -44,149 +44,106 @@ Route::prefix('/api')->group(function () {
 });
 
 // run it when it needs
-// Route::get('/createtrend/{sbu}', [TrendController::class, 'create']);
-// Route::get('/updatetrend/{sbu}', [TrendController::class, 'update']);
+Route::get('/createtrend/{sbu}', [TrendController::class, 'create']);
+Route::get('/updatetrend/{sbu}', [TrendController::class, 'update']);
 
-// Route::get('/createweeklytrend/{sbu}', [TrendController::class, 'createWeeklyTrend']);
-// Route::get('/createutil/{sbu}', function ($sbu) {
-//     ini_set('max_execution_time', 180);
-//     $months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul'];
-
-//     foreach ($months as $month) {
-//         // ambil hostnya
-//         $sql = "
-//             select ring, origin, terminating from myapp.hosts h 
-//             where h.status = 1 and h.sbu_name = '$sbu'
-//         ";
-
-//         $hosts = DB::connection('second_db')->select($sql);
-
-//         // ambil trafficnya
-//         $merge = array();
-//         foreach ($hosts as $h) {
-//             $data = ApiModel::queryMaxTrafficEachSourceToDestination(
-//                 $h->origin,
-//                 $h->terminating,
-//                 $h->ring,
-//                 $month,
-
-//             );
-//             // var_dump($sheet->getCell("C{$row}")->getValue());
-//             array_push($merge, $data);
-//         }
-
-//         // flat biar gampang
-//         $flat = array();
-//         foreach ($merge as $hosts) {
-//             foreach ($hosts as $h) {
-//                 $flat[] = $h;
-//             }
-//         }
-
-//         // mencari interfaces
-//         foreach ($flat as $f) {
-//             $sql = "
-//                 select 
-//                     i.interfaceid 
-//                 from myapp.hosts h 
-//                 join myapp.interfaces i on h.hostid = i.hostid 
-//                 where h.origin = '$f->origin'
-//                 and h.terminating = '$f->terminating'
-//                 and i.interface_name ='$f->interface'
-//                 and h.sbu_name = '$sbu'";
-
-//             $interfaces =  DB::connection('second_db')->select($sql);
-
-//             // save to each interface
-//             foreach ($interfaces as $interface) {
-//                 $sql = "
-//                     insert into myapp.utilization (interfaceid, `year`, `month`, value)
-//                     values ($interface->interfaceid, 2024, '$month', $f->traffic);
-//                 ";
-//                 DB::connection('second_db')->select($sql);
-//             }
-//         }
-//     }
-
-//     return 'MENYALA';
-// });
+Route::get('/createweeklytrend/{sbu}', [TrendController::class, 'createWeeklyTrend']);
 
 // mytestroute
-Route::get('/tes/{sbu}', [ApiController::class, 'listOfMaxTrafficEachRing']);
+// Route::get('/tes', function () {
+//     $sql = "
+//     select 
+//     h.hostid 
+//     from myapp.hosts h 
+//     where h.sbu_name = 'sumbagut' 
+//     and h.ring = 'Ring 1' 
+//     and h.host_name = 'SBU-GI.ACEH-NE8000.M14-NPE-02'";
+
+//     return DB::connection('second_db')->select($sql);
+// });
 
 // will be deleted very soon
-// Route::get('/createhost/{sbu}', function ($sbu) {
-//     $path = public_path('data utilisasi.xlsx');
-//     $reader = new Xlsx();
-//     $spreadsheet = $reader->load($path);
-//     $sheet = $spreadsheet->getSheetByName($sbu);
-//     $totalRows = $sheet->getHighestRow();
+Route::get('/createhost/{sbu}', function ($sbu) {
+    $path = public_path('ring utilisasi.xlsx');
+    $reader = new Xlsx();
+    $spreadsheet = $reader->load($path);
+    $sheet = $spreadsheet->getSheetByName($sbu);
+    $totalRows = $sheet->getHighestRow();
 
-//     for ($row = 3; $row <= $totalRows; $row++) {
-//         $sbu_name = $sbu;
-//         $ring = $sheet->getCell("B{$row}")->getValue();
-//         $origin = $sheet->getCell("C{$row}")->getValue();
-//         $terminating = $sheet->getCell("D{$row}")->getValue();
-//         $status = $sheet->getCell("E{$row}")->getValue();
+    for ($row = 2; $row <= $totalRows; $row++) {
+        $sbu_name = $sbu;
+        $ring = $sheet->getCell("A{$row}")->getValue();
+        $host_name = $sheet->getCell("B{$row}")->getValue();
+        $description = $sheet->getCell("C{$row}")->getValue();
+        $interface_name = $sheet->getCell("D{$row}")->getValue();
 
-//         $sql = "
-//             insert into myapp.hosts (sbu_name, ring, origin, terminating, status)
-//             values ('$sbu_name', '$ring', '$origin', '$terminating', $status)
-//         ";
-//         DB::connection('second_db')->select($sql);
-//     }
-//     return 'MENYALA';
+        // membuat host
+        $sql = "
+        insert into myapp.hosts (sbu_name, ring, host_name)
+        values ('$sbu_name', '$ring', '$host_name')";
+        DB::connection('second_db')->select($sql);
+
+        // mengambil hostid
+        $sql = "
+        select 
+            h.hostid 
+        from myapp.hosts h 
+        where h.sbu_name = '$sbu_name' 
+        and h.ring = '$ring' 
+        and h.host_name = '$host_name'";
+        $hostid = DB::connection('second_db')->select($sql)[0]->hostid;
+
+        // cek capacity
+        $capacity = cekCapacity($interface_name);
+
+        // membuat interface
+        $sql = "
+        insert into myapp.interfaces (hostid, interface_name, description, capacity, status)
+        values ($hostid, '$interface_name', '$description', $capacity, 1)";
+        DB::connection('second_db')->select($sql);
+
+        // mengambil interfaceid
+        $sql = "
+        select 
+        interfaceid
+        from myapp.interfaces i 
+        where i.interface_name = '$interface_name'
+        and i.hostid = $hostid
+        and i.description = '$description'";
+        $interfaceid = DB::connection('second_db')->select($sql)[0]->interfaceid;
+
+        $sql = "
+        insert into myapp.items (hostid, interfaceid)
+        values($hostid, $interfaceid)";
+        DB::connection('second_db')->select($sql);
+    }
+    return 'MENYALA';
+});
+
+// Route::get('/createinterface/{sbu}', function ($sbu) {
 // });
 
-// Route::get('/createinterface', function () {
-//     $sql = "SELECT id, origin, terminating FROM myapp.hosts";
-//     $hosts = DB::connection('second_db')->select($sql);
-
-//     foreach ($hosts as $host) {
-//         $sql = "
-//         select 
-//             split_part(i.\"name\", '(', 1) as interface 
-//         from hosts h 
-//         join items i on h.hostid = i.hostid 
-//         where h.name LIKE '%$host->origin%'
-//         AND i.name LIKE '%$host->terminating%'
-//         and i.name like '%Bits sent%'";
-
-//         $interfaces = DB::select($sql);
-
-//         foreach ($interfaces as $interface) {
-//             $capacity = cekCapacity($interface->interface);
-//             $create = "
-//                 insert into myapp.interfaces (hostid, interface_name, capacity)
-//                 values ($host->id, '$interface->interface', $capacity)
-//             ";
-//             DB::connection('second_db')->select($create);
-//         }
-//     }
-//     return 'MENYALA';
-// });
-
-// function cekCapacity($interface)
-// {
-//     $capacity = 0;
-//     if (str_contains($interface, 'Interface 100GE')) {
-//         $capacity =  100000000000;
-//     } elseif (str_contains($interface, 'Interface 50|100GE0')) {
-//         $capacity =  100000000000;
-//     } elseif (str_contains($interface, 'Interface HundredGigE')) {
-//         $capacity =  100000000000;
-//     } elseif (str_contains($interface, 'Interface et')) {
-//         $capacity =  100000000000;
-//     } elseif (str_contains($interface, 'Interface GigabitEthernet')) {
-//         $capacity =  10000000000;
-//     } elseif (str_contains($interface, 'Interface Te')) {
-//         $capacity =  10000000000;
-//     } elseif (str_contains($interface, 'Interface TenGig')) {
-//         $capacity =  10000000000;
-//     } elseif (str_contains($interface, 'Interface xe')) {
-//         $capacity =  10000000000;
-//     } elseif (str_contains($interface, 'Interface Gi')) {
-//         $capacity =  1000000000;
-//     }
-//     return $capacity;
-// }
+function cekCapacity($interface)
+{
+    $capacity = 0;
+    if (str_contains($interface, '100GE')) {
+        $capacity =  100000000000;
+    } elseif (str_contains($interface, '50|100GE0')) {
+        $capacity =  100000000000;
+    } elseif (str_contains($interface, 'HundredGigE')) {
+        $capacity =  100000000000;
+    } elseif (str_contains($interface, 'et')) {
+        $capacity =  100000000000;
+    } elseif (str_contains($interface, 'GigabitEthernet')) {
+        $capacity =  10000000000;
+    } elseif (str_contains($interface, 'Te')) {
+        $capacity =  10000000000;
+    } elseif (str_contains($interface, 'TenGig')) {
+        $capacity =  10000000000;
+    } elseif (str_contains($interface, 'xe')) {
+        $capacity =  10000000000;
+    } elseif (str_contains($interface, 'Gi')) {
+        $capacity =  1000000000;
+    }
+    return $capacity;
+}

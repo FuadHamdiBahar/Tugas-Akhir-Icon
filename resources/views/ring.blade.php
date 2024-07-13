@@ -70,6 +70,7 @@
                 <thead class="bg-white text-uppercase">
                     <tr class="ligth ligth-data">
                         <th>Ring</th>
+                        <th>Hostname</th>
                         <th>Interface</th>
                         <th>Utilisation (Gbps)</th>
                         <th>Capacity (Gbps)</th>
@@ -194,11 +195,12 @@
 
         function showBar(sbu, month, date) {
             $.ajax({
-                url: '/api/summary/' + sbu + '/' + month,
+                url: '/api/summary/' + sbu,
                 type: 'GET',
                 success: function(data) {
-                    const dataList = data.map(ring => (ring.data / 1000000000).toFixed(1));
-                    const nameList = data.map(ring => ring.name);
+                    // console.log(data);
+                    const dataList = data.map(ring => ring.traffic);
+                    const nameList = data.map(ring => ring.ring);
 
                     var options = {
                         series: [{
@@ -287,16 +289,17 @@
         function showTable(sbu, month, date) {
             $.ajax({
                 type: 'GET',
-                url: '/api/list/' + sbu + '/' + month,
+                url: '/api/list/' + sbu,
                 success: function(data) {
                     var resulttag = "";
 
                     data.forEach(element => {
                         resulttag += "<tr>"
                         resulttag += "<td>" + element.ring + "</td>"
+                        resulttag += "<td>" + element.host_name + "</td>"
                         resulttag += "<td>" + element.interface_name + "</td>"
-                        resulttag += "<td>" + (element.value / 1000000000).toFixed(1) + "</td>"
-                        resulttag += "<td>" + (element.capacity / 1000000000).toFixed(1) + "</td>"
+                        resulttag += "<td>" + element.traffic + "</td>"
+                        resulttag += "<td>" + element.capacity + "</td>"
                         resulttag += "</tr>"
                     });
 

@@ -6,6 +6,25 @@ use Illuminate\Support\Facades\DB;
 
 class TrendModel
 {
+    public static function getRingTrend($sbu, $month)
+    {
+        $sql = "
+        select 
+            raw.ring, round(sum(raw.traffic) / 1000000000, 1) as traffic
+        from(
+            select 
+                h.ring, it.interface_name, max(wt.traffic) as traffic
+            from myapp.items i 
+            join myapp.hosts h on h.hostid = i.hostid 
+            join myapp.interfaces it on it.interfaceid = i.interfaceid 
+            join myapp.weekly_trends wt on it.interfaceid = wt.interfaceid 
+            where h.sbu_name = '$sbu'
+            and wt.month = '$month'
+            group by h.ring, it.interface_name 
+        ) raw group by raw.ring";
+
+        return DB::connection('second_db')->select($sql);
+    }
     public static function getTotalUtilizationEachMonth($year)
     {
         $sql = "
@@ -42,16 +61,20 @@ class TrendModel
         return DB::connection('second_db')->select($sql);
     }
 
-    public static function getUtilizationList($sbu, $month)
+    public static function getUtilizationList($sbu)
     {
         $sql = "
         select 
-            h.ring, h.origin, h.terminating, i.interface_name, i.capacity, u.value  
-        from myapp.hosts h 
-        join myapp.interfaces i on i.hostid = h.hostid 
-        join myapp.utilization u on u.interfaceid = i.interfaceid 
-        where h.sbu_name = '$sbu'
-        and u.`month` = '$month'";
+            h.ring, h.host_name, it.interface_name, 
+            round(it.capacity / 1000000000, 1) as capacity, 
+            round(max(wt.traffic) / 1000000000, 1) as traffic
+        from myapp.items i 
+        join myapp.hosts h on h.hostid = i.hostid 
+        join myapp.interfaces it on it.interfaceid = i.interfaceid 
+        join myapp.weekly_trends wt on it.interfaceid = wt.interfaceid 
+        where h.sbu_name = 'sumbagut'
+        and wt.month = 'jul'
+        group by h.host_name, it.interface_name, h.ring, it.capacity";
 
         return DB::connection('second_db')->select($sql);
     }
@@ -72,18 +95,35 @@ class TrendModel
         return DB::connection('second_db')->select($sql);
     }
 
-    public static function getWeeklyTrend($sbu, $ring, $fw, $cw)
+    public static function getWeeklyTrend($sbu, $fw, $cw)
     {
+        // $sql = "
+        // SELECT 
+        //     *
+        // FROM myapp.weekly_trends wt 
+        // WHERE wt.week_number >= $fw
+        // AND wt.week_number <= $cw
+        // and wt.sbu_name = '$sbu'
+        // and wt.ring = '$ring'
+        // order by wt.sbu_name, wt.ring, wt.week_number 
+        // ";
+
         $sql = "
-        SELECT 
-            *
-        FROM myapp.weekly_trends wt 
-        WHERE wt.week_number >= $fw
-        AND wt.week_number <= $cw
-        and wt.sbu_name = '$sbu'
-        and wt.ring = '$ring'
-        order by wt.sbu_name, wt.ring, wt.week_number 
-        ";
+        select 
+            raw.ring as name, group_concat(raw.traffic) as data
+        from (
+            select 
+                h.ring, wt.week_number, round(sum(wt.traffic) / 1000000000, 1) as traffic
+            from myapp.items i 
+            join myapp.hosts h on h.hostid = i.hostid 
+            join myapp.interfaces it on it.interfaceid = i.interfaceid 
+            join myapp.weekly_trends wt on it.interfaceid = wt.interfaceid 
+            where h.sbu_name = 'sumbagut'
+            and wt.week_number >= 25
+            and wt.week_number <= 28
+            group by h.ring, wt.week_number
+            order by h.ring, wt.week_number 
+        ) raw group by raw.ring";
 
         return DB::connection('second_db')->select($sql);
     }

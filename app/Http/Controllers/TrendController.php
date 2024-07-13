@@ -4,8 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ApiModel;
 use App\Models\TrendModel;
-use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
-use PhpOffice\PhpSpreadsheet\Shared\Trend\Trend;
+use Illuminate\Support\Facades\DB;
 
 class TrendController extends Controller
 {
@@ -42,51 +41,42 @@ class TrendController extends Controller
     public static function createWeeklyTrend($sbu)
     {
 
-        ini_set('max_execution_time', 60);
+        ini_set('max_execution_time', 600);
 
         // $m = (int) date('m');
         // $month = RingController::convertNumToTextMonth($m);
 
         $months = ['jun', 'jul'];
         foreach ($months as $month) {
-            $hosts = TrendModel::getUtilizationList($sbu, $month);
+            $hosts = TrendModel::getUtilizationList($sbu);
+
+            // return $hosts;
 
             $merge = array();
             foreach ($hosts as $h) {
                 $data = ApiModel::queryMaxTrafficEachSourceToDestinationWeekly(
                     $h->origin,
                     $h->terminating,
-                    $h->ring,
-                    $month,
+                    $h->interface,
+                    $month
                 );
-                array_push($merge, $data);
-            }
 
-            // flat biar lurus
-            $flat = array();
-            foreach ($merge as $hosts) {
-                foreach ($hosts as $h) {
-                    $flat[] = $h;
-                }
-            }
+                $sql = "
+                select 
+                    it.interfaceid
+                from myapp.items i 
+                join myapp.hosts h on h.hostid = i.hostid 
+                join myapp.interfaces it on it.interfaceid = i.interfaceid 
+                where h.host_name = '$h->origin'
+                and it.description = '$h->terminating'
+                and it.interface_name = '$h->interface'";
 
-            // membuat 0 2d array
-            $result = array();
-            foreach ($flat as $f) {
-                $result[$f->ring][$f->week_number] = 0;
-            }
+                $interfaceid = DB::connection('second_db')->select($sql)[0]->interfaceid;
 
-            // mengisi 2d array
-            foreach ($flat as $f) {
-                $result[$f->ring][$f->week_number] += $f->traffic;
-            }
-
-            // return $result;
-
-            // menambah ke tabel
-            foreach ($result as $res => $r) {
-                foreach ($r as $week_number => $traffic) {
-                    TrendModel::createWeeklyTrend($sbu, $res, $month, $week_number, $traffic);
+                foreach ($data as $d) {
+                    $sql = "insert into myapp.weekly_trends (interfaceid, `month`, week_number, traffic)
+                    values ($interfaceid, '$month', $d->week_number, $d->traffic)";
+                    DB::connection('second_db')->select($sql);
                 }
             }
         }

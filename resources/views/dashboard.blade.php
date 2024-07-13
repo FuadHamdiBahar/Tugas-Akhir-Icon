@@ -74,38 +74,60 @@
 
 
         <div class="col-lg-4">
-            <div class="profile-image position-relative p-1 m-1" id="chart">
-            </div>
-            {{-- <div class="card car-transparent">
+
+            <div class="card car-transparent">
                 <div class="card-body p-0">
+                    <div class="profile-image position-relative p-1 m-1" id="chart">
+                    </div>
                 </div>
-            </div> --}}
+            </div>
         </div>
 
         <div class="col-lg-4">
-            <div class="profile-image position-relative p-1 m-1" id="topEachSBU">
-            </div>
-            {{-- <div class="card car-transparent">
+
+            <div class="card car-transparent">
                 <div class="card-body p-0">
+                    <div class="profile-image position-relative p-1 m-1" id="topEachSBU">
+                    </div>
                 </div>
-            </div> --}}
+            </div>
         </div>
         <div class="col-lg-4">
-            <div class="profile-image position-relative p-1 m-1" id="utilized">
+
+            <div class="card car-transparent">
+                <div class="card-body p-0">
+                    <div class="profile-image position-relative p-1 m-1" id="utilized">
+                    </div>
+                </div>
             </div>
         </div>
 
         <div class="col-lg-6">
-            <div class="profile-image position-relative p-1 m-1" id="topEachMonth">
+
+            <div class="card car-transparent">
+                <div class="card-body p-0">
+                    <div class="profile-image position-relative p-1 m-1" id="topEachMonth">
+                    </div>
+                </div>
             </div>
         </div>
         <div class="col-lg-6">
-            <div class="profile-image position-relative p-1 m-1" id="utilizedEachMonth">
+
+            <div class="card car-transparent">
+                <div class="card-body p-0">
+                    <div class="profile-image position-relative p-1 m-1" id="utilizedEachMonth">
+                    </div>
+                </div>
             </div>
         </div>
 
         <div class="col-lg-12">
-            <div class="profile-image position-relative p-1 m-1" id="monthDifference">
+            <div class="card car-transparent">
+                <div class="card-body p-0">
+                    <div class="profile-image position-relative p-1 m-1" id="monthDifference">
+                    </div>
+
+                </div>
             </div>
 
         </div>

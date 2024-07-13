@@ -111,31 +111,26 @@ class ApiModel extends Model
         return DB::select($sql);
     }
 
-    public static function queryMaxTrafficEachSourceToDestinationWeekly($origin, $terminating, $ring, $month)
+    public static function queryMaxTrafficEachSourceToDestinationWeekly($origin, $terminating, $interface, $month)
     {
         $sql = "
             select 
-                * 
+                raw.week_number, MAX(raw.value_max) as traffic
             from (
                 select 
-                    raw.origin, raw.terminating, '$ring' as ring, cast(raw.week_number as integer), MAX(raw.value_max) as traffic
-                from (
+                    to_char(to_timestamp(t.clock), 'IW') as week_number, t.value_max 
+                from hosts h 
+                join (
                     select 
-                        to_timestamp(t.clock), to_char(to_timestamp(t.clock), 'IW') as week_number, 
-                        h.\"name\" as origin, '$terminating' as terminating,
-                        t.value_max  
-                    from hosts h 
-                    join (
-                        select 
-                            it.itemid, it.hostid, it.\"name\"
-                        from items it where it.\"name\" LIKE '%Bits sent%' OR it.name LIKE '%Bits received%'
-                    ) i on h.hostid = i.hostid
-                    join trends_uint_$month t on i.itemid = t.itemid  
-                    where h.name LIKE '%$origin%'
-                    AND i.name LIKE '%$terminating%'
-                ) raw
-                group by raw.week_number, raw.origin, raw.terminating
-            ) res   
+                        it.itemid, it.hostid, it.\"name\"
+                    from 
+                    items it where (it.name like '%Bits sent%' or it.name like '%Bits received%')
+                ) i on h.hostid = i.hostid
+                join trends_uint_$month t on i.itemid = t.itemid 
+                where h.name like '%$origin%'
+                AND i.name like '%$terminating%'
+                and i.name like '%$interface%'
+            ) raw group by raw.week_number
         ";
 
         return DB::select($sql);

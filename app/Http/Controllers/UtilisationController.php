@@ -8,7 +8,8 @@ class UtilisationController extends Controller
 {
     public function utilisation($sbu)
     {
-        $month = RingController::convertNumToTextMonth();
+        $m = date('m');
+        $month = RingController::convertNumToTextMonth($m);
         $data = ApiController::listOfMaxTrafficEachSourceToDestination($sbu, $month);
         // return $data;
         return view('utilisation', $data);
@@ -16,7 +17,8 @@ class UtilisationController extends Controller
 
     public function ringUtilisation($sbu, $ring)
     {
-        $month = RingController::convertNumToTextMonth();
+        $m = date('m');
+        $month = RingController::convertNumToTextMonth($m);
         $data = ApiController::listOfMaxTrafficEachSourceToDestination($sbu, $month);
         // return $ring;
         $spesific = [];
@@ -26,12 +28,12 @@ class UtilisationController extends Controller
             }
         }
 
-        $out = array(
+        $out = [
             'data' => $spesific,
             'sbu_name' => ucfirst($sbu),
             'ring' => $ring,
-            'month' => date('F', strtotime(date('d-m-Y')))
-        );
+            'month' => date('F', strtotime(date('d-m-Y'))),
+        ];
         return view('ringUtilisation', $out);
     }
 }
