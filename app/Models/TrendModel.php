@@ -6,11 +6,11 @@ use Illuminate\Support\Facades\DB;
 
 class TrendModel
 {
-    public static function getRingTrend($sbu, $month)
+    public static function getRingTrendMonth($sbu, $month)
     {
         $sql = "
         select 
-            raw.ring, round(sum(raw.traffic) / 1000000000, 1) as traffic
+            raw.ring as name, round(sum(raw.traffic) / 1000000000, 1) as data
         from(
             select 
                 h.ring, it.interface_name, max(wt.traffic) as traffic
@@ -22,9 +22,48 @@ class TrendModel
             and wt.month = '$month'
             group by h.ring, it.interface_name 
         ) raw group by raw.ring";
+        return DB::connection('second_db')->select($sql);
+    }
+    public static function getHostList($sbu)
+    {
+        $sql = "
+        select 
+            h.ring, h.host_name as origin, 
+            it.interfaceid, it.interface_name as interface, 
+            it.description as terminating
+        from myapp.items i 
+        join myapp.hosts h on h.hostid = i.hostid 
+        join myapp.interfaces it on it.interfaceid = i.interfaceid 
+        where h.sbu_name = '$sbu'
+        and it.interface_name != 'TIDAK ADA'
+        ";
+        return DB::connection('second_db')->select($sql);
+    }
+
+    public static function getRingTrend($sbu)
+    {
+        $sql = "
+        select 
+            res.ring as name, group_concat(res.traffic) as data
+        from (
+            select 
+                raw.ring, raw.month, round(sum(raw.traffic) / 1000000000, 1) as traffic
+            from(
+                select 
+                    h.ring, it.interface_name, wt.month, max(wt.traffic) as traffic
+                from myapp.items i 
+                join myapp.hosts h on h.hostid = i.hostid 
+                join myapp.interfaces it on it.interfaceid = i.interfaceid 
+                join myapp.weekly_trends wt on it.interfaceid = wt.interfaceid 
+                where h.sbu_name = '$sbu'
+                group by h.ring, it.interface_name, wt.month 
+            ) raw group by raw.ring, raw.month
+            order by raw.ring
+        ) res group by res.ring";
 
         return DB::connection('second_db')->select($sql);
     }
+
     public static function getTotalUtilizationEachMonth($year)
     {
         $sql = "
@@ -43,6 +82,7 @@ class TrendModel
         group by u.year, u.`month`";
         return DB::connection('second_db')->select($sql);
     }
+
     public static function getTotalUtilization($year, $month)
     {
         $sql = "
@@ -61,7 +101,7 @@ class TrendModel
         return DB::connection('second_db')->select($sql);
     }
 
-    public static function getUtilizationList($sbu)
+    public static function getUtilizationList($sbu, $month)
     {
         $sql = "
         select 
@@ -72,8 +112,8 @@ class TrendModel
         join myapp.hosts h on h.hostid = i.hostid 
         join myapp.interfaces it on it.interfaceid = i.interfaceid 
         join myapp.weekly_trends wt on it.interfaceid = wt.interfaceid 
-        where h.sbu_name = 'sumbagut'
-        and wt.month = 'jul'
+        where h.sbu_name = '$sbu'
+        and wt.month = '$month'
         group by h.host_name, it.interface_name, h.ring, it.capacity";
 
         return DB::connection('second_db')->select($sql);

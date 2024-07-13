@@ -46,9 +46,10 @@ class TrendController extends Controller
         // $m = (int) date('m');
         // $month = RingController::convertNumToTextMonth($m);
 
-        $months = ['jun', 'jul'];
+        // $months = [1, 2, 3, 4];
+        $months = [5, 6, 7];
         foreach ($months as $month) {
-            $hosts = TrendModel::getUtilizationList($sbu);
+            $hosts = TrendModel::getHostList($sbu);
 
             // return $hosts;
 
@@ -58,7 +59,7 @@ class TrendController extends Controller
                     $h->origin,
                     $h->terminating,
                     $h->interface,
-                    $month
+                    RingController::convertNumToTextMonth($month)
                 );
 
                 $sql = "

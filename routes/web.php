@@ -44,8 +44,8 @@ Route::prefix('/api')->group(function () {
 });
 
 // run it when it needs
-Route::get('/createtrend/{sbu}', [TrendController::class, 'create']);
-Route::get('/updatetrend/{sbu}', [TrendController::class, 'update']);
+// Route::get('/createtrend/{sbu}', [TrendController::class, 'create']);
+// Route::get('/updatetrend/{sbu}', [TrendController::class, 'update']);
 
 Route::get('/createweeklytrend/{sbu}', [TrendController::class, 'createWeeklyTrend']);
 
@@ -112,6 +112,7 @@ Route::get('/createhost/{sbu}', function ($sbu) {
         and i.description = '$description'";
         $interfaceid = DB::connection('second_db')->select($sql)[0]->interfaceid;
 
+        // membuat items
         $sql = "
         insert into myapp.items (hostid, interfaceid)
         values($hostid, $interfaceid)";

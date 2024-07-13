@@ -222,10 +222,12 @@ class ApiController extends Controller
     // ring trends
     public static function ringTrend($sbu)
     {
-        $month = date('m');
-        $month = RingController::convertNumToTextMonth($month);
-        $query = TrendModel::getRingTrend($sbu, $month);
-        return $query;
+        $rings = TrendModel::getRingTrend($sbu);
+        foreach ($rings as $ring) {
+            $ring->data = explode(',', $ring->data);
+        }
+
+        return $rings;
     }
     // public static function ringTrend($sbu)
     // {
@@ -339,7 +341,6 @@ class ApiController extends Controller
     public static function listOfMaxTrafficEachRing($sbu)
     {
         $month = date('m');
-        $month = RingController::convertNumToTextMonth($month);
         $query = TrendModel::getUtilizationList($sbu, $month);
 
         return $query;
@@ -348,8 +349,7 @@ class ApiController extends Controller
     public static function sumOfMaxTrafficEachRing($sbu)
     {
         $month = date('m');
-        $month = RingController::convertNumToTextMonth($month);
-        $query = TrendModel::getRingTrend($sbu, $month);
+        $query = TrendModel::getRingTrendMonth($sbu, $month);
         return $query;
     }
     // ring lama

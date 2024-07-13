@@ -124,7 +124,7 @@
                 type: 'GET',
                 url: '/api/weekly/' + sbu,
                 success: function(data) {
-                    console.log(data);
+                    // console.log(data);
                     var options = {
                         series: data['data'],
                         chart: {
@@ -198,9 +198,9 @@
                 url: '/api/summary/' + sbu,
                 type: 'GET',
                 success: function(data) {
-                    // console.log(data);
-                    const dataList = data.map(ring => ring.traffic);
-                    const nameList = data.map(ring => ring.ring);
+                    console.log(data);
+                    const dataList = data.map(ring => ring.data);
+                    const nameList = data.map(ring => ring.name);
 
                     var options = {
                         series: [{
