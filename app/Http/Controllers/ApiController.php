@@ -51,23 +51,27 @@ class ApiController extends Controller
     public function monthDifference()
     {
         $curm = (int) date('m');
-        $befm = RingController::convertNumToTextMonth($curm - 1);
-        $curm = RingController::convertNumToTextMonth($curm);
+        $befm = $curm - 1;
 
-        $query = TrendModel::monthDifference($befm, $curm);
+        $rings = TrendModel::topEachSBU($curm);
+        // return $rings;
 
-        // return $query;
-
-        $cur['name'] = 'jun';
-        $bef['name'] = 'jul';
         $t1 = [];
         $t2 = [];
         $name = [];
-        foreach ($query as $q) {
-            array_push($t1, $q->cur_traffic);
-            array_push($t2, $q->bef_traffic);
-            array_push($name, $q->name);
+        foreach ($rings as $r) {
+            $parts = explode(" ", $r->name, 2);
+            $prev = TrendModel::getPrevious($befm, $parts[0], $parts[1])[0];
+            // return $prev;
+            array_push($t1, $r->traffic);
+            array_push($t2, $prev->traffic);
+            array_push($name, $r->name);
+            // return $prev;
         }
+
+
+        $cur['name'] = RingController::convertNumToTextMonth($curm);
+        $bef['name'] = RingController::convertNumToTextMonth($befm);
 
         $cur['data'] = $t1;
         $bef['data'] = $t2;

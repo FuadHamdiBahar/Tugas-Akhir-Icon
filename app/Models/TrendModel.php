@@ -68,18 +68,22 @@ class TrendModel
     {
         $sql = "
         select 
-            u.year, 
-            u.`month`, 
-            round((sum(u.value) / sum(i.capacity)) * 100, 1) as utilized, 
-            100 - round((sum(u.value) / sum(i.capacity)) * 100, 1) as idle 
-        from myapp.hosts h 
-        join myapp.interfaces i on i.hostid = h.hostid 
-        join myapp.utilization u on u.interfaceid = i.interfaceid
-        where h.status = 1
-        and u.`year` = $year
-        and i.capacity >= 100000000000
-        and u.value != 0
-        group by u.year, u.`month`";
+            res.month, round(sum(res.traffic) / sum(res.capacity) * 100, 1) as utilized,
+            100 - round(sum(res.traffic) / sum(res.capacity) * 100, 1) as idle
+        from (
+            select 
+                h.ring, h.host_name, it.interface_name, wt.month,
+                round(it.capacity / 1000000000, 1) as capacity, 
+                round(max(wt.traffic) / 1000000000, 1) as traffic
+            from myapp.items i 
+            join myapp.hosts h on h.hostid = i.hostid 
+            join myapp.interfaces it on it.interfaceid = i.interfaceid 
+            join myapp.weekly_trends wt on it.interfaceid = wt.interfaceid 
+            where it.interface_name != 'TIDAK ADA'
+            and wt.year = '$year'
+            group by h.host_name, it.interface_name, h.ring, it.capacity, wt.`month`  
+            order by h.host_name, wt.month
+        ) res group by res.month";
         return DB::connection('second_db')->select($sql);
     }
 
@@ -174,32 +178,23 @@ class TrendModel
         return DB::connection('second_db')->select($sql);
     }
 
-    public static function monthDifference($before, $current)
+    public static function getPrevious($before, $sbu_name, $ring)
     {
         $sql = "
-        select
-            lower(concat(cur.sbu_name, ' ', cur.ring)) as name,
-            format(cur.traffic / 1000000000, 1) as cur_traffic,
-            format(bef.traffic / 1000000000, 1) AS bef_traffic
-        FROM (
-            SELECT 
-                t.sbu_name, 
-                t.ring, 
-                t.traffic 
-            FROM (
-                SELECT 
-                    sbu_name, 
-                    MAX(traffic) AS traffic
-                FROM myapp.trends 
-                WHERE `month` = '$current'
-                GROUP BY sbu_name 
-            ) raw 
-            JOIN myapp.trends t ON t.sbu_name = raw.sbu_name AND t.traffic = raw.traffic
-        ) cur 
-        JOIN myapp.trends bef 
-        ON cur.sbu_name = bef.sbu_name 
-        AND bef.`month` = '$before' 
-        AND bef.ring = cur.ring
+        select 
+            lower(concat(res.sbu_name, ' ', res.ring)) as name, round(sum(res.traffic) / 1000000000, 1) as traffic
+        from (
+            select 
+                h.sbu_name, h.ring, h.host_name, it.interface_name, wt.`month`, max(wt.traffic) as traffic
+            FROM myapp.items i 
+            JOIN myapp.hosts h ON h.hostid = i.hostid 
+            JOIN myapp.interfaces it ON it.interfaceid = i.interfaceid 
+            JOIN myapp.weekly_trends wt ON it.interfaceid = wt.interfaceid
+            where h.sbu_name = '$sbu_name'
+            and h.ring = '$ring'
+            and wt.`month` = $before
+            group by h.sbu_name, h.ring, h.host_name, it.interface_name, wt.`month`
+        ) res group by res.sbu_name, res.ring
         ";
         return DB::connection('second_db')->select($sql);
     }

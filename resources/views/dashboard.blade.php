@@ -164,7 +164,7 @@
                         }],
                         chart: {
                             type: 'bar',
-                            height: 350,
+                            height: 400,
                             stacked: true,
                             stackType: '100%'
                         },
@@ -180,6 +180,11 @@
                         }],
                         xaxis: {
                             categories: data['categories'],
+                        },
+                        yaxis: {
+                            title: {
+                                text: 'Percentage'
+                            }
                         },
                         fill: {
                             opacity: 1
@@ -206,7 +211,6 @@
                 url: '/api/totalUtilization/' + year + '/' + month,
                 type: 'GET',
                 success: function(data) {
-                    console.log(data);
                     var options = {
                         series: data,
                         chart: {
