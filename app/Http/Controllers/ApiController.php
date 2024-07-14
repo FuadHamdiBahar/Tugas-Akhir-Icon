@@ -4,10 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\ApiModel;
 use App\Models\TrendModel;
-use Illuminate\Http\Response;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use DateTime;
-use PhpOffice\PhpSpreadsheet\Shared\Trend\Trend;
 
 class ApiController extends Controller
 {
@@ -21,7 +19,7 @@ class ApiController extends Controller
         foreach ($months as $month) {
             array_push($idle, $month->idle);
             array_push($utilized, $month->utilized);
-            array_push($categories, $month->month);
+            array_push($categories, RingController::convertNumToTextMonth($month->month));
         }
 
         $res['idle'] = $idle;
@@ -89,7 +87,7 @@ class ApiController extends Controller
         $traffic = [];
         $points = [];
         foreach ($query as $q) {
-            array_push($month, $q->month);
+            array_push($month, RingController::convertNumToTextMonth($q->month));
             array_push($traffic, $q->traffic);
 
             // sulap hahah

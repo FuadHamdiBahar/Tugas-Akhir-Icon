@@ -149,6 +149,24 @@
             monthDifference(month);
         })
 
+        function getMonthName(monthNumber) {
+            // Array of month names
+            const monthNames = [
+                "January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"
+            ];
+
+            // Adjust monthNumber to be zero-based
+            const index = monthNumber - 1;
+
+            // Check if monthNumber is valid
+            if (index >= 0 && index < 12) {
+                return monthNames[index];
+            } else {
+                return "Invalid month number";
+            }
+        }
+
         function utilizedEachMont(year) {
             $.ajax({
                 type: 'GET',
@@ -296,7 +314,8 @@
                             show: true
                         },
                         title: {
-                            text: 'Traffic Increase Of The Highest Traffic Each SBU in ' + month
+                            text: 'Traffic Increase Of The Highest Traffic Each SBU in ' + getMonthName(
+                                month)
                         }
                     };
 
@@ -315,7 +334,7 @@
 
                     var options = {
                         series: [{
-                            name: 'Servings',
+                            name: 'Traffic',
                             data: data['traffic']
                         }],
                         annotations: {
@@ -357,7 +376,14 @@
                         title: {
                             text: 'The Highest Ring Traffic Each Month in 2024',
                             align: 'center',
-                        }
+                        },
+                        tooltip: {
+                            y: {
+                                formatter: function(val) {
+                                    return val + ' Gbps'
+                                }
+                            }
+                        },
                         // fill: {
                         //     type: 'gradient',
                         //     gradient: {
@@ -406,7 +432,7 @@
                             }
                         },
                         title: {
-                            text: 'The Highest Traffic Each SBU in ' + month
+                            text: 'The Highest Traffic Each SBU in ' + getMonthName(month)
                         },
                         // colors: ['#FF4560'],
                         // markers: {
@@ -479,7 +505,7 @@
                             }
                         },
                         title: {
-                            text: 'Top 5 Highest Traffic Ring in ' + month,
+                            text: 'Top 5 Highest Traffic Ring in ' + getMonthName(month),
                             align: 'center'
                         },
                         xaxis: {
