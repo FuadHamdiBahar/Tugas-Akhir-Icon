@@ -35,8 +35,8 @@ class ApiController extends Controller
 
         $res = [];
         foreach ($query as $q) {
-            array_push($res, (float) number_format($q->utilized * 100, 1));
-            array_push($res, (float) number_format($q->idle * 100, 1));
+            array_push($res, (float) $q->utilized);
+            array_push($res, (float) $q->idle);
         }
 
         return $res;
@@ -80,9 +80,6 @@ class ApiController extends Controller
     public function topEachMonth()
     {
         $query = TrendModel::topEachMonth();
-        usort($query, function ($a, $b) {
-            return $this->getMonthIndex($a->month) - $this->getMonthIndex($b->month);
-        });
 
         $month = [];
         $traffic = [];
@@ -111,7 +108,9 @@ class ApiController extends Controller
 
     public function topEachSBU()
     {
-        $query = TrendModel::topEachSBU();
+        $month = date('m');
+        $query = TrendModel::topEachSBU($month);
+
         $result = [];
 
         // spyder style
@@ -155,7 +154,8 @@ class ApiController extends Controller
 
     public function top()
     {
-        $query = TrendModel::getTopFive();
+        $month = date('m');
+        $query = TrendModel::getTopFive($month);
 
         $result = [];
         foreach ($query as $q) {
@@ -297,6 +297,13 @@ class ApiController extends Controller
             $ring->data = explode(',', $ring->data);
         }
         $res['data'] = $rings;
+
+        $categories = [];
+        for ($i = $fw; $i <= $cw; $i++) {
+            array_push($categories, self::getLastDateOfWeek($i));
+        }
+        $res['categories'] = $categories;
+
         return $res;
     }
     // public static function weeklyTrend($sbu)

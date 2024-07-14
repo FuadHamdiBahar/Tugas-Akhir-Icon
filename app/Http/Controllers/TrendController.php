@@ -46,8 +46,8 @@ class TrendController extends Controller
         // $m = (int) date('m');
         // $month = RingController::convertNumToTextMonth($m);
 
-        // $months = [1, 2, 3, 4];
-        $months = [5, 6, 7];
+        $months = [1, 2, 3, 4, 5, 6, 7];
+        // $months = [];
         foreach ($months as $month) {
             $hosts = TrendModel::getHostList($sbu);
 
@@ -75,8 +75,8 @@ class TrendController extends Controller
                 $interfaceid = DB::connection('second_db')->select($sql)[0]->interfaceid;
 
                 foreach ($data as $d) {
-                    $sql = "insert into myapp.weekly_trends (interfaceid, `month`, week_number, traffic)
-                    values ($interfaceid, '$month', $d->week_number, $d->traffic)";
+                    $sql = "insert into myapp.weekly_trends (interfaceid, year, `month`, week_number, traffic)
+                    values ($interfaceid, '2024', '$month', $d->week_number, $d->traffic)";
                     DB::connection('second_db')->select($sql);
                 }
             }

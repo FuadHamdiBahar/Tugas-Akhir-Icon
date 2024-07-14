@@ -87,15 +87,21 @@ class TrendModel
     {
         $sql = "
         select 
-            sum(u.value) / sum(i.capacity) as utilized, (sum(i.capacity) - sum(u.value)) / sum(i.capacity) as idle 
-        from myapp.hosts h 
-        join myapp.interfaces i on i.hostid = h.hostid  
-        join myapp.utilization u on u.interfaceid = i.interfaceid 
-        where i.capacity >= 100000000000
-        and h.status = 1
-        and u.`year` = $year
-        and u.`month` = '$month'
-        and u.value != 0
+            round(sum(raw.traffic) / sum(raw.capacity) * 100, 1) as utilized, 100 - round(sum(raw.traffic) / sum(raw.capacity) * 100, 1) as idle
+        from (
+            select 
+                h.ring, h.host_name, it.interface_name, 
+                round(it.capacity / 1000000000, 1) as capacity, 
+                round(max(wt.traffic) / 1000000000, 1) as traffic
+            from myapp.items i 
+            join myapp.hosts h on h.hostid = i.hostid 
+            join myapp.interfaces it on it.interfaceid = i.interfaceid 
+            join myapp.weekly_trends wt on it.interfaceid = wt.interfaceid 
+            where it.interface_name != 'TIDAK ADA'
+            and wt.month = $month
+            and wt.year = '$year'
+            group by h.host_name, it.interface_name, h.ring, it.capacity 
+        ) raw
         ";
 
         return DB::connection('second_db')->select($sql);
@@ -158,9 +164,9 @@ class TrendModel
             join myapp.hosts h on h.hostid = i.hostid 
             join myapp.interfaces it on it.interfaceid = i.interfaceid 
             join myapp.weekly_trends wt on it.interfaceid = wt.interfaceid 
-            where h.sbu_name = 'sumbagut'
-            and wt.week_number >= 25
-            and wt.week_number <= 28
+            where h.sbu_name = '$sbu'
+            and wt.week_number >= $fw
+            and wt.week_number <= $cw
             group by h.ring, wt.week_number
             order by h.ring, wt.week_number 
         ) raw group by raw.ring";
@@ -198,32 +204,76 @@ class TrendModel
         return DB::connection('second_db')->select($sql);
     }
 
-    public static function getTopFive()
+    public static function getTopFive($month)
     {
         $sql = "
-        select 
-            lower(concat(t.sbu_name, ' ', t.ring)) as name, format(t.traffic / 1000000000, 1) as traffic  
-        from myapp.trends t 
-        where t.`month` = 'jul'
-        order by t.traffic desc
-        limit 5
+        WITH ranked_traffic AS (
+            SELECT 
+                raw.sbu_name, 
+                raw.ring, 
+                raw.month, 
+                ROUND(SUM(raw.traffic) / 1000000000, 1) AS traffic,
+                ROW_NUMBER() OVER (PARTITION BY raw.sbu_name ORDER BY SUM(raw.traffic) DESC) AS rn
+            FROM (
+                SELECT 
+                    h.sbu_name, 
+                    h.ring, 
+                    it.interface_name, 
+                    wt.month, 
+                    MAX(wt.traffic) AS traffic
+                FROM myapp.items i 
+                JOIN myapp.hosts h ON h.hostid = i.hostid 
+                JOIN myapp.interfaces it ON it.interfaceid = i.interfaceid 
+                JOIN myapp.weekly_trends wt ON it.interfaceid = wt.interfaceid 
+                WHERE it.interface_name != 'TIDAK ADA'
+                AND wt.`month` = $month
+                GROUP BY h.ring, it.interface_name, wt.month, h.sbu_name 
+            ) raw 
+            GROUP BY raw.ring, raw.month, raw.sbu_name
+        )
+        SELECT 
+            lower(concat(sbu_name, ' ', ring)) as name,
+            traffic
+        FROM ranked_traffic
+        WHERE rn = 1
+        ORDER BY traffic desc
+        LIMIT 5;
         ";
         return DB::connection('second_db')->select($sql);
     }
 
-    public static function topEachSBU()
+    public static function topEachSBU($month)
     {
         $sql = "
-            select 
-                lower(concat(t.sbu_name, ' ', t.ring)) as name, format(t.traffic / 1000000000, 1) as traffic  
-            from (
-                select 
-                    sbu_name, max(t.traffic) as traffic  
-                from myapp.trends t 
-                where t.`month` = 'jul'
-                group by sbu_name
+            WITH ranked_traffic AS (
+            SELECT 
+                raw.sbu_name, 
+                raw.ring, 
+                raw.month, 
+                ROUND(SUM(raw.traffic) / 1000000000, 1) AS traffic,
+                ROW_NUMBER() OVER (PARTITION BY raw.sbu_name ORDER BY SUM(raw.traffic) DESC) AS rn
+            FROM (
+                SELECT 
+                    h.sbu_name, 
+                    h.ring, 
+                    it.interface_name, 
+                    wt.month, 
+                    MAX(wt.traffic) AS traffic
+                FROM myapp.items i 
+                JOIN myapp.hosts h ON h.hostid = i.hostid 
+                JOIN myapp.interfaces it ON it.interfaceid = i.interfaceid 
+                JOIN myapp.weekly_trends wt ON it.interfaceid = wt.interfaceid 
+                WHERE it.interface_name != 'TIDAK ADA'
+                AND wt.`month` = $month
+                GROUP BY h.ring, it.interface_name, wt.month, h.sbu_name 
             ) raw 
-            join myapp.trends t on t.traffic = raw.traffic
+            GROUP BY raw.ring, raw.month, raw.sbu_name
+        )
+        SELECT 
+            lower(concat(sbu_name, ' ', ring)) as name,
+            traffic
+        FROM ranked_traffic
+        WHERE rn = 1
         ";
 
         return DB::connection('second_db')->select($sql);
@@ -232,17 +282,32 @@ class TrendModel
     public static function topEachMonth()
     {
         $sql = "
-       select 
-            lower(concat(t.sbu_name, ' ', t.ring)) as name, t.month, format(t.traffic / 1000000000, 1) as traffic
-        from (
+        WITH ranked_traffic AS (
             select 
-                t.`month`, max(t.traffic) as traffic
-            from
-                myapp.trends t 
-            where t.year = 2024
-            group by t.`month`  
-        ) raw
-        join myapp.trends t on t.traffic = raw.traffic
+                *,	row_number() over(partition by las.month order by las.traffic desc) as rn
+            from (
+                select 
+                    res.sbu_name, res.ring, res.month, round(sum(res.traffic) / 1000000000, 1) as traffic
+                from (
+                    select raw.sbu_name, raw.ring, raw.host_name, raw.interface_name, raw.month,max(raw.traffic) as traffic from(
+                        select 
+                            h.sbu_name,  h.host_name, it.interface_name, h.ring, wt.month, wt.week_number, wt.traffic 
+                        from myapp.items i 
+                        join myapp.hosts h on h.hostid = i.hostid 
+                        join myapp.interfaces it on it.interfaceid = i.interfaceid 
+                        join myapp.weekly_trends wt on it.interfaceid = wt.interfaceid 
+                    ) raw group by raw.month, raw.interface_name, raw.host_name, raw.ring, raw.sbu_name
+                ) res group by res.sbu_name, res.ring, res.month
+                order by res.month
+            ) las
+        )
+        SELECT 
+            lower(concat(sbu_name, ' ', ring)) as name,
+            month,
+            traffic
+        FROM ranked_traffic
+        WHERE rn = 1
+        order by month
         ";
         return DB::connection('second_db')->select($sql);
     }

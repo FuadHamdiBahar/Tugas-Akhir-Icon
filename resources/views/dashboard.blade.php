@@ -139,7 +139,7 @@
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script>
         $(document).ready(function() {
-            var month = "{{ date('F') }}"
+            var month = "{{ date('m') }}"
             var year = "{{ date('Y') }}"
             topFive(month);
             topEachSBU(month);
@@ -203,7 +203,7 @@
 
         function utilized(year, month) {
             $.ajax({
-                url: '/api/totalUtilization/2024/jul',
+                url: '/api/totalUtilization/' + year + '/' + month,
                 type: 'GET',
                 success: function(data) {
                     console.log(data);
@@ -380,7 +380,7 @@
                 type: 'GET',
                 url: '/api/topSbu',
                 success: function(data) {
-                    console.log(data);
+                    // console.log(data);
                     var options = {
                         series: data['data'],
                         chart: {
