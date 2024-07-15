@@ -30,12 +30,16 @@ class ApiController extends Controller
     public function totalUtilization($year, $month)
     {
         $query = TrendModel::getTotalUtilization($year, $month);
+        // return $query;
 
-        $res = [];
+        $data = [];
         foreach ($query as $q) {
-            array_push($res, (float) $q->utilized);
-            array_push($res, (float) $q->idle);
+            array_push($data, (float) $q->utilized);
+            array_push($data, (float) $q->idle);
         }
+
+        $res['data'] = $data;
+        $res['capacity'] = (float) $q->capacity;
 
         return $res;
     }
@@ -91,7 +95,7 @@ class ApiController extends Controller
             array_push($traffic, $q->traffic);
 
             // sulap hahah
-            $temp['x'] = $q->month;
+            $temp['x'] = RingController::convertNumToTextMonth($q->month);
             $t['text'] = $q->name;
             $t['offsetY'] = 0;
             $temp['label'] = $t;

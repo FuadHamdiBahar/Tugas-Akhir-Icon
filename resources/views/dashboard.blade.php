@@ -74,7 +74,6 @@
 
 
         <div class="col-lg-4">
-
             <div class="card car-transparent">
                 <div class="card-body p-0">
                     <div class="profile-image position-relative p-1 m-1" id="chart">
@@ -84,7 +83,6 @@
         </div>
 
         <div class="col-lg-4">
-
             <div class="card car-transparent">
                 <div class="card-body p-0">
                     <div class="profile-image position-relative p-1 m-1" id="topEachSBU">
@@ -93,7 +91,6 @@
             </div>
         </div>
         <div class="col-lg-4">
-
             <div class="card car-transparent">
                 <div class="card-body p-0">
                     <div class="profile-image position-relative p-1 m-1" id="utilized">
@@ -103,7 +100,6 @@
         </div>
 
         <div class="col-lg-6">
-
             <div class="card car-transparent">
                 <div class="card-body p-0">
                     <div class="profile-image position-relative p-1 m-1" id="topEachMonth">
@@ -111,8 +107,8 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-6">
 
+        <div class="col-lg-6">
             <div class="card car-transparent">
                 <div class="card-body p-0">
                     <div class="profile-image position-relative p-1 m-1" id="utilizedEachMonth">
@@ -145,7 +141,7 @@
             topEachSBU(month);
             utilized(year, month);
             topEachMonth(year);
-            utilizedEachMont(year)
+            utilizedEachMonth(year)
             monthDifference(month);
         })
 
@@ -167,7 +163,7 @@
             }
         }
 
-        function utilizedEachMont(year) {
+        function utilizedEachMonth(year) {
             $.ajax({
                 type: 'GET',
                 url: '/api/totalUtilization/' + year,
@@ -228,9 +224,9 @@
             $.ajax({
                 url: '/api/totalUtilization/' + year + '/' + month,
                 type: 'GET',
-                success: function(data) {
+                success: function(result) {
                     var options = {
-                        series: data,
+                        series: result['data'],
                         chart: {
                             width: 500,
                             type: 'donut',
@@ -242,37 +238,44 @@
                             }
                         },
                         dataLabels: {
-                            enabled: true
+                            enabled: true,
                         },
                         // fill: {
                         //     type: 'gradient',
                         // },
                         legend: {
                             formatter: function(val, opts) {
-                                return val + " - " + opts.w.globals.series[opts.seriesIndex]
+                                return val + " - " + opts.w.globals.series[opts.seriesIndex] + ' Gbps'
                             },
                             position: 'bottom',
                         },
                         title: {
-                            text: 'National Utilization in ' + year,
+                            text: 'National Utilization in ' + year + ' (' + result['capacity'] + ' Gbps)',
                             align: 'center',
                         },
                         labels: ['Utilized', 'Idle'],
-                        // responsive: [{
-                        //     breakpoint: 400,
-                        //     options: {
-                        //         chart: {
-                        //             width: 200
-                        //         },
-                        //         legend: {
-                        //             position: 'bottom'
-                        //         }
-                        //     }
-                        // }]
+                        tooltip: {
+                            y: {
+                                formatter: function(val) {
+                                    return val + " Gbps"
+                                }
+                            }
+                        },
+                        responsive: [{
+                            breakpoint: 400,
+                            options: {
+                                chart: {
+                                    width: 200
+                                },
+                                legend: {
+                                    position: 'bottom'
+                                }
+                            }
+                        }]
                     };
 
-                    var chart = new ApexCharts(document.querySelector("#utilized"), options);
-                    chart.render();
+                    var natChart = new ApexCharts(document.querySelector("#utilized"), options);
+                    natChart.render();
                 }
             })
         }

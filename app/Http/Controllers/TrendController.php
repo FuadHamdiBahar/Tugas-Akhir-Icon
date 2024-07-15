@@ -43,26 +43,19 @@ class TrendController extends Controller
 
         ini_set('max_execution_time', 600);
 
-        // $m = (int) date('m');
-        // $month = RingController::convertNumToTextMonth($m);
+        $m = (int) date('m');
+        // foreach ($months as $month) {
+        $hosts = TrendModel::getHostList($sbu);
 
-        $months = [1, 2, 3, 4, 5, 6, 7];
-        // $months = [];
-        foreach ($months as $month) {
-            $hosts = TrendModel::getHostList($sbu);
+        foreach ($hosts as $h) {
+            $data = ApiModel::queryMaxTrafficEachSourceToDestinationWeekly(
+                $h->origin,
+                $h->terminating,
+                $h->interface,
+                RingController::convertNumToTextMonth($m)
+            );
 
-            // return $hosts;
-
-            $merge = array();
-            foreach ($hosts as $h) {
-                $data = ApiModel::queryMaxTrafficEachSourceToDestinationWeekly(
-                    $h->origin,
-                    $h->terminating,
-                    $h->interface,
-                    RingController::convertNumToTextMonth($month)
-                );
-
-                $sql = "
+            $sql = "
                 select 
                     it.interfaceid
                 from myapp.items i 
@@ -72,17 +65,25 @@ class TrendController extends Controller
                 and it.description = '$h->terminating'
                 and it.interface_name = '$h->interface'";
 
-                $interfaceid = DB::connection('second_db')->select($sql)[0]->interfaceid;
+            $interfaceid = DB::connection('second_db')->select($sql)[0]->interfaceid;
 
-                foreach ($data as $d) {
-                    $sql = "insert into myapp.weekly_trends (interfaceid, year, `month`, week_number, traffic)
-                    values ($interfaceid, '2024', '$month', $d->week_number, $d->traffic)";
-                    DB::connection('second_db')->select($sql);
-                }
+            foreach ($data as $d) {
+                $sql = "insert into myapp.weekly_trends (interfaceid, year, `month`, week_number, traffic)
+                    values ($interfaceid, '2024', '$m', $d->week_number, $d->traffic)";
+                DB::connection('second_db')->select($sql);
             }
         }
+        // }
 
+        $url = '/ring/' . $sbu;
+        return redirect($url);
+    }
 
-        return 'BERHASIL ' . $month;
+    public static function updateWeeklyTrend($sbu)
+    {
+        $month = date('m');
+        $deleted = TrendModel::deleteWeeklyTrend($sbu, $month);
+        $url = '/createweeklytrend/' . $sbu;
+        return redirect($url);
     }
 }

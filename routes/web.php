@@ -48,6 +48,7 @@ Route::prefix('/api')->group(function () {
 // Route::get('/updatetrend/{sbu}', [TrendController::class, 'update']);
 
 Route::get('/createweeklytrend/{sbu}', [TrendController::class, 'createWeeklyTrend']);
+Route::get('/updateweeklytrend/{sbu}', [TrendController::class, 'updateWeeklyTrend']);
 
 // mytestroute
 // Route::get('/tes', function () {

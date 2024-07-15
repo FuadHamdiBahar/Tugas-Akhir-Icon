@@ -6,6 +6,21 @@ use Illuminate\Support\Facades\DB;
 
 class TrendModel
 {
+
+    public static function deleteWeeklyTrend($sbu, $month)
+    {
+        $sql = "
+        delete wt
+        from weekly_trends wt
+        join myapp.interfaces i on wt.interfaceid = i.interfaceid 
+        join myapp.items it on it.interfaceid = i.interfaceid 
+        join myapp.hosts h on h.hostid = it.hostid 
+        where h.sbu_name = '$sbu'
+        and wt.`month` = $month 
+        and i.interface_name != 'TIDAK ADA'
+        ";
+        return DB::connection('second_db')->select($sql);
+    }
     public static function getRingTrendMonth($sbu, $month)
     {
         $sql = "
@@ -91,7 +106,7 @@ class TrendModel
     {
         $sql = "
         select 
-            round(sum(raw.traffic) / sum(raw.capacity) * 100, 1) as utilized, 100 - round(sum(raw.traffic) / sum(raw.capacity) * 100, 1) as idle
+            sum(raw.traffic) as utilized, sum(raw.capacity) - sum(raw.traffic) as idle, sum(raw.capacity) as capacity 
         from (
             select 
                 h.ring, h.host_name, it.interface_name, 
