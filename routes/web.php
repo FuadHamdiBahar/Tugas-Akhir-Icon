@@ -64,88 +64,88 @@ Route::get('/updateweeklytrend/{sbu}', [TrendController::class, 'updateWeeklyTre
 // });
 
 // will be deleted very soon
-Route::get('/createhost/{sbu}', function ($sbu) {
-    $path = public_path('ring utilisasi.xlsx');
-    $reader = new Xlsx();
-    $spreadsheet = $reader->load($path);
-    $sheet = $spreadsheet->getSheetByName($sbu);
-    $totalRows = $sheet->getHighestRow();
+// Route::get('/createhost/{sbu}', function ($sbu) {
+//     $path = public_path('ring utilisasi.xlsx');
+//     $reader = new Xlsx();
+//     $spreadsheet = $reader->load($path);
+//     $sheet = $spreadsheet->getSheetByName($sbu);
+//     $totalRows = $sheet->getHighestRow();
 
-    for ($row = 2; $row <= $totalRows; $row++) {
-        $sbu_name = $sbu;
-        $ring = $sheet->getCell("A{$row}")->getValue();
-        $host_name = $sheet->getCell("B{$row}")->getValue();
-        $description = $sheet->getCell("C{$row}")->getValue();
-        $interface_name = $sheet->getCell("D{$row}")->getValue();
+//     for ($row = 2; $row <= $totalRows; $row++) {
+//         $sbu_name = $sbu;
+//         $ring = $sheet->getCell("A{$row}")->getValue();
+//         $host_name = $sheet->getCell("B{$row}")->getValue();
+//         $description = $sheet->getCell("C{$row}")->getValue();
+//         $interface_name = $sheet->getCell("D{$row}")->getValue();
 
-        // membuat host
-        $sql = "
-        insert into myapp.hosts (sbu_name, ring, host_name)
-        values ('$sbu_name', '$ring', '$host_name')";
-        DB::connection('second_db')->select($sql);
+//         // membuat host
+//         $sql = "
+//         insert into myapp.hosts (sbu_name, ring, host_name)
+//         values ('$sbu_name', '$ring', '$host_name')";
+//         DB::connection('second_db')->select($sql);
 
-        // mengambil hostid
-        $sql = "
-        select 
-            h.hostid 
-        from myapp.hosts h 
-        where h.sbu_name = '$sbu_name' 
-        and h.ring = '$ring' 
-        and h.host_name = '$host_name'";
-        $hostid = DB::connection('second_db')->select($sql)[0]->hostid;
+//         // mengambil hostid
+//         $sql = "
+//         select 
+//             h.hostid 
+//         from myapp.hosts h 
+//         where h.sbu_name = '$sbu_name' 
+//         and h.ring = '$ring' 
+//         and h.host_name = '$host_name'";
+//         $hostid = DB::connection('second_db')->select($sql)[0]->hostid;
 
-        // cek capacity
-        $capacity = cekCapacity($interface_name);
+//         // cek capacity
+//         $capacity = cekCapacity($interface_name);
 
-        // membuat interface
-        $sql = "
-        insert into myapp.interfaces (hostid, interface_name, description, capacity, status)
-        values ($hostid, '$interface_name', '$description', $capacity, 1)";
-        DB::connection('second_db')->select($sql);
+//         // membuat interface
+//         $sql = "
+//         insert into myapp.interfaces (hostid, interface_name, description, capacity, status)
+//         values ($hostid, '$interface_name', '$description', $capacity, 1)";
+//         DB::connection('second_db')->select($sql);
 
-        // mengambil interfaceid
-        $sql = "
-        select 
-        interfaceid
-        from myapp.interfaces i 
-        where i.interface_name = '$interface_name'
-        and i.hostid = $hostid
-        and i.description = '$description'";
-        $interfaceid = DB::connection('second_db')->select($sql)[0]->interfaceid;
+//         // mengambil interfaceid
+//         $sql = "
+//         select 
+//         interfaceid
+//         from myapp.interfaces i 
+//         where i.interface_name = '$interface_name'
+//         and i.hostid = $hostid
+//         and i.description = '$description'";
+//         $interfaceid = DB::connection('second_db')->select($sql)[0]->interfaceid;
 
-        // membuat items
-        $sql = "
-        insert into myapp.items (hostid, interfaceid)
-        values($hostid, $interfaceid)";
-        DB::connection('second_db')->select($sql);
-    }
-    return 'MENYALA';
-});
+//         // membuat items
+//         $sql = "
+//         insert into myapp.items (hostid, interfaceid)
+//         values($hostid, $interfaceid)";
+//         DB::connection('second_db')->select($sql);
+//     }
+//     return 'MENYALA';
+// });
 
 // Route::get('/createinterface/{sbu}', function ($sbu) {
 // });
 
-function cekCapacity($interface)
-{
-    $capacity = 0;
-    if (str_contains($interface, '100GE')) {
-        $capacity =  100000000000;
-    } elseif (str_contains($interface, '50|100GE0')) {
-        $capacity =  100000000000;
-    } elseif (str_contains($interface, 'HundredGigE')) {
-        $capacity =  100000000000;
-    } elseif (str_contains($interface, 'et')) {
-        $capacity =  100000000000;
-    } elseif (str_contains($interface, 'GigabitEthernet')) {
-        $capacity =  10000000000;
-    } elseif (str_contains($interface, 'Te')) {
-        $capacity =  10000000000;
-    } elseif (str_contains($interface, 'TenGig')) {
-        $capacity =  10000000000;
-    } elseif (str_contains($interface, 'xe')) {
-        $capacity =  10000000000;
-    } elseif (str_contains($interface, 'Gi')) {
-        $capacity =  1000000000;
-    }
-    return $capacity;
-}
+// function cekCapacity($interface)
+// {
+//     $capacity = 0;
+//     if (str_contains($interface, '100GE')) {
+//         $capacity =  100000000000;
+//     } elseif (str_contains($interface, '50|100GE0')) {
+//         $capacity =  100000000000;
+//     } elseif (str_contains($interface, 'HundredGigE')) {
+//         $capacity =  100000000000;
+//     } elseif (str_contains($interface, 'et')) {
+//         $capacity =  100000000000;
+//     } elseif (str_contains($interface, 'GigabitEthernet')) {
+//         $capacity =  10000000000;
+//     } elseif (str_contains($interface, 'Te')) {
+//         $capacity =  10000000000;
+//     } elseif (str_contains($interface, 'TenGig')) {
+//         $capacity =  10000000000;
+//     } elseif (str_contains($interface, 'xe')) {
+//         $capacity =  10000000000;
+//     } elseif (str_contains($interface, 'Gi')) {
+//         $capacity =  1000000000;
+//     }
+//     return $capacity;
+// }
