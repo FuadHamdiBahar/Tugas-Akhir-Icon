@@ -17,8 +17,8 @@ class ApiController extends Controller
         $utilized = [];
         $categories = [];
         foreach ($months as $month) {
-            array_push($idle, $month->idle);
-            array_push($utilized, $month->utilized);
+            array_push($idle, (float) $month->idle);
+            array_push($utilized, (float) $month->utilized);
             array_push($categories, RingController::convertNumToTextMonth($month->month));
         }
 

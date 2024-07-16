@@ -209,7 +209,7 @@
                             // offsetY: 50
                         },
                         title: {
-                            text: 'National Utilization Every Month in ' + year,
+                            text: 'National Utilization in ' + year,
                             align: 'center',
                         }
                     };
@@ -250,7 +250,9 @@
                             position: 'bottom',
                         },
                         title: {
-                            text: 'National Utilization in ' + year + ' (' + result['capacity'] + ' Gbps)',
+                            text: 'National Utilization in ' + getMonthName(month) + ' ' + year + ' (' +
+                                result[
+                                    'capacity'] + ' Gbps)',
                             align: 'center',
                         },
                         labels: ['Utilized', 'Idle'],
