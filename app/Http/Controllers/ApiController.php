@@ -9,6 +9,22 @@ use DateTime;
 
 class ApiController extends Controller
 {
+    public function localUtilization($sbu_name)
+    {
+        $month = (int)date('m');
+        $year = date('Y');
+        $query = TrendModel::getLocalUtilization($sbu_name, $year, $month);
+
+        $data = [];
+        foreach ($query as $q) {
+            array_push($data, (float) $q->utilized);
+            array_push($data, (float) $q->idle);
+        }
+
+        $result['data'] = $data;
+        return $result;
+    }
+
     public function totalUtilizationEachMonth($year)
     {
         $months = TrendModel::getTotalUtilizationEachMonth($year);
@@ -27,6 +43,7 @@ class ApiController extends Controller
         $res['categories'] = $categories;
         return $res;
     }
+
     public function totalUtilization($year, $month)
     {
         $query = TrendModel::getTotalUtilization($year, $month);

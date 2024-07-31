@@ -50,7 +50,8 @@ class TrendModel
         join myapp.hosts h on h.hostid = i.hostid 
         join myapp.interfaces it on it.interfaceid = i.interfaceid 
         where h.sbu_name = '$sbu'
-        and it.interface_name != 'TIDAK ADA'
+        and it.interface_name != 'TIDAK ADA
+        and it.status = 1'
         ";
         return DB::connection('second_db')->select($sql);
     }
@@ -123,6 +124,28 @@ class TrendModel
         ) raw
         ";
 
+        return DB::connection('second_db')->select($sql);
+    }
+
+    public static function getLocalUtilization($sbu_name, $year, $month)
+    {
+        $sql = "select 
+                    round(sum(raw.traffic) / sum(raw.capacity) * 100, 1) as utilized, 100 - round(sum(raw.traffic) / sum(raw.capacity) * 100, 1) as idle
+                from (
+                    select 
+                        h.ring, h.host_name, it.interface_name, 
+                        round(it.capacity / 1000000000, 1) as capacity, 
+                        round(max(wt.traffic) / 1000000000, 1) as traffic
+                    from myapp.items i 
+                    join myapp.hosts h on h.hostid = i.hostid 
+                    join myapp.interfaces it on it.interfaceid = i.interfaceid 
+                    join myapp.weekly_trends wt on it.interfaceid = wt.interfaceid 
+                    where h.sbu_name = '$sbu_name'
+                    and it.interface_name != 'TIDAK ADA'
+                    and wt.month = $month
+                    and wt.year = '$year'
+                    group by h.host_name, it.interface_name, h.ring, it.capacity 
+                ) raw";
         return DB::connection('second_db')->select($sql);
     }
 

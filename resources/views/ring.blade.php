@@ -51,6 +51,15 @@
             </div>
         </div>
 
+        <div class="col-lg-4">
+            <div class="card car-transparent">
+                <div class="card-body p-0">
+                    <div class="profile-image position-relative p-1 m-1" id="localUtilization">
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
 
         {{-- <div class="col-lg-6">
@@ -65,7 +74,7 @@
             </div>
         </div> --}}
 
-        <div class="col-lg-6">
+        <div class="col-lg-8">
             <table class="data-table table mb-0 tbl-server-info" id="table">
                 <thead class="bg-white text-uppercase">
                     <tr class="ligth ligth-data">
@@ -82,7 +91,7 @@
             </table>
         </div>
 
-        <div class="col-lg-6">
+        <div class="col-lg-12">
             <table class="table" id="tableLink">
                 <thead>
                     <tr class="ligth">
@@ -113,9 +122,28 @@
             showTrend(sbu, month)
             showWeeklyTrend(sbu)
             showBar(sbu, month, date)
+            localUtilizatoin(sbu)
             showTable(sbu, month, date)
             showLocation(sbu)
         })
+
+        function getMonthName(monthNumber) {
+            // Array of month names
+            const monthNames = [
+                "January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"
+            ];
+
+            // Adjust monthNumber to be zero-based
+            const index = monthNumber - 1;
+
+            // Check if monthNumber is valid
+            if (index >= 0 && index < 12) {
+                return monthNames[index];
+            } else {
+                return "Invalid month number";
+            }
+        }
 
         function showWeeklyTrend(sbu) {
             $.ajax({
@@ -163,8 +191,8 @@
                             categories: data['categories'],
                         },
                         yaxis: {
-                            text: {
-                                title: 'Giga bits per second'
+                            title: {
+                                text: 'Giga bits per second'
                             }
                         },
                         title: {
@@ -399,6 +427,67 @@
                     // then finally
                     $("#tableLink tbody").append(resulttag);
                     // console.log(resulttag);
+                }
+            })
+        }
+
+        function localUtilizatoin(sbu, month, year) {
+            $.ajax({
+                url: '/api/localUtilization/' + sbu,
+                type: 'GET',
+                success: function(result) {
+                    console.log(result);
+                    var options = {
+                        series: result['data'],
+                        chart: {
+                            width: 500,
+                            type: 'donut',
+                        },
+                        plotOptions: {
+                            pie: {
+                                startAngle: 0,
+                                endAngle: 360
+                            }
+                        },
+                        dataLabels: {
+                            enabled: true,
+                        },
+                        // fill: {
+                        //     type: 'gradient',
+                        // },
+                        legend: {
+                            formatter: function(val, opts) {
+                                return val + " - " + opts.w.globals.series[opts.seriesIndex] + ' Gbps'
+                            },
+                            position: 'bottom',
+                        },
+                        title: {
+                            text: 'Local Utilization',
+                            align: 'center',
+                        },
+                        labels: ['Utilized', 'Idle'],
+                        tooltip: {
+                            y: {
+                                formatter: function(val) {
+                                    return val + " Gbps"
+                                }
+                            }
+                        },
+                        responsive: [{
+                            breakpoint: 400,
+                            options: {
+                                chart: {
+                                    width: 200
+                                },
+                                legend: {
+                                    position: 'bottom'
+                                }
+                            }
+                        }]
+                    };
+
+                    var natChart = new ApexCharts(document.querySelector("#localUtilization"), options);
+                    natChart.render();
                 }
             })
         }

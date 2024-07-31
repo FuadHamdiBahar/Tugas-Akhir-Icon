@@ -41,6 +41,7 @@ Route::prefix('/api')->group(function () {
     Route::get('/diff', [ApiController::class, 'monthDifference']);
     Route::get('/totalUtilization/{year}/{month}', [ApiController::class, 'totalUtilization']);
     Route::get('/totalUtilization/{year}', [ApiController::class, 'totalUtilizationEachMonth']);
+    Route::get('/localUtilization/{sbu_name}', [ApiController::class, 'localUtilization']);
 });
 
 // run it when it needs
