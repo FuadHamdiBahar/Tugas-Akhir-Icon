@@ -169,18 +169,17 @@
                 url: '/api/totalUtilization/' + year,
                 success: function(data) {
                     var options = {
-                        series: [{
-                            name: 'Utilized',
-                            data: data['utilized']
-                        }, {
-                            name: 'Idle',
-                            data: data['idle']
-                        }],
+                        series: data['data'],
                         chart: {
                             type: 'bar',
-                            height: 400,
+                            height: 350,
                             stacked: true,
-                            stackType: '100%'
+                            toolbar: {
+                                show: true
+                            },
+                            zoom: {
+                                enabled: true
+                            }
                         },
                         responsive: [{
                             breakpoint: 480,
@@ -192,25 +191,42 @@
                                 }
                             }
                         }],
+                        plotOptions: {
+                            bar: {
+                                horizontal: false,
+                                borderRadius: 10,
+                                borderRadiusApplication: 'end', // 'around', 'end'
+                                borderRadiusWhenStacked: 'last', // 'all', 'last'
+                                dataLabels: {
+                                    total: {
+                                        enabled: true,
+                                        style: {
+                                            fontSize: '13px',
+                                            fontWeight: 900
+                                        }
+                                    }
+                                }
+                            },
+                        },
                         xaxis: {
+                            // type: 'datetime',
                             categories: data['categories'],
                         },
                         yaxis: {
                             title: {
-                                text: 'Percentage'
+                                text: 'Giga bits per second'
                             }
+                        },
+                        legend: {
+                            position: 'bottom',
+                            // offsetY: 40
                         },
                         fill: {
                             opacity: 1
                         },
-                        legend: {
-                            position: 'bottom',
-                            // offsetX: 0,
-                            // offsetY: 50
-                        },
                         title: {
-                            text: 'National Utilization in ' + year,
-                            align: 'center',
+                            text: 'National Utilization Every Month ' + year,
+                            align: 'center  '
                         }
                     };
 
