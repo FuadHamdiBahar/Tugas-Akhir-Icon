@@ -162,10 +162,10 @@
                     {
                         data: 'hostid',
                         render: function(data) {
-                            return `<a class='btn btn-small btn-primary' href='/interface/` + data + `'>View</a> 
-                            <button class='btn btn-small btn-warning' type='button' onclick='edit(` + data + `)'>Edit</button> 
+                            return `<a class='btn btn-small btn-primary' href='/interface/` + data + `'><i class="ri-eye-line"></i></a> 
+                            <button class='btn btn-small btn-warning' type='button' onclick='edit(` + data + `)'><i class="ri-pencil-line"></i></button> 
                             <button class='btn btn-small btn-danger' type='button' onclick="hapus(` + data +
-                                `)">Delete</button>`
+                                `)"><i class="ri-delete-bin-7-line"></i></button>`
                         }
                     }
                 ]

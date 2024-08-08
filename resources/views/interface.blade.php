@@ -138,9 +138,9 @@
                         data: 'interfaceid',
                         render: function(data) {
                             return `<button class='btn btn-small btn-warning' type='button' onclick='edit(` +
-                                data + `)'>Edit</button> 
+                                data + `)'><i class="ri-pencil-line"></i></button> 
                             <button class='btn btn-small btn-danger' type='button' onclick="hapus(` + data +
-                                `)">Delete</button>`
+                                `)"><i class="ri-delete-bin-7-line"></i></button>`
                         }
                     }
                 ]

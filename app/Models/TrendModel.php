@@ -332,7 +332,7 @@ class TrendModel
     {
         $sql = "
         select 
-            h.ring, h.host_name, it.interface_name, 
+            h.ring, h.host_name, it.interface_name,
             round(it.capacity / 1000000000, 1) as capacity, 
             round(max(wt.traffic) / 1000000000, 1) as traffic
         from myapp.items i 
@@ -340,7 +340,7 @@ class TrendModel
         join myapp.interfaces it on it.interfaceid = i.interfaceid 
         join myapp.weekly_trends wt on it.interfaceid = wt.interfaceid 
         where h.sbu_name = '$sbu'
-        and wt.month = '$month'
+        and wt.week_number = WEEKOFYEAR(NOW())
         group by h.host_name, it.interface_name, h.ring, it.capacity
         order by ring";
 
