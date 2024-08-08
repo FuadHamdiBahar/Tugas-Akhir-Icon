@@ -8,9 +8,30 @@ use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Trends;
+use PhpOffice\PhpSpreadsheet\Shared\Trend\Trend;
 
 class ApiController extends Controller
 {
+    public function deleteInterface($interfaceid)
+    {
+        return TrendModel::deleteInterface($interfaceid);
+    }
+
+    public function updateInterface(Request $request)
+    {
+        return TrendModel::updateInterface($request);
+    }
+
+    public function createInterface(Request $request)
+    {
+        return TrendModel::createInterface($request);
+    }
+
+    public function retrieveSingleInterface($interfaceid)
+    {
+        return TrendModel::retrieveSingleInterface($interfaceid);
+    }
 
     public function retrieveInterface($hostid)
     {

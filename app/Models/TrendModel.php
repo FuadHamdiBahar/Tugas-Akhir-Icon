@@ -8,6 +8,49 @@ use Illuminate\Support\Facades\DB;
 
 class TrendModel
 {
+    public static function deleteInterface($interfaceid)
+    {
+        $sql = "delete from interfaces
+                where interfaceid = $interfaceid";
+        return DB::select($sql);
+    }
+    public static function updateInterface(Request $request)
+    {
+        $interface_name = $request->input('interface_name');
+        $description = $request->input('description');
+        $capacity = $request->input('capacity');
+        $interfaceid = $request->input('interfaceid');
+
+        $sql = "update interfaces
+                set interface_name = '$interface_name',
+                    description = '$description',
+                    capacity = '$capacity'
+                where interfaceid = $interfaceid";
+        return DB::select($sql);
+    }
+
+    public static function createInterface(Request $request)
+    {
+        $hostid = $request->input('hostid');
+        $interface_name = $request->input('interface_name');
+        $description = $request->input('description');
+        $capacity = $request->input('capacity');
+
+        $sql = "insert into
+                interfaces (hostid, interface_name, description, capacity, status)
+                values ($hostid, '$interface_name', '$description', $capacity, 1)";
+        return DB::select($sql);
+    }
+
+    public static function retrieveSingleInterface($interfaceid)
+    {
+        $sql = "select
+                *
+                from interfaces i
+                where i.interfaceid = $interfaceid";
+
+        return DB::select($sql)[0];
+    }
     public static function retrieveInterface($hostid)
     {
         $data = DB::select("select * from interfaces i where i.hostid = $hostid");

@@ -94,7 +94,7 @@
                                     <div class="d-flex flex-wrap align-items-ceter justify-content-center">
                                         <button class="btn btn-primary mr-4" data-dismiss="modal" type="button"
                                             onclick="closeModal()">Cancel</button>
-                                        <button class="btn btn-outline-primary" type="submit">Create</button>
+                                        <button class="btn btn-outline-primary" type="submit">Update</button>
                                     </div>
                                 </div>
                             </form>

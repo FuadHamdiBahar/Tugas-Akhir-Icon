@@ -43,10 +43,14 @@ Route::prefix('/api')->group(function () {
     Route::delete('/host/{hostid}', [ApiController::class, 'deleteHost']);
 
     Route::get('/interface/{hostid}', [ApiController::class, 'retrieveInterface']);
+    Route::get('/interface/detail/{interfaceid}', [ApiController::class, 'retrieveSingleInterface']);
+    Route::post('/interface', [ApiController::class, 'createInterface']);
+    Route::put('/interface', [ApiController::class, 'updateInterface']);
+    Route::delete('/interface/{interfaceid}', [ApiController::class, 'deleteInterface']);
 
-    Route::put('/master', [ApiController::class, 'updateMaster']);
+    // Route::put('/master', [ApiController::class, 'updateMaster']);
     // Route::get('/master', [ApiController::class, 'getMaster']);
-    Route::get('/master/{hid}/{iid}', [ApiController::class, 'getSingleMaster']);
+    // Route::get('/master/{hid}/{iid}', [ApiController::class, 'getSingleMaster']);
 
 
     Route::get('/top', [ApiController::class, 'top']);
