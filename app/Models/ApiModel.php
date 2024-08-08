@@ -33,7 +33,7 @@ class ApiModel extends Model
                 ) raw
                 group by raw.origin, raw.terminating, raw.interface";
 
-        $data = DB::select($sql);
+        $data = DB::connection('second_db')->select($sql);
         foreach ($data as $d) {
             if (str_contains($d->interface, 'Interface 100GE')) {
                 $d->capacity =  100000000000;
@@ -81,7 +81,8 @@ class ApiModel extends Model
                 tuj.clock ASC
         ) rekap";
 
-        return DB::select($sql);
+        return DB::connection('second_db')->select($sql);
+        // return DB::select($sql);
     }
 
     public static function queryTrafficWeek($origin, $terminating, $type, $month)
@@ -108,7 +109,8 @@ class ApiModel extends Model
         ) rekap
         where rekap.waktu > current_date - interval '7 days'";
 
-        return DB::select($sql);
+        return DB::connection('second_db')->select($sql);
+        // return DB::select($sql);
     }
 
     public static function queryMaxTrafficEachSourceToDestinationWeekly($origin, $terminating, $interface, $month)
@@ -133,6 +135,7 @@ class ApiModel extends Model
             ) raw group by raw.week_number
         ";
 
-        return DB::select($sql);
+        return DB::connection('second_db')->select($sql);
+        // return DB::select($sql);
     }
 }

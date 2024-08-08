@@ -2,10 +2,139 @@
 
 namespace App\Models;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+// use OutOfBoundsException;
 
 class TrendModel
 {
+    public static function retrieveInterface($hostid)
+    {
+        $data = DB::select("select * from interfaces i where i.hostid = $hostid");
+        return $data;
+    }
+
+    public static function deleteHost($hostid)
+    {
+        $sql = "delete 
+                from hosts 
+                where hostid = $hostid";
+        return DB::select($sql);
+    }
+
+    public static function createHost(Request $request)
+    {
+        $sbu_name = $request->input('sbuname');
+        $ring = $request->input('idring');
+        $hostname = $request->input('hostname');
+        $sql = "insert 
+                into hosts (sbu_name, ring, host_name)
+                values ('$sbu_name', $ring, '$hostname')";
+        return DB::select($sql);
+    }
+
+    public static function updateHost(Request $request)
+    {
+        // id
+        $hid = $request->input('hid');
+
+        // data
+        $sbu_name = $request->input('sbuname');
+        $ring = $request->input('idring');
+        $hostname = $request->input('hostname');
+
+        $sql = "update 
+                     hosts 
+                 set 
+                     sbu_name = '$sbu_name',
+                     ring = $ring,
+                     host_name = '$hostname'
+                 where hostid = $hid";
+        return DB::select($sql);
+    }
+
+    public static function retrieveSingleHost($hostid)
+    {
+        $sql = "select
+                *
+                from hosts h where h.hostid = $hostid";
+
+        return DB::select($sql)[0];
+    }
+
+    public static function retrieveHost()
+    {
+        $sql = "select 
+                h.*, count(*) as jumlah
+                from hosts h 
+                left join interfaces i on h.hostid = i.hostid 
+                group by h.hostid";
+        return DB::select($sql);
+    }
+
+    public static function updateMaster(Request $request)
+    {
+        // id
+        $hid = $request->input('hid');
+        $iid = $request->input('iid');
+
+        // data
+        $sbu_name = $request->input('sbuname');
+        $ring = $request->input('idring');
+        $hostname = $request->input('hostname');
+
+        $sql = "update 
+                    hosts 
+                set 
+                    sbu_name = '$sbu_name',
+                    ring = $ring,
+                    host_name = '$hostname'
+                where hostid = $hid";
+        DB::select($sql);
+
+
+        $interfacename = $request->input('interfacename');
+        $description = $request->input('description');
+        $capacity = $request->input('capacity');
+
+        $sql = "update 
+        interfaces 
+        set
+            interface_name = '$interfacename',
+            description = '$description',
+            capacity = $capacity
+        where interfaceid = $iid";
+        DB::select($sql);
+
+
+        return response(json_encode(['message' => 'Berhasil']));
+    }
+
+    public static function getSingleMaster($hid, $iid)
+    {
+        $sql = "select 
+                *
+                from hosts h 
+                join interfaces i on h.hostid = i.hostid 
+                where h.hostid = $hid
+                and i.interfaceid = $iid";
+
+        try {
+            return DB::select($sql)[0];
+        } catch (\Throwable $th) {
+            return 'OutOfBoundsException';
+        }
+    }
+
+    public static function getMaster()
+    {
+        $sql = "select 
+                *
+                from hosts h 
+                join interfaces i on h.hostid = i.hostid
+                order by sbu_name, ring";
+        return DB::select($sql);
+    }
 
     public static function deleteWeeklyTrend($sbu, $par)
     {
@@ -19,8 +148,9 @@ class TrendModel
         and wt.`month` = $par
         and i.interface_name != 'TIDAK ADA'
         ";
-        return DB::connection('second_db')->select($sql);
+        return DB::select($sql);
     }
+
     public static function getRingTrendMonth($sbu, $month)
     {
         $sql = "
@@ -38,8 +168,9 @@ class TrendModel
             group by h.ring, it.interface_name 
         ) raw group by raw.ring
         order by name";
-        return DB::connection('second_db')->select($sql);
+        return DB::select($sql);
     }
+
     public static function getHostList($sbu)
     {
         $sql = "
@@ -55,7 +186,7 @@ class TrendModel
         and it.status = 1
         order by ring'
         ";
-        return DB::connection('second_db')->select($sql);
+        return DB::select($sql);
     }
 
     public static function getRingTrend($sbu)
@@ -79,7 +210,7 @@ class TrendModel
             order by raw.ring
         ) res group by res.ring";
 
-        return DB::connection('second_db')->select($sql);
+        return DB::select($sql);
     }
 
     public static function getTotalUtilizationEachMonth($year)
@@ -103,7 +234,7 @@ class TrendModel
             group by h.host_name, it.interface_name, h.ring, it.capacity, wt.`month`  
             order by h.host_name, wt.month
         ) res group by res.month";
-        return DB::connection('second_db')->select($sql);
+        return DB::select($sql);
     }
 
     public static function  getTotalUtilization($year, $month)
@@ -128,7 +259,7 @@ class TrendModel
         ) raw
         ";
 
-        return DB::connection('second_db')->select($sql);
+        return DB::select($sql);
     }
 
     public static function getLocalUtilization($sbu_name, $year, $month)
@@ -151,7 +282,7 @@ class TrendModel
                     and wt.year = '$year'
                     group by h.host_name, it.interface_name, h.ring, it.capacity 
                 ) raw";
-        return DB::connection('second_db')->select($sql);
+        return DB::select($sql);
     }
 
     public static function getUtilizationList($sbu, $month)
@@ -170,7 +301,7 @@ class TrendModel
         group by h.host_name, it.interface_name, h.ring, it.capacity
         order by ring";
 
-        return DB::connection('second_db')->select($sql);
+        return DB::select($sql);
     }
 
     public static function getWeeklyNumberOfRing($sbu)
@@ -186,7 +317,7 @@ class TrendModel
         order by wt.ring
         ";
 
-        return DB::connection('second_db')->select($sql);
+        return DB::select($sql);
     }
 
     public static function getWeeklyTrend($sbu, $fw, $cw)
@@ -228,7 +359,7 @@ class TrendModel
             group by raw.ring, wt.week_number
         ) res group by res.ring";
 
-        return DB::connection('second_db')->select($sql);
+        return DB::select($sql);
     }
 
     public static function getPrevious($before, $sbu_name, $ring)
@@ -249,7 +380,7 @@ class TrendModel
             group by h.sbu_name, h.ring, h.host_name, it.interface_name, wt.`month`
         ) res group by res.sbu_name, res.ring
         ";
-        return DB::connection('second_db')->select($sql);
+        return DB::select($sql);
     }
 
     public static function getTopFive($month)
@@ -287,7 +418,7 @@ class TrendModel
         ORDER BY traffic desc
         LIMIT 5;
         ";
-        return DB::connection('second_db')->select($sql);
+        return DB::select($sql);
     }
 
     public static function topEachSBU($month)
@@ -324,7 +455,7 @@ class TrendModel
         WHERE rn = 1
         ";
 
-        return DB::connection('second_db')->select($sql);
+        return DB::select($sql);
     }
 
     public static function topEachMonth()
@@ -357,7 +488,7 @@ class TrendModel
         WHERE rn = 1
         order by month
         ";
-        return DB::connection('second_db')->select($sql);
+        return DB::select($sql);
     }
 
     public static function getNumberOfRing($sbu, $year)
@@ -371,7 +502,7 @@ class TrendModel
         group by ring 
         order by ring
         ";
-        return DB::connection('second_db')->select($sql);
+        return DB::select($sql);
     }
 
     public static function getTrendsEachSbu($sbu, $year, $ring)
@@ -385,7 +516,7 @@ class TrendModel
             and `year` = '$year'
             and ring = '$ring'
         ";
-        return DB::connection('second_db')->select($sql);
+        return DB::select($sql);
     }
 
     public static function createTrend($sbu_name, $month, $year, $ring, $traffic)
@@ -394,7 +525,7 @@ class TrendModel
             INSERT INTO myapp.trends (sbu_name, month, year, ring, traffic) 
             VALUES ('$sbu_name', '$month', '$year', '$ring', $traffic);
             ";
-        return DB::connection('second_db')->select($sql);
+        return DB::select($sql);
     }
 
     public static function updateTrend($sbu_name, $month, $ring, $val)
@@ -402,7 +533,7 @@ class TrendModel
         $sql = "
         update myapp.trends set traffic = $val where sbu_name = '$sbu_name' and `month` = '$month' and ring = '$ring'
         ";
-        return DB::connection('second_db')->select($sql);
+        return DB::select($sql);
     }
 
     public static function createWeeklyTrend($sbu_name, $ring, $month, $week_number, $traffic)
@@ -412,6 +543,6 @@ class TrendModel
             values ('$sbu_name', '$ring', '$month', $week_number, $traffic)
         ";
 
-        return DB::connection('second_db')->select($sql);
+        return DB::select($sql);
     }
 }

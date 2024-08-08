@@ -110,7 +110,7 @@ return [
         ],
 
         'second_db' => [
-            'driver' => 'mysql',
+            'driver' => env('SECOND_DB_CONNECTION', 'pgsql'),
             'host' => env('SECOND_DB_HOST', 'localhost'),
             'port' => env('SECOND_DB_PORT', '3306'),
             'database' => env('SECOND_DB_DATABASE', 'laravel'),

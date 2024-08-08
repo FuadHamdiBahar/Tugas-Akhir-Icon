@@ -6,9 +6,58 @@ use App\Models\ApiModel;
 use App\Models\TrendModel;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use DateTime;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ApiController extends Controller
 {
+
+    public function retrieveInterface($hostid)
+    {
+        $data = array(
+            'data' => TrendModel::retrieveInterface($hostid)
+        );
+        return $data;
+    }
+
+    public function deleteHost($hostid)
+    {
+        return TrendModel::deleteHost($hostid);
+    }
+
+    public function createHost(Request $request)
+    {
+        return TrendModel::createHost($request);
+    }
+
+    public function updateHost(Request $request)
+    {
+        return TrendModel::updateHost($request);
+    }
+
+    public function retrieveSingleHost($hostid)
+    {
+        return TrendModel::retrieveSingleHost($hostid);
+    }
+
+    public function retrieveHost()
+    {
+        $data = array(
+            'data' => TrendModel::retrieveHost()
+        );
+        return $data;
+    }
+
+    public function getSingleMaster($hid, $iid)
+    {
+        return TrendModel::getSingleMaster($hid, $iid);
+    }
+
+    public function updateMaster(Request $request)
+    {
+        return TrendModel::updateMaster($request);
+    }
+
     public function localUtilization($sbu_name)
     {
         $month = (int)date('m');

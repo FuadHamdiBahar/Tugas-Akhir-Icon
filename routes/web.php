@@ -3,13 +3,11 @@
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeviceController;
+use App\Http\Controllers\MasterController;
 use App\Http\Controllers\RingController;
 use App\Http\Controllers\TrendController;
 use App\Http\Controllers\UtilisationController;
-use App\Models\ApiModel;
 use Illuminate\Support\Facades\Route;
-use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
-use Illuminate\Support\Facades\DB;
 
 Route::get('/', [DashboardController::class, 'dashboard']);
 
@@ -23,6 +21,10 @@ Route::get('/ring/{sbu}', [RingController::class, 'ring'])->name('ring');
 
 Route::get('/documentation', [DashboardController::class, 'documentation'])->name('documentation');
 
+Route::get('/master', [MasterController::class, 'master'])->name('master');
+
+Route::get('/interface/{hostid}', [MasterController::class, 'interface'])->name('interface');
+
 
 // myApi
 Route::prefix('/api')->group(function () {
@@ -33,6 +35,18 @@ Route::prefix('/api')->group(function () {
     Route::get('/link/{sbu}', [ApiController::class, 'ringLink']);
     Route::get('/trendmonth/{origin}/{terminating}', [ApiController::class, 'listTrafficMonth']);
     Route::get('/trendweek/{origin}/{terminating}', [ApiController::class, 'listTrafficWeek']);
+
+    Route::get('/host', [ApiController::class, 'retrieveHost']);
+    Route::get('/host/{host}', [ApiController::class, 'retrieveSingleHost']);
+    Route::put('/host', [ApiController::class, 'updateHost']);
+    Route::post('/host', [ApiController::class, 'createHost']);
+    Route::delete('/host/{hostid}', [ApiController::class, 'deleteHost']);
+
+    Route::get('/interface/{hostid}', [ApiController::class, 'retrieveInterface']);
+
+    Route::put('/master', [ApiController::class, 'updateMaster']);
+    // Route::get('/master', [ApiController::class, 'getMaster']);
+    Route::get('/master/{hid}/{iid}', [ApiController::class, 'getSingleMaster']);
 
 
     Route::get('/top', [ApiController::class, 'top']);
@@ -150,3 +164,5 @@ Route::get('/updateweeklytrend/{sbu}', [TrendController::class, 'updateWeeklyTre
 //     }
 //     return $capacity;
 // }
+
+Route::post('/test', [ApiController::class, 'createMaster']);
