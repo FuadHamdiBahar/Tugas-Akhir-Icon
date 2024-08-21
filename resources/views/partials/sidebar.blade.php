@@ -167,7 +167,7 @@
                         </li>
                     </ul>
                 </li>
-                <li class="{{ Request::path() == 'master' ? 'active' : '' }}">
+                {{-- <li class="{{ Request::path() == 'master' ? 'active' : '' }}">
                     <a href="/master" class="svg-icon">
                         <svg class="svg-icon" id="p-dash8" width="20" height="20"
                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
@@ -179,7 +179,7 @@
                         </svg>
                         <span class="ml-4">Master</span>
                     </a>
-                </li>
+                </li> --}}
 
 
             </ul>

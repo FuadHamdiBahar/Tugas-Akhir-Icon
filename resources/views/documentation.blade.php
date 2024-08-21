@@ -121,57 +121,89 @@
                                         <div id="basic-installation" class="section-block">
                                             <h2 class="section-title">The Features</h2>
                                             <h3 class="block-title py-2">Dashboard</h3>
-                                            <p>Dashboard will provide you a brief of network utilization. On this page,
-                                                We create three bar charts, the first one will show you top 5 rings
-                                                which has the highest traffic on this month. The next bar chart will be
-                                                looking similiar to the first one, the difference is that the second bar
-                                                chart depict you the largest traffic of ring each sbu. The last bar
-                                                describe the highest traffic of ring compared to all sbu's rings in
-                                                every month. We also add some details such as date and link to the
-                                                documentation page</p>
                                             <img src="{{ asset('assets/images/documentation/dashboard.png') }}"
                                                 alt="" srcset="" class="img-fluid">
+                                            <p>The dashboard feature will provide a simple overview of distribution
+                                                network utilization. The following is an explanation of its function:
+                                            </p>
+                                            <ol>
+                                                <li>Shows a link to the documentation page</li>
+                                                <li>Shows the date when the application was accessed</li>
+                                                <li>The first horizontal bar diagram shows the ring with the highest
+                                                    traffic from all sbu in the current month</li>
+                                                <li>Radar graph showing the highest traffic per bus and depicting
+                                                    information rings that exceed 100 G capacity in a given month</li>
+                                                <li>Pie chart showing the percentage of total national utilization
+                                                    for that month</li>
+                                                <li>The bar chart depicts the circles with the highest traffic each
+                                                    month in a particular year</li>
+                                                <li>Bar chart depicting the percentage of national utilization for
+                                                    each month in a particular year</li>
+                                                <li>The last bar chart explains the difference between traffic in a
+                                                    particular month and the previous month from the highest ring for
+                                                    each SBU in a particular month.</li>
+
+                                            </ol>
+
                                         </div><!--//section-block-->
                                         <div id="basic-structure" class="section-block">
                                             <h3 class="block-title">SBU</h3>
-                                            <p>By this page, you will see a list of link to devices. The list has 7
-                                                columns, they are Ring, Origin, Interface, Terminating, Capacity, Max
-                                                Traffic (Gbps) and Action. Click view action to see further details
-                                                about the link to device.</p>
                                             <img src="{{ asset('assets/images/documentation/sbu.png') }}" alt=""
                                                 srcset="" class="img-fluid">
+                                            <p>This feature functions to display all devices that form the distribution
+                                                network at the SBU. Page information as follows:</p>
+
+                                            <ol>
+                                                <li> Shows the name of the SBU currently displayed</li>
+                                                <li> Shows the current month</li>
+                                                <li> Show actions that can be taken</li>
+                                                <li> Shows information about ring, origin, interfaces, terminating,
+                                                    capacity and maximum traffic.</li>
+                                            </ol>
+
 
                                         </div><!--//section-block-->
                                         <div id="basic-css" class="section-block">
                                             <h3 class="block-title">Ring</h3>
-                                            <p>Comapared to other features, ring contains more information than the
-                                                others. Ring will show you three different pieces of
-                                                information and three different kinds of chart. It contains line chart,
-                                                bar chart and also list.
-                                            </p>
-                                            <p>The line chart is trying to plot the trend of traffic of ring in every
-                                                single month. On the right of line chart, there is a bar chart that plot
-                                                the percentage of traffic of ring on current month. After that, there
-                                                are 2 lists, the first one indicate the highest traffic of ring on
-                                                current month and the other one tell about the location of each ring.
-                                            </p>
-
                                             <img src="{{ asset('assets/images/documentation/ring.png') }}"
                                                 alt="" srcset="" class="img-fluid">
+                                            <p>This feature functions to show a summary of the SBU. It contains some
+                                                information, namely:</p>
+                                            <ol>
+                                                <li>Indicates the currently displayed SBU</li>
+                                                <li>Shows the current Month</li>
+                                                <li>Line chart to show the maximum traffic pattern on each SBU ring
+                                                    every month</li>
+                                                <li>The next line chart depicts the maximum traffic pattern on each SBU
+                                                    ring every week for the last 4 weeks</li>
+                                                <li>Bar chart to show the maximum traffic for each ring on the SBU in
+                                                    that month in the form of a bar chart</li>
+                                                <li>Pie Chart shows Local Utilization</li>
+                                                <li>Ring list to show the maximum traffic for each ring on the SBU for
+                                                    that month, complete with interface name and total capacity</li>
+                                                <li>Location list to show a list of locations on the ring.</li>
+                                            </ol>
+
 
                                         </div><!--//section-block css-->
 
                                         <div id="basic-js" class="section-block">
                                             <h3 class="block-title">Traffic</h3>
-                                            <p>In order to understand where all the data come from, traffic feature is
-                                                the answer of this question. In this page, we can see lot of details
-                                                provided. There are informations about link to device name, current
-                                                month, max traffic on the current month and max traffic on current week.
-                                            </p>
-                                            <p>Underneath those informations, we add two line charts that will plot
-                                                traffic utilization in range of a week and a month respectively.</p>
                                             <img src="{{ asset('assets/images/documentation/traffic.png') }}"
                                                 alt="" srcset="" class="img-fluid">
+                                            <p>The device traffic feature is used to check more deeply about the maximum
+                                                traffic of a ring. Here are the detailed features:</p>
+                                            <ol>
+                                                <li>Shows device name and device direction</li>
+                                                <li>Shows the current month</li>
+                                                <li>Shows max traffic for that month</li>
+                                                <li>Shows max traffic for that week</li>
+                                                <li>The first line chart shows device traffic over a period of 1 week
+                                                </li>
+                                                <li>The second line chart shows device traffic over a period of 1 month.
+                                                    The blue line shows total incoming traffic, while the yellow line
+                                                    shows total outgoing traffic.</li>
+                                            </ol>
 
                                         </div><!--//section-block Javascript Structure-->
 
@@ -382,7 +414,7 @@
                                 <div class="section-block">
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <ul>
+                                           olul>
                                                 <li>
                                                     <a href="https://getbootstrap.com/docs/4.1/utilities/text/#text-alignment"
                                                         target="black">Text Alignments</a>
