@@ -340,7 +340,7 @@ class TrendModel
         join myapp.interfaces it on it.interfaceid = i.interfaceid 
         join myapp.weekly_trends wt on it.interfaceid = wt.interfaceid 
         where h.sbu_name = '$sbu'
-        and wt.week_number = WEEKOFYEAR(NOW())
+        and wt.`month` = MONTH(CURRENT_DATE()) 
         group by h.host_name, it.interface_name, h.ring, it.capacity
         order by ring";
 
