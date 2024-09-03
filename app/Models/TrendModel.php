@@ -236,7 +236,7 @@ class TrendModel
     {
         $sql = "
         select 
-            res.ring as name, group_concat(res.traffic) as data
+            res.ring as name, group_concat(res.traffic order by res.month asc) as data
         from (
             select 
                 raw.ring, raw.month, round(sum(raw.traffic) / 1000000000, 1) as traffic
@@ -246,12 +246,11 @@ class TrendModel
                 from myapp.items i 
                 join myapp.hosts h on h.hostid = i.hostid 
                 join myapp.interfaces it on it.interfaceid = i.interfaceid 
-                join myapp.weekly_trends wt on it.interfaceid = wt.interfaceid 
+                join (select * from myapp.weekly_trends wt order by wt.month, wt.week_number) wt on it.interfaceid = wt.interfaceid 
                 where h.sbu_name = '$sbu'
                 group by h.ring, it.interface_name, wt.month 
-                order by wt.month
             ) raw group by raw.ring, raw.month
-            order by raw.ring
+            order by raw.ring, raw.month
         ) res group by res.ring";
 
         return DB::select($sql);
