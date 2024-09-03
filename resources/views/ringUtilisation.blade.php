@@ -55,9 +55,11 @@
                                 <tr>
                                     <th>Ring</th>
                                     <th>Origin</th>
-                                    <th>to</th>
+                                    <th>Interface</th>
                                     <th>Terminating</th>
-                                    <th>Max Bandwith (bps)</th>
+                                    <th>Capacity</th>
+                                    <th>Max Traffic (Gbps)</th>
+                                    <th>Action</th>
                                 </tr>
                             </tfoot>
                         </table>
