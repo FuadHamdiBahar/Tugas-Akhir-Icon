@@ -249,6 +249,7 @@ class TrendModel
                 join myapp.weekly_trends wt on it.interfaceid = wt.interfaceid 
                 where h.sbu_name = '$sbu'
                 group by h.ring, it.interface_name, wt.month 
+                order by wt.month
             ) raw group by raw.ring, raw.month
             order by raw.ring
         ) res group by res.ring";
