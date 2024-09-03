@@ -383,24 +383,24 @@ class TrendModel
         // ) raw group by raw.ring";
 
         $sql = "select 
-            res.ring as name, group_concat(res.traffic) as data
-        from (
-            select 
-                raw.ring, wt.week_number, round(sum(wt.traffic) / 1000000000, 1) as traffic
-            from (
-                select 
-                    h.sbu_name, h.ring, h.host_name, i2.interface_name, i2.description, wt.week_number, count(*) as jumlah, max(wt.id) as wtid
-                from myapp.hosts h 
-                join myapp.items i on h.hostid = i.hostid 
-                join myapp.interfaces i2 on i2.interfaceid = i.interfaceid 
-                join myapp.weekly_trends wt on wt.interfaceid = i2.interfaceid
-                where h.sbu_name = '$sbu'
-                and wt.week_number >= $fw
-                and wt.week_number <= $cw
-                group by h.sbu_name, h.ring, h.host_name, i2.interface_name, i2.description, wt.week_number
-            ) raw join myapp.weekly_trends wt on raw.wtid = wt.id 
-            group by raw.ring, wt.week_number
-        ) res group by res.ring";
+                    res.ring as name, group_concat(res.traffic order by res.week_number asc) as data
+                from (
+                    select 
+                        raw.ring, wt.week_number, round(sum(wt.traffic) / 1000000000, 1) as traffic
+                    from (
+                        select 
+                            h.sbu_name, h.ring, h.host_name, i2.interface_name, i2.description, wt.week_number, count(*) as jumlah, max(wt.id) as wtid
+                        from myapp.hosts h 
+                        join myapp.items i on h.hostid = i.hostid 
+                        join myapp.interfaces i2 on i2.interfaceid = i.interfaceid 
+                        join myapp.weekly_trends wt on wt.interfaceid = i2.interfaceid
+                        where h.sbu_name = '$sbu'
+                        and wt.week_number >= $fw
+                        and wt.week_number <= $cw
+                        group by h.sbu_name, h.ring, h.host_name, i2.interface_name, i2.description, wt.week_number
+                    ) raw join myapp.weekly_trends wt on raw.wtid = wt.id 
+                    group by raw.ring, wt.week_number
+                ) res group by res.ring";
 
         return DB::select($sql);
     }
