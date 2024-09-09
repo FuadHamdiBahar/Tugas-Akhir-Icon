@@ -98,6 +98,6 @@ class UpdateCron extends Command
             }
         }
 
-        printf('Last update: ' . $date->format('Y-m-d H:i:s') . '\n');
+        echo 'Last update: ' . $date->format('Y-m-d H:i:s') . "\n";
     }
 }
