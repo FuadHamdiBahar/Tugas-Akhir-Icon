@@ -169,4 +169,9 @@ Route::get('/updateweeklytrend/{sbu}', [TrendController::class, 'updateWeeklyTre
 //     return $capacity;
 // }
 
-Route::post('/test', [ApiController::class, 'createMaster']);
+Route::get('/test', function () {
+    $date = date('Y-m-d H:i:s');
+    $date = new DateTime($date);
+    $week = $date->format("W");
+    return "Week number: $week";
+});

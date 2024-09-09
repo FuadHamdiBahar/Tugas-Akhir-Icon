@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use DateTime;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
@@ -26,6 +27,17 @@ class UpdateCron extends Command
      */
     public function handle()
     {
+        $m = (int) date('m');
+
+        $date = date('Y-m-d H:i:s');
+        $date = new DateTime($date);
+        $weeknumber = $date->format("W");
+
+        // get latest weekly trend
+        $query = "delete from weekly_trends wt where wt.week_number = $weeknumber";
+        DB::select($query);
+
+        // get hostlist
         $query = "
         select 
             h.ring, h.host_name as origin, 
@@ -37,8 +49,51 @@ class UpdateCron extends Command
         and it.interface_name != 'TIDAK ADA'
         and it.status = 1
         order by ring";
-        // echo DB::select($query);
+        $hosts = DB::select($query);
 
-        echo 'Selamat Siang Fuad Hamdi Bahar';
+        foreach ($hosts as $h) {
+            $sql = "
+                select 
+                    it.interfaceid
+                from myapp.items i 
+                join myapp.hosts h on h.hostid = i.hostid 
+                join myapp.interfaces it on it.interfaceid = i.interfaceid 
+                where h.host_name = '$h->origin'
+                and it.description = '$h->terminating'
+                and it.interface_name = '$h->interface'
+                and h.ring = $h->ring";
+
+            $interfaceid = DB::select($sql)[0]->interfaceid;
+
+            $sql = "
+            select 
+                raw.week_number, MAX(raw.value_max) as traffic
+            from (
+                select 
+                    to_char(to_timestamp(t.clock), 'IW') as week_number, t.value_max, t.clock 
+                from hosts h 
+                join (
+                    select 
+                        it.itemid, it.hostid, it.name
+                    from 
+                    items it where (it.name like '%Bits sent%' or it.name like '%Bits received%')
+                ) i on h.hostid = i.hostid
+                join trends_uint_sep t on i.itemid = t.itemid 
+                where h.name like '%$h->origin%'
+                AND i.name like '%$h->terminating%'
+                and i.name like '%$h->interface%'
+            ) raw where raw.week_number = '$weeknumber'
+            group by raw.week_number";
+
+            $d = DB::connection('second_db')->select($sql)[0];
+
+            // insert
+            $sql = "insert into myapp.weekly_trends (interfaceid, year, `month`, week_number, traffic)
+                    values ($interfaceid, '2024', '$m', $d->week_number, $d->traffic)";
+            DB::select($sql);
+        }
+
+
+        echo 'Selamat Siang Fuad Hamdi Bahar' . $date;
     }
 }
