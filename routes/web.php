@@ -168,10 +168,8 @@ Route::get('/updateweeklytrend/{sbu}', [TrendController::class, 'updateWeeklyTre
 //     }
 //     return $capacity;
 // }
+use Illuminate\Support\Facades\DB;
 
 Route::get('/test', function () {
-    $date = date('Y-m-d H:i:s');
-    $date = new DateTime($date);
-    $week = $date->format("W");
-    return "Week number: $week";
+    return true;
 });

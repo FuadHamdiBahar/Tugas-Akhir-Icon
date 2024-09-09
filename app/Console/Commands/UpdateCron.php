@@ -51,7 +51,9 @@ class UpdateCron extends Command
         order by ring";
         $hosts = DB::select($query);
 
+        // long process
         foreach ($hosts as $h) {
+            // find the interface id
             $sql = "
                 select 
                     it.interfaceid
@@ -65,6 +67,7 @@ class UpdateCron extends Command
 
             $interfaceid = DB::select($sql)[0]->interfaceid;
 
+            // get the latest weekly traffic
             $sql = "
             select 
                 raw.week_number, MAX(raw.value_max) as traffic
@@ -85,15 +88,16 @@ class UpdateCron extends Command
             ) raw where raw.week_number = '$weeknumber'
             group by raw.week_number";
 
-            $d = DB::connection('second_db')->select($sql)[0];
+            $data = DB::connection('second_db')->select($sql);
 
-            // insert
-            $sql = "insert into myapp.weekly_trends (interfaceid, year, `month`, week_number, traffic)
+            // insert the traffic to local database
+            foreach ($data as $d) {
+                $sql = "insert into myapp.weekly_trends (interfaceid, year, `month`, week_number, traffic)
                     values ($interfaceid, '2024', '$m', $d->week_number, $d->traffic)";
-            DB::select($sql);
+                DB::select($sql);
+            }
         }
 
-
-        echo 'Selamat Siang Fuad Hamdi Bahar' . $date;
+        echo 'Last update: ' . $date->format('Y-m-d H:i:s');;
     }
 }
