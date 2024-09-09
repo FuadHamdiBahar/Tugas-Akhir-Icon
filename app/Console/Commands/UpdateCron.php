@@ -37,7 +37,8 @@ class UpdateCron extends Command
         and it.interface_name != 'TIDAK ADA'
         and it.status = 1
         order by ring";
-        echo DB::select($query);
+        // echo DB::select($query);
+
         echo 'Selamat Siang Fuad Hamdi Bahar';
     }
 }
