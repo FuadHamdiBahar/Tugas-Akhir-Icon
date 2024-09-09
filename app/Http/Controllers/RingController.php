@@ -29,8 +29,8 @@ class RingController extends Controller
             'jateng' => 'Jawa Tengah',
             'jatim' => 'Jawa Timur',
             'balnus' => 'Bali Nusa',
-            'kal' => 'Kalimantan',
-            'ibt' => 'Sulawesi',
+            'kalimantan' => 'Kalimantan',
+            'sulawesi' => 'Sulawesi',
         );
         $data['sbu_name'] = $sbu_ref[$sbu];
         $data['sbu'] = $sbu;
