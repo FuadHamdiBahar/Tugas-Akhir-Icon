@@ -25,6 +25,6 @@ class UpdateCron extends Command
      */
     public function handle()
     {
-        echo 'Fuad Hamdi Bahar' . date('Y-m-d H:i:s');
+        echo 'Selamat Siang Fuad Hamdi Bahar';
     }
 }
