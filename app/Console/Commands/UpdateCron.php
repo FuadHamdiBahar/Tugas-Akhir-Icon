@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Http\Controllers\RingController;
 use DateTime;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
@@ -28,6 +29,7 @@ class UpdateCron extends Command
     public function handle()
     {
         $m = (int) date('m');
+        $month = RingController::convertNumToTextMonth($m);
 
         $date = date('Y-m-d H:i:s');
         $date = new DateTime($date);
@@ -81,7 +83,7 @@ class UpdateCron extends Command
                     from 
                     items it where (it.name like '%Bits sent%' or it.name like '%Bits received%')
                 ) i on h.hostid = i.hostid
-                join trends_uint_sep t on i.itemid = t.itemid 
+                join trends_uint_$month t on i.itemid = t.itemid 
                 where h.name like '%$h->origin%'
                 AND i.name like '%$h->terminating%'
                 and i.name like '%$h->interface%'

@@ -11,13 +11,13 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [DashboardController::class, 'dashboard']);
 
-Route::get('/utilisation/{sbu}', [UtilisationController::class, 'utilisation'])->name('utilisation');
+Route::get('/utilization/{sbu}', [UtilisationController::class, 'utilisation'])->name('utilization');
 
 Route::get('/{sbu}/ring/{ring}', [UtilisationController::class, 'ringUtilisation'])->name('ringUtilisation');
 
 Route::get('/device/{origin}/{terminating}', [DeviceController::class, 'index'])->name('device');
 
-Route::get('/ring/{sbu}', [RingController::class, 'ring'])->name('ring');
+Route::get('/summary/{sbu}', [RingController::class, 'ring'])->name('summary');
 
 Route::get('/documentation', [DashboardController::class, 'documentation'])->name('documentation');
 

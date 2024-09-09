@@ -1,3 +1,6 @@
+@php
+    $menu = DB::select('SELECT * FROM myapp.menus');
+@endphp>
 <div class="iq-sidebar  sidebar-default ">
     <div class="iq-sidebar-logo d-flex align-items-center justify-content-between">
         <a href="/" class="header-logo">
@@ -9,6 +12,7 @@
         </div>
     </div>
     <div class="data-scrollbar" data-scroll="1">
+
         <nav class="iq-sidebar-menu">
             <ul id="iq-sidebar-toggle" class="iq-menu">
                 <li class="{{ Request::path() == '/' ? 'active' : '' }}">
@@ -25,8 +29,41 @@
                         <span class="ml-4">Dashboards</span>
                     </a>
                 </li>
+                @foreach ($menu as $m)
+                    <li class="">
+                        <a href="#{{ $m->nama_menu }}" class="collapsed" data-toggle="collapse" aria-expanded="false">
+                            <svg class="svg-icon" id="p-dash3" width="20" height="20"
+                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                            </svg>
+                            <span class="ml-4">{{ $m->nama_menu }}</span>
+                            <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20"
+                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="10 15 15 20 20 15"></polyline>
+                                <path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
+                            </svg>
+                        </a>
+                        <ul id="{{ $m->nama_menu }}" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                            @php
+                                $submenu = DB::select("SELECT * FROM myapp.submenus s WHERE s.mid = $m->mid");
+                            @endphp
+                            @foreach ($submenu as $s)
+                                <li
+                                    class="{{ str_contains(Request::path(), $m->nama_menu) ? (str_contains(Request::path(), $s->nama_submenu) ? 'active' : '') : '' }}">
+                                    <a href="{{ route($m->nama_menu, $s->nama_submenu) }}">
+                                        <i class="las la-minus"></i><span>{{ $s->nama_submenu }}</span>
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </li>
+                @endforeach
 
-                <li class="{{ str_contains(Request::path(), 'utilisation') ? 'active' : '' }}">
+
+                {{-- <li class="{{ str_contains(Request::path(), 'utilisation') ? 'active' : '' }}">
                     <a href="#product" class="collapsed" data-toggle="collapse" aria-expanded="false">
                         <svg class="svg-icon" id="p-dash3" width="20" height="20"
                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -95,7 +132,8 @@
                         </li>
                     </ul>
                 </li>
-                <li class="{{ str_contains(Request::path(), 'ring') ? 'active' : '' }}">
+
+                <li class="">
                     <a href="#ring" class="collapsed" data-toggle="collapse" aria-expanded="false">
                         <svg class="svg-icon" id="p-dash7" width="20" height="20"
                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
@@ -115,7 +153,7 @@
                         </svg>
                     </a>
                     <ul id="ring" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
-                        <li class="">
+                        <li class="{{ str_contains(Request::path(), 'ring') ? 'active' : '' }}">
                             <a href="{{ route('ring', 'sumbagut') }}">
                                 <i class="las la-minus"></i><span>Sumbagut</span>
                             </a>
@@ -166,7 +204,7 @@
                             </a>
                         </li>
                     </ul>
-                </li>
+                </li> --}}
                 {{-- <li class="{{ Request::path() == 'master' ? 'active' : '' }}">
                     <a href="/master" class="svg-icon">
                         <svg class="svg-icon" id="p-dash8" width="20" height="20"
