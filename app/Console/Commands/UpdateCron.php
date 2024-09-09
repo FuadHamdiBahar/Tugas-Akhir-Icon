@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
 
 class UpdateCron extends Command
 {
@@ -26,6 +25,6 @@ class UpdateCron extends Command
      */
     public function handle()
     {
-        Log::info("Cron job Berhasil di jalankan " . date('Y-m-d H:i:s'));
+        echo 'Fuad Hamdi Bahar' . date('Y-m-d H:i:s');
     }
 }
