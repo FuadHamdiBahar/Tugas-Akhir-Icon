@@ -442,7 +442,7 @@
                     var options = {
                         series: result['data'],
                         chart: {
-                            width: 500,
+                            width: '100%',
                             type: 'donut',
                         },
                         plotOptions: {
