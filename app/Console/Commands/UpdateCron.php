@@ -27,6 +27,5 @@ class UpdateCron extends Command
     public function handle()
     {
         Log::info("Cron job Berhasil di jalankan " . date('Y-m-d H:i:s'));
-        echo 'Selamat Siang Fuad Hamdi Bahar';
     }
 }
