@@ -100,6 +100,6 @@ class UpdateCron extends Command
             }
         }
 
-        echo 'Successfully update: ' . count($hosts) . ' devices at' . $date->format('Y-m-d H:i:s') . "\n";
+        echo 'Successfully update: ' . count($hosts) . ' devices at ' . $date->format('Y-m-d H:i:s') . "\n";
     }
 }
