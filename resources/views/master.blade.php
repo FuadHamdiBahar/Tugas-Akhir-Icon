@@ -46,7 +46,7 @@
                                 </div>
                                 <div class="pb-3">
                                     <label class="mb-2">Ring</label>
-                                    <input name="idring" id="idring"type="text" class="form-control">
+                                    <input name="idring" id="idring"type="number" class="form-control">
                                 </div>
                                 <div class="pb-3">
                                     <label class="mb-2">Hostname</label>
