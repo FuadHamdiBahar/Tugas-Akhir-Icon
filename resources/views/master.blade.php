@@ -168,6 +168,9 @@
                                 `)"><i class="ri-delete-bin-7-line"></i></button>`
                         }
                     }
+                ],
+                order: [
+                    ['updated_at', 'desc']
                 ]
             })
         }
