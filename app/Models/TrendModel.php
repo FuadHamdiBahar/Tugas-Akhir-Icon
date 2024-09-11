@@ -111,7 +111,8 @@ class TrendModel
                 h.*, count(*) as jumlah
                 from hosts h 
                 left join interfaces i on h.hostid = i.hostid 
-                group by h.hostid";
+                group by h.hostid
+                order by h.updated_at desc";
         return DB::select($sql);
     }
 
