@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ApiController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\MasterController;
@@ -24,6 +25,8 @@ Route::get('/documentation', [DashboardController::class, 'documentation'])->nam
 Route::get('/master', [MasterController::class, 'master'])->name('master');
 
 Route::get('/interface/{hostid}', [MasterController::class, 'interface'])->name('interface');
+
+Route::get('/signin', [AuthController::class, 'signin'])->name('signin');
 
 
 // myApi
@@ -171,5 +174,9 @@ Route::get('/updateweeklytrend/{sbu}', [TrendController::class, 'updateWeeklyTre
 use Illuminate\Support\Facades\DB;
 
 Route::get('/test', function () {
+    return true;
+});
+
+Route::post('/test', function () {
     return true;
 });
