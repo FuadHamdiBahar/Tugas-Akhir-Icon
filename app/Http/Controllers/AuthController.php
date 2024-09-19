@@ -18,11 +18,10 @@ class AuthController extends Controller
         if (Auth::attempt($data)) {
             $request->session()->regenerate();
             session([
-                'user_id' => Auth::user()->id,
-                'email' => Auth::user()->email
+                'userid' => Auth::user()->id,
+                'email' => Auth::user()->email,
+                'usertype' => Auth::user()->usertype
             ]);
-            // $request->session()->put('userid', Auth::user()->id);
-            // $request->session()->put('email', Auth::user()->email);
             return redirect()->route('dashboard');
         } else {
             return redirect()->back()->with('gagal', 'Email atau password salah');

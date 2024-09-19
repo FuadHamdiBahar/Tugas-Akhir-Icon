@@ -54,6 +54,11 @@
                                                             <label>Password</label>
                                                         </div>
                                                     </div>
+                                                    @if (session('gagal'))
+                                                        <div class="col-lg-12">
+                                                            <p class="text-danger">{{ session('gagal') }}</p>
+                                                        </div>
+                                                    @endif
                                                     {{-- <div class="col-lg-6">
                                                         <div class="custom-control custom-checkbox mb-3">
                                                             <input type="checkbox" class="custom-control-input"
