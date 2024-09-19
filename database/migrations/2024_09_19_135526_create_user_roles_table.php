@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('menus', function (Blueprint $table) {
-            $table->id('mid');
-            $table->string('nama_menu');
-            $table->smallInteger('submenu');
+        Schema::create('user_roles', function (Blueprint $table) {
+            $table->id();
+            $table->string('email')->unique();
+            $table->string('role')->default('user');
+            $table->timestamps();
         });
     }
 
@@ -23,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('menus');
+        Schema::dropIfExists('user_roles');
     }
 };

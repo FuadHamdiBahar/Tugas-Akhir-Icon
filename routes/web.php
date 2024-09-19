@@ -23,9 +23,9 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/documentation', [DashboardController::class, 'documentation'])->name('documentation');
 
-    Route::get('/master', [MasterController::class, 'master'])->name('master');
+    Route::get('/master', [MasterController::class, 'master'])->name('master')->middleware('is_admin');
 
-    Route::get('/interface/{hostid}', [MasterController::class, 'interface'])->name('interface');
+    Route::get('/interface/{hostid}', [MasterController::class, 'interface'])->name('interface')->middleware('is_admin');
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
@@ -78,3 +78,7 @@ Route::middleware('auth')->group(function () {
 // setelah ada crontab ini tidak dipakai lagi
 Route::get('/createweeklytrend/{sbu}', [TrendController::class, 'createWeeklyTrend']);
 Route::get('/updateweeklytrend/{sbu}', [TrendController::class, 'updateWeeklyTrend']);
+
+Route::get('/tes', function () {
+    return bcrypt('admin');
+});
