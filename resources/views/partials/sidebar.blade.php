@@ -1,5 +1,11 @@
 @php
-    $menu = DB::select('SELECT * FROM myapp.menus');
+    $userType = Session::get('usertype');
+    $menu = DB::select("select 
+            m.*
+            from menus m
+            join role_menus rm
+            on m.mid = rm.mid
+            where rm.role = '$userType'");
 @endphp>
 <div class="iq-sidebar  sidebar-default ">
     <div class="iq-sidebar-logo d-flex align-items-center justify-content-between">
