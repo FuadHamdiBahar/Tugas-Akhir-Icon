@@ -236,7 +236,7 @@
                                 <img src="{{ asset('assets/images/user/1.png') }}" class="img-fluid rounded"
                                     alt="user">
                             </a>
-                            {{-- <div class="iq-sub-dropdown dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <div class="iq-sub-dropdown dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <div class="card shadow-none m-0">
                                     <div class="card-body p-0 text-center">
                                         <div class="media-body profile-detail text-center">
@@ -246,16 +246,19 @@
                                                 class="rounded profile-img img-fluid avatar-70">
                                         </div>
                                         <div class="p-3">
-                                            <h5 class="mb-1">JoanDuo@property.com</h5>
-                                            <p class="mb-0">Since 10 march, 2020</p>
+                                            <h5 class="mb-1">{{ Session::get('email') }}</h5>
+                                            {{-- <p class="mb-0">Since 10 march, 2020</p> --}}
                                             <div class="d-flex align-items-center justify-content-center mt-3">
-                                                <a href="../app/user-profile.html" class="btn border mr-2">Profile</a>
-                                                <a href="auth-sign-in.html" class="btn border">Sign Out</a>
+                                                {{-- <a href="../app/user-profile.html" class="btn border mr-2">Profile</a> --}}
+                                                <form action="{{ route('logout') }}" method="post">
+                                                    @csrf
+                                                    <button type="submit" class="btn border">Sign Out</button>
+                                                </form>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div> --}}
+                            </div>
                         </li>
                     </ul>
                 </div>
