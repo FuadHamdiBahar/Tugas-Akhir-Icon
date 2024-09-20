@@ -20,11 +20,13 @@ class TrendModel
         $description = $request->input('description');
         $capacity = $request->input('capacity');
         $interfaceid = $request->input('interfaceid');
+        $email = session('email');
 
         $sql = "update interfaces
                 set interface_name = '$interface_name',
                     description = '$description',
-                    capacity = '$capacity'
+                    capacity = '$capacity',
+                    updated_by = '$email'
                 where interfaceid = $interfaceid";
         return DB::select($sql);
     }
@@ -35,10 +37,11 @@ class TrendModel
         $interface_name = $request->input('interface_name');
         $description = $request->input('description');
         $capacity = $request->input('capacity');
+        $email = session('email');
 
         $sql = "insert into
-                interfaces (hostid, interface_name, description, capacity, status)
-                values ($hostid, '$interface_name', '$description', $capacity, 1)";
+                interfaces (hostid, interface_name, description, capacity, status, created_by, updated_by)
+                values ($hostid, '$interface_name', '$description', $capacity, 1, '$email', '$email')";
         return DB::select($sql);
     }
 
@@ -70,9 +73,10 @@ class TrendModel
         $sbu_name = $request->input('sbuname');
         $ring = $request->input('idring');
         $hostname = $request->input('hostname');
+        $email = session('email');
         $sql = "insert 
-                into hosts (sbu_name, ring, host_name)
-                values ('$sbu_name', $ring, '$hostname')";
+                into hosts (sbu_name, ring, host_name, created_by, updated_by)
+                values ('$sbu_name', $ring, '$hostname', '$email', '$email')";
         return DB::select($sql);
     }
 
@@ -85,13 +89,15 @@ class TrendModel
         $sbu_name = $request->input('sbuname');
         $ring = $request->input('idring');
         $hostname = $request->input('hostname');
+        $email = session('email');
 
         $sql = "update 
                      hosts 
                  set 
                      sbu_name = '$sbu_name',
                      ring = $ring,
-                     host_name = '$hostname'
+                     host_name = '$hostname',
+                     updated_by = '$email'
                  where hostid = $hid";
         return DB::select($sql);
     }

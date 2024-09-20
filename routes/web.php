@@ -80,5 +80,5 @@ Route::get('/createweeklytrend/{sbu}', [TrendController::class, 'createWeeklyTre
 Route::get('/updateweeklytrend/{sbu}', [TrendController::class, 'updateWeeklyTrend']);
 
 Route::get('/tes', function () {
-    return bcrypt('admin');
+    return bcrypt('fuad');
 });

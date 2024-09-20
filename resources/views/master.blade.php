@@ -22,6 +22,8 @@
                                     <th>Ring</th>
                                     <th>Hostname</th>
                                     <th>Number of Interfaces</th>
+                                    <th>Created by</th>
+                                    <th>Updated by</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -158,6 +160,12 @@
                     },
                     {
                         data: 'jumlah'
+                    },
+                    {
+                        data: 'created_by'
+                    },
+                    {
+                        data: 'updated_by'
                     },
                     {
                         data: 'hostid',

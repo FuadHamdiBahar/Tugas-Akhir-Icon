@@ -26,6 +26,8 @@
                                     <th>Description</th>
                                     <th>Capacity</th>
                                     <th>Status</th>
+                                    <th>Created by</th>
+                                    <th>Updated by</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -133,6 +135,12 @@
                     },
                     {
                         data: 'status'
+                    },
+                    {
+                        data: 'created_by'
+                    },
+                    {
+                        data: 'updated_by'
                     },
                     {
                         data: 'interfaceid',
