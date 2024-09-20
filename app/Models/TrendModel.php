@@ -280,10 +280,10 @@ class TrendModel
             join myapp.interfaces it on it.interfaceid = i.interfaceid 
             join myapp.weekly_trends wt on it.interfaceid = wt.interfaceid 
             where it.interface_name != 'TIDAK ADA'
-            and wt.year = '$year'
+            and wt.year = '2024'
             group by h.host_name, it.interface_name, h.ring, it.capacity, wt.`month`  
             order by h.host_name, wt.month
-        ) res group by res.month";
+        ) res group by res.month order by res.month";
         return DB::select($sql);
     }
 
