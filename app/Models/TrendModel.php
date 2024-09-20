@@ -62,6 +62,12 @@ class TrendModel
 
     public static function deleteHost($hostid)
     {
+        $sql = "select * from interfaces i where i.hostid = $hostid";
+        $query = DB::select($sql);
+        foreach ($query as $q) {
+            self::deleteInterface($q->interfaceid);
+        }
+
         $sql = "delete 
                 from hosts 
                 where hostid = $hostid";
