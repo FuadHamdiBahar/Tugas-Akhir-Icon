@@ -169,6 +169,7 @@
                     },
                     {
                         data: 'hostid',
+                        width: '15%',
                         render: function(data) {
                             return `<a class='btn btn-small btn-primary' href='/interface/` + data + `'><i class="ri-eye-line"></i></a> 
                             <button class='btn btn-small btn-warning' type='button' onclick='edit(` + data + `)'><i class="ri-pencil-line"></i></button> 

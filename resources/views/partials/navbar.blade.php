@@ -230,6 +230,9 @@
                                 </div>
                             </div>
                         </li> --}}
+                        <li class="nav-item nav-icon caption-content">
+                            <p>{{ Session::get('email') }}</p>
+                        </li>
                         <li class="nav-item nav-icon dropdown caption-content">
                             <a href="#" class="search-toggle dropdown-toggle" id="dropdownMenuButton4"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
