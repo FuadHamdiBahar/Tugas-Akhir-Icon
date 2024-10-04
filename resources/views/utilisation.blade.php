@@ -69,3 +69,17 @@
         </div>
     </div>
 @endsection
+
+@section('script')
+    <script>
+        let table = $(document).ready(function() {
+            $('#datatable').DataTable({
+                bDestroy: true,
+                order: [
+                    [5, 'desc']
+                ]
+            });
+        });
+        console.log('Fuad Hamdi Bahar');
+    </script>
+@endsection
