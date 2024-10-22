@@ -4,6 +4,7 @@ use App\Http\Controllers\ApiController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeviceController;
+use App\Http\Controllers\MapController;
 use App\Http\Controllers\MasterController;
 use App\Http\Controllers\RingController;
 use App\Http\Controllers\TrendController;
@@ -35,8 +36,6 @@ Route::middleware('guest')->group(function () {
     Route::post('/signin', [AuthController::class, 'submitSignin'])->name('login.submit');
 });
 
-
-
 Route::middleware('auth')->group(function () {
     // myApi
     Route::prefix('/api')->group(function () {
@@ -60,6 +59,8 @@ Route::middleware('auth')->group(function () {
         Route::put('/interface', [ApiController::class, 'updateInterface']);
         Route::delete('/interface/{interfaceid}', [ApiController::class, 'deleteInterface']);
 
+        Route::get('/marker/{sbu}', [ApiController::class, 'retrieveMarker'])->name('retrieveMarker');
+
         // Route::put('/master', [ApiController::class, 'updateMaster']);
         // Route::get('/master', [ApiController::class, 'getMaster']);
         // Route::get('/master/{hid}/{iid}', [ApiController::class, 'getSingleMaster']);
@@ -76,9 +77,11 @@ Route::middleware('auth')->group(function () {
 });
 
 // setelah ada crontab ini tidak dipakai lagi
-Route::get('/createweeklytrend/{sbu}', [TrendController::class, 'createWeeklyTrend']);
-Route::get('/updateweeklytrend/{sbu}', [TrendController::class, 'updateWeeklyTrend']);
+// Route::get('/createweeklytrend/{sbu}', [TrendController::class, 'createWeeklyTrend']);
+// Route::get('/updateweeklytrend/{sbu}', [TrendController::class, 'updateWeeklyTrend']);
 
-Route::get('/tes', function () {
-    return bcrypt('fuad');
-});
+// Route::get('/tes', function () {
+//     return bcrypt('Adm1n!c0n');
+// });
+
+Route::get('/map', [MapController::class, 'index']);

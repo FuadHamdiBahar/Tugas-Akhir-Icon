@@ -13,6 +13,15 @@ use PhpOffice\PhpSpreadsheet\Shared\Trend\Trend;
 
 class ApiController extends Controller
 {
+    public function retrieveMarker($sbu)
+    {
+        $sql = "select m.sbu_name, m.marker_name, p.lat, p.lng 
+        from laravel.markers m 
+        join laravel.points p on m.markerid = p.refid
+        where m.sbu_name = '$sbu'";
+        return DB::select($sql);
+    }
+
     public function deleteInterface($interfaceid)
     {
         return TrendModel::deleteInterface($interfaceid);

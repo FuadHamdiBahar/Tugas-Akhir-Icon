@@ -140,7 +140,7 @@
             let month = '{{ $month }}'
             let date = '{{ $date }}'
 
-            map()
+            map(sbu)
             showTrend(sbu, month)
             showWeeklyTrend(sbu)
             showBar(sbu, month, date)
@@ -172,7 +172,6 @@
                 type: 'GET',
                 url: '/api/weekly/' + sbu,
                 success: function(data) {
-                    // console.log(data);
                     var options = {
                         series: data['data'],
                         chart: {
@@ -246,7 +245,6 @@
                 url: '/api/summary/' + sbu,
                 type: 'GET',
                 success: function(data) {
-                    console.log(data);
                     const dataList = data.map(ring => ring.data);
                     const nameList = data.map(ring => ring.name);
 
@@ -450,7 +448,6 @@
 
                     // then finally
                     $("#tableLink tbody").append(resulttag);
-                    // console.log(resulttag);
                 }
             })
         }
@@ -460,7 +457,6 @@
                 url: '/api/localUtilization/' + sbu,
                 type: 'GET',
                 success: function(result) {
-                    console.log(result);
                     var options = {
                         series: result['data'],
                         chart: {
@@ -516,7 +512,7 @@
             })
         }
 
-        function map() {
+        function map(sbu) {
             var map = L.map('map', {
                 center: [3.8436159904648886, 97.56073738176667],
                 zoom: 7
@@ -532,51 +528,24 @@
                 subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
             }).addTo(map)
 
-            var locations = [
-                ['POP_1BNA003 BANDA ACEH GI SHELTER PLN', 95.343305, 5.513006],
-                ['POP_1MDN001 GLUGUR MEDAN GI SHELTER PLN', 98.668327, 3.616638],
-                ['POP_1MDN003 TITI KUNING GI SHELTER PLN', 98.689419, 3.540087],
-                ['POP_1KBJ001 BERASTAGI GI SHELTER PLN', 98.504198, 3.157928],
-                ['POP_1SDK001 SIDIKALANG GI SHELTER PLN', 98.339278, 2.734974],
-                ['POP_1PRR001 TELE GI SHELTER PLN', 98.629083, 2.532683],
-                ['POP_1TRT001 TARUTUNG GIS SHELTER PLN', 98.991038, 2.016564],
-                ['POP_1SBG001 SIBOLGA GI SHELTER PLN', 98.834962, 1.691171],
-                ['POP_1PSP001 PADANG SIDEMPUAN SHELTER PLN', 99.300395, 1.339638],
-                ['POP_1LBP001 SEI ROTAN GI SHELTER PLN', 98.787769, 3.600104],
-                ['POP_1SRH001 TEBING TINGGI GI SHELTER PLN', 99.165483, 3.38245],
-                ['POP_1KIS001 KISARAN GI SHELTER PLN', 99.653777, 2.961529],
-                ['POP_1RAP002 RANTAU PRAPAT SHELTER PLN', 99.808374, 2.112545],
-                ['POP_1STB001 PANGKALAN BRANDAN GI SHELTER PLN', 98.272396, 3.992511],
-                ['POP_1STB002 RANTING STABAT MINI SHELTER PLN', 98.443403, 3.742352],
-                ['POP_1LMP001 KUALA TANJUNG GI SHELTER PLN', 99.458157, 3.343542],
-                ['POP_1LBP002 PAYAGELI GI SHELTER PLN', 98.593363, 3.59025],
-                ['POP_1BNJ001 BINJAI GI SHELTER PLN', 98.507101, 3.644916],
-                ['POP_1MDN002 BELAWAN SHELTER PLN', 98.670838, 3.769432],
-                ['POP_1MDN005 WILSU ODC PLN', 98.672969, 3.615412],
-                ['POP_1MDN008 MEDAN TIMUR ODC PLN', 98.701579, 3.609552],
-                ['POP_1MDN018 CABANG MEDAN MINI SHELTER PLN', 98.676071, 3.586288],
-                ['POP_1MDN011 KITSBU GI ODC PLN', 98.686088, 3.539111],
-                ['POP_1BLG001 PORSEA SHELTER PLN', 99.186921, 2.464089],
-                ['POP_1PMS001 PEMATANG SIANTAR GI SHELTER PLN', 99.105462, 2.964307],
-                ['POP_1AKK001 AEK KANOPAN GI MINI SHELTER PLN', 99.637299, 2.568917],
-                ['POP_1SGI001 SIGLI GI SHELTER PLN', 95.963254, 5.351915],
-                ['POP_1BIR001 BIREUEN GI SHELTER PLN', 96.725209, 5.131541],
-                ['POP_1LSM001 LHOKSEUMAWE GI SHELTER PLN', 97.182212, 5.114952],
-                ['POP_1LGS001 IDIE GI SHELTER PLN', 97.839053, 4.878885],
-                ['POP_1LGS002 LANGSA GI SHELTER PLN', 97.94289, 4.511266],
-                ['POP_1KRB001 KUALA SIMPANG MINI POP PLN', 98.050281, 4.289456],
-                ['POP_1PYB001 KOTA NOPAN GI SHELTER PLN', 99.723887, 0.654887],
-                ['POP_1SUS001 SUBULUSSALAM AREA MINI ODC PLN', 98.031197, 2.632353],
-                ['POP_1TKN10001_TAKENGON ULP ODC PLN', 96.842638, 4.632571],
-                ['POP_1TTN001_BAKONGAN GH MINI POP PLN', 97.482191, 2.924778],
-            ];
-
+            var locations = []
             var markerGroup = L.layerGroup().addTo(map);
-            for (var i = 0; i < locations.length; i++) {
-                marker = new L.marker([locations[i][2], locations[i][1]])
-                    .bindPopup(locations[i][0]);
-                markerGroup.addLayer(marker)
-            }
+            $.ajax({
+                type: 'GET',
+                url: '/api/marker/' + sbu,
+                success: function(data) {
+                    console.log(data);
+
+                    data.forEach(element => {
+                        locations.push([element['marker_name'], element['lat'], element['lng']])
+                    });
+                    for (var i = 0; i < locations.length; i++) {
+                        marker = new L.marker([locations[i][2], locations[i][1]])
+                            .bindPopup(locations[i][0]);
+                        markerGroup.addLayer(marker)
+                    }
+                }
+            })
 
 
             // create a red polyline from an array of LatLng points
