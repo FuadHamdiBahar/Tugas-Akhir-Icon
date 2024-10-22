@@ -141,12 +141,12 @@
             let date = '{{ $date }}'
 
             map(sbu)
-            showTrend(sbu, month)
-            showWeeklyTrend(sbu)
-            showBar(sbu, month, date)
-            localUtilizatoin(sbu)
-            showTable(sbu, month, date)
-            showLocation(sbu)
+            // showTrend(sbu, month)
+            // showWeeklyTrend(sbu)
+            // showBar(sbu, month, date)
+            // localUtilizatoin(sbu)
+            // showTable(sbu, month, date)
+            // showLocation(sbu)
         })
 
         function getMonthName(monthNumber) {
@@ -518,6 +518,17 @@
                 zoom: 5
             });
 
+            var LeafIcon = L.Icon.extend({
+                options: {
+                    iconSize: [20, 20],
+                }
+            });
+
+            var greenIcon = new LeafIcon({
+                iconUrl: '/storage/red.png',
+                // shadowUrl: 'http://leafletjs.com/examples/custom-icons/leaf-shadow.png'
+            })
+
             osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 19,
                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -560,7 +571,9 @@
                         locations.push([element['marker_name'], element['lat'], element['lng']])
                     });
                     for (var i = 0; i < locations.length; i++) {
-                        marker = new L.marker([locations[i][2], locations[i][1]])
+                        marker = new L.marker([locations[i][2], locations[i][1]], {
+                                icon: greenIcon
+                            })
                             .bindPopup(locations[i][0]);
                         markerGroup.addLayer(marker)
                     }
