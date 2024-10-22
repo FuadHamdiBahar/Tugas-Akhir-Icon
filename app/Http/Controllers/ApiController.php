@@ -15,12 +15,12 @@ class ApiController extends Controller
 {
     public function retrievePolygon($sbu)
     {
-        $polyid = DB::select("SELECT p.polygonid FROM laravel.polygons p WHERE p.sbu_name = '$sbu'");
+        $polyid = DB::select("SELECT p.polygonid FROM polygons p WHERE p.sbu_name = '$sbu'");
 
         $result = [];
         foreach ($polyid as $item) {
             $polyPoint = [];
-            $points = DB::select("SELECT * FROM laravel.points p WHERE p.refid = '$item->polygonid'");
+            $points = DB::select("SELECT * FROM points p WHERE p.refid = '$item->polygonid'");
             foreach ($points as $po) {
                 array_push($polyPoint, [$po->lng, $po->lat]);
             }
