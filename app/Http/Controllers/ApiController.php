@@ -13,6 +13,22 @@ use PhpOffice\PhpSpreadsheet\Shared\Trend\Trend;
 
 class ApiController extends Controller
 {
+    public function retrievePolygon($sbu)
+    {
+        $polyid = DB::select("SELECT p.polygonid FROM laravel.polygons p WHERE p.sbu_name = '$sbu'");
+
+        $result = [];
+        foreach ($polyid as $item) {
+            $polyPoint = [];
+            $points = DB::select("SELECT * FROM laravel.points p WHERE p.refid = '$item->polygonid'");
+            foreach ($points as $po) {
+                array_push($polyPoint, [$po->lng, $po->lat]);
+            }
+            array_push($result, $polyPoint);
+        }
+        return $result;
+    }
+
     public function retrieveMarker($sbu)
     {
         $sql = "select m.sbu_name, m.marker_name, p.lat, p.lng 

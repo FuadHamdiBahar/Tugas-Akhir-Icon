@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('points', function (Blueprint $table) {
-            $table->uuid('pointid')->primary();
-            $table->uuid('refid');
-            $table->double('lat');
-            $table->double('lng');
+        Schema::create('polygons', function (Blueprint $table) {
+            $table->uuid('polygonid')->primary();
+            $table->string('sbu_name');
+            $table->string('polygon_name');
 
             // default field
             $table->string('created_by')->default('admin@admin.com');
@@ -30,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('points');
+        Schema::dropIfExists('polygons');
     }
 };

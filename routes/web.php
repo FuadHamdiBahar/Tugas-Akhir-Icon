@@ -61,6 +61,8 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/marker/{sbu}', [ApiController::class, 'retrieveMarker'])->name('retrieveMarker');
 
+        Route::get('/polygon/{sbu}', [ApiController::class, 'retrievePolygon'])->name('retrievePolygon');
+
         // Route::put('/master', [ApiController::class, 'updateMaster']);
         // Route::get('/master', [ApiController::class, 'getMaster']);
         // Route::get('/master/{hid}/{iid}', [ApiController::class, 'getSingleMaster']);
