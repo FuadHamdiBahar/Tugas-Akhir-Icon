@@ -544,7 +544,7 @@
                     });
                     polyLineGroup.addLayer(polyline)
                     // zoom the map to the polyline
-                    map.fitBounds(polyline.getBounds());
+                    map.flyToBounds(polyline.getBounds());
                 }
             })
 
