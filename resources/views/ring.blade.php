@@ -141,12 +141,12 @@
             let date = '{{ $date }}'
 
             map(sbu)
-            // showTrend(sbu, month)
-            // showWeeklyTrend(sbu)
-            // showBar(sbu, month, date)
-            // localUtilizatoin(sbu)
-            // showTable(sbu, month, date)
-            // showLocation(sbu)
+            showTrend(sbu, month)
+            showWeeklyTrend(sbu)
+            showBar(sbu, month, date)
+            localUtilizatoin(sbu)
+            showTable(sbu, month, date)
+            showLocation(sbu)
         })
 
         function getMonthName(monthNumber) {
