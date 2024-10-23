@@ -31,10 +31,30 @@ class ApiController extends Controller
 
     public function retrieveMarker($sbu)
     {
-        $sql = "select m.sbu_name, m.marker_name, p.lat, p.lng 
-        from myapp.markers m 
-        join myapp.points p on m.markerid = p.refid
-        where m.sbu_name = '$sbu'";
+        $sql = "select 
+                    temp.*, concat(traffic.host_name, ' -> ', traffic.description, ' : ', traffic.traffic, ' Gbps') as info 
+                from (
+                    select 
+                        m.sbu_name, m.markerid, m.marker_name, p.lat, p.lng, mh.hostid 
+                    from myapp.markers m 
+                    join myapp.points p on m.markerid = p.refid
+                    left join myapp.marker_hosts mh on mh.markerid = m.markerid
+                    where m.sbu_name = '$sbu'
+                ) temp 
+                left join (
+                    select 
+                        h.hostid, h.ring, h.host_name, it.interface_name, it.description,
+                        round(it.capacity / 1000000000, 1) as capacity, 
+                        round(max(wt.traffic) / 1000000000, 1) as traffic
+                    from myapp.items i 
+                    join myapp.hosts h on h.hostid = i.hostid 
+                    join myapp.interfaces it on it.interfaceid = i.interfaceid 
+                    join myapp.weekly_trends wt on it.interfaceid = wt.interfaceid 
+                    where h.sbu_name = '$sbu'
+                    and wt.`month` = MONTH(CURRENT_DATE()) 
+                    group by h.host_name, it.interface_name, h.ring, it.capacity, h.hostid, it.description
+                    order by ring
+                ) traffic on temp.hostid = traffic.hostid";
         return DB::select($sql);
     }
 

@@ -568,15 +568,15 @@
                     console.log(data);
 
                     data.forEach(element => {
-                        locations.push([element['marker_name'], element['lat'], element['lng']])
-                    });
-                    for (var i = 0; i < locations.length; i++) {
-                        marker = new L.marker([locations[i][2], locations[i][1]], {
+                        marker = new L.marker([element['lng'], element['lat']], {
                                 icon: greenIcon
                             })
-                            .bindPopup(locations[i][0]);
+                            .bindPopup("<b>" + element['marker_name'] + "</b><br>" + element['info']);
                         markerGroup.addLayer(marker)
-                    }
+                    });
+                    // for (var i = 0; i < locations.length; i++) {
+
+                    // }
                 }
             })
 

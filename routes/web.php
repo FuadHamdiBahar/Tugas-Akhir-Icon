@@ -9,7 +9,11 @@ use App\Http\Controllers\MasterController;
 use App\Http\Controllers\RingController;
 use App\Http\Controllers\TrendController;
 use App\Http\Controllers\UtilisationController;
+use App\Models\Host;
+use App\Models\Marker;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 
 Route::middleware('auth')->group(function () {
     Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
@@ -78,12 +82,46 @@ Route::middleware('auth')->group(function () {
     });
 });
 
-// setelah ada crontab ini tidak dipakai lagi
-// Route::get('/createweeklytrend/{sbu}', [TrendController::class, 'createWeeklyTrend']);
-// Route::get('/updateweeklytrend/{sbu}', [TrendController::class, 'updateWeeklyTrend']);
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use Ramsey\Uuid\Uuid;
+
+// Gunakan route ini untuk pairing pop dengan perangkat
+// Route::get('/pairing', function () {
+//     $reader = IOFactory::createReader("Xlsx");
+//     $spreadsheet = $reader->load("D:\Code\myapp\public\marker host.xlsx");
+//     $sheet = $spreadsheet->getSheetByName('02. Router 100G sd 2022rev6');
+
+//     // mendapatkan jumlah baris
+//     $totalRows = $sheet->getHighestRow();
+//     // $totalRows = 10;
+
+//     $myLokasi = [];
+//     for ($row = 2; $row <= $totalRows; $row++) {
+//         $lokasi = $sheet->getCell("H{$row}")->getValue();
+//         $pop = $sheet->getCell("I{$row}")->getValue();
+
+//         $hosts = Host::where('host_name', 'LIKE', "%$lokasi%")->get();
+
+//         $marker = Marker::where('marker_name', 'LIKE', "%$pop%")->first();
+
+
+//         if (count($hosts) > 0) {
+//             foreach ($hosts as $h) {
+//                 $myuuid = Uuid::uuid4()->toString();
+//                 DB::select("INSERT INTO marker_hosts (mhid, markerid, hostid) VALUES ('$myuuid', '$marker->markerid', $h->hostid)");
+//             }
+//             array_push($myLokasi, $hosts);
+//         }
+//         // return $lokasi;
+//     }
+
+//     return $myLokasi;
+//     // $sql = "SELECT * FROM hosts WHERE sbu_name = '$sbu'";
+//     // echo 'Fuad Hamdi Bahar';
+// });
 
 // Route::get('/tes', function () {
 //     return bcrypt('Adm1n!c0n');
 // });
 
-Route::get('/map', [MapController::class, 'index']);
+// Route::get('/map', [MapController::class, 'index']);
