@@ -123,7 +123,7 @@ use Ramsey\Uuid\Uuid;
 
 
 // untuk menambahkan hostname terminating dari excel
-Route::get('/check', function ($sbu) {
+Route::get('/check', function () {
     ini_set('max_execution_time', 600);
     function insertInterface($hostid, $interface_name, $description, $capacity, $status)
     {
