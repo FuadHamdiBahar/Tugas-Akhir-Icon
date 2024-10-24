@@ -281,9 +281,8 @@ class TrendModel
                 h.ring, h.host_name, it.interface_name, wt.month,
                 round(it.capacity / 1000000000, 1) as capacity, 
                 round(max(wt.traffic) / 1000000000, 1) as traffic
-            from myapp.items i 
-            join myapp.hosts h on h.hostid = i.hostid 
-            join myapp.interfaces it on it.interfaceid = i.interfaceid 
+            from myapp.hosts h  
+            join myapp.interfaces it on it.hostid = h.hostid 
             join myapp.weekly_trends wt on it.interfaceid = wt.interfaceid 
             where it.interface_name != 'TIDAK ADA'
             and wt.year = '2024'
@@ -303,9 +302,8 @@ class TrendModel
                 h.ring, h.host_name, it.interface_name, 
                 round(it.capacity / 1000000000, 1) as capacity, 
                 round(max(wt.traffic) / 1000000000, 1) as traffic
-            from myapp.items i 
-            join myapp.hosts h on h.hostid = i.hostid 
-            join myapp.interfaces it on it.interfaceid = i.interfaceid 
+            from myapp.hosts h 
+            join myapp.interfaces it on it.hostid = h.hostid
             join myapp.weekly_trends wt on it.interfaceid = wt.interfaceid 
             where it.interface_name != 'TIDAK ADA'
             and it.status = 1
@@ -426,9 +424,8 @@ class TrendModel
         from (
             select 
                 h.sbu_name, h.ring, h.host_name, it.interface_name, wt.`month`, max(wt.traffic) as traffic
-            FROM myapp.items i 
-            JOIN myapp.hosts h ON h.hostid = i.hostid 
-            JOIN myapp.interfaces it ON it.interfaceid = i.interfaceid 
+            FROM myapp.hosts h 
+            JOIN myapp.interfaces it ON it.hostid = h.hostid 
             JOIN myapp.weekly_trends wt ON it.interfaceid = wt.interfaceid
             where h.sbu_name = '$sbu_name'
             and h.ring = '$ring'
@@ -456,9 +453,8 @@ class TrendModel
                     it.interface_name, 
                     wt.month, 
                     MAX(wt.traffic) AS traffic
-                FROM myapp.items i 
-                JOIN myapp.hosts h ON h.hostid = i.hostid 
-                JOIN myapp.interfaces it ON it.interfaceid = i.interfaceid 
+                FROM myapp.hosts h 
+                JOIN myapp.interfaces it ON h.hostid = it.hostid 
                 JOIN myapp.weekly_trends wt ON it.interfaceid = wt.interfaceid 
                 WHERE it.interface_name != 'TIDAK ADA'
                 AND wt.`month` = $month
@@ -494,9 +490,8 @@ class TrendModel
                     it.interface_name, 
                     wt.month, 
                     MAX(wt.traffic) AS traffic
-                FROM myapp.items i 
-                JOIN myapp.hosts h ON h.hostid = i.hostid 
-                JOIN myapp.interfaces it ON it.interfaceid = i.interfaceid 
+                FROM myapp.hosts h 
+                JOIN myapp.interfaces it ON it.hostid = h.hostid 
                 JOIN myapp.weekly_trends wt ON it.interfaceid = wt.interfaceid 
                 WHERE it.interface_name != 'TIDAK ADA'
                 AND wt.`month` = $month
@@ -527,9 +522,8 @@ class TrendModel
                     select raw.sbu_name, raw.ring, raw.host_name, raw.interface_name, raw.month,max(raw.traffic) as traffic from(
                         select 
                             h.sbu_name,  h.host_name, it.interface_name, h.ring, wt.month, wt.week_number, wt.traffic 
-                        from myapp.items i 
-                        join myapp.hosts h on h.hostid = i.hostid 
-                        join myapp.interfaces it on it.interfaceid = i.interfaceid 
+                        from myapp.hosts h 
+                        join myapp.interfaces it on it.hostid = h.hostid 
                         join myapp.weekly_trends wt on it.interfaceid = wt.interfaceid 
                     ) raw group by raw.month, raw.interface_name, raw.host_name, raw.ring, raw.sbu_name
                 ) res group by res.sbu_name, res.ring, res.month

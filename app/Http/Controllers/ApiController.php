@@ -592,34 +592,25 @@ class ApiController extends Controller
     {
         ini_set('max_execution_time', 60);
 
-        // read file
-        $path = public_path('data utilisasi.xlsx');
-        $reader = new Xlsx();
-        $spreadsheet = $reader->load($path);
-        $sheet = $spreadsheet->getSheetByName($sbu);
-        $totalRows = $sheet->getHighestRow();
-
-        // for testing
-        // $totalRows = 4;
-
         // new array to merge
         $merge = array();
 
-        for ($row = 3; $row <= $totalRows; $row++) {
-            if (!empty($sheet->getCell("C{$row}")->getValue())) {
-                $data = ApiModel::queryMaxTrafficEachSourceToDestination(
-                    $sheet->getCell("C{$row}")->getValue(),
-                    $sheet->getCell("D{$row}")->getValue(),
-                    $sheet->getCell("B{$row}")->getValue(),
-                    $month,
-                );
-                // var_dump($sheet->getCell("C{$row}")->getValue());
-                array_push($merge, $data);
-            }
-        }
+        $sql = "select 
+            h.sbu_name, h.ring, h.host_name, i.interface_name, i.description 
+        from hosts h 
+        join interfaces i on h.hostid = i.hostid 
+        where h.sbu_name = '$sbu'";
+        $data = DB::select($sql);
 
-        // check missing sbu ring max
-        // dd($merge);
+        foreach ($data as $d) {
+            $data = ApiModel::queryMaxTrafficEachSourceToDestination(
+                $d->host_name,
+                $d->description,
+                $d->ring,
+                $month,
+            );
+            array_push($merge, $data);
+        }
 
         $flat = array();
         foreach ($merge as $hosts) {
