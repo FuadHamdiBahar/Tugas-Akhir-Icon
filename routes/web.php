@@ -123,7 +123,7 @@ use Ramsey\Uuid\Uuid;
 
 
 // untuk menambahkan hostname terminating dari excel
-Route::get('/check/{sbu}', function ($sbu) {
+Route::get('/check', function ($sbu) {
     ini_set('max_execution_time', 600);
     function insertInterface($hostid, $interface_name, $description, $capacity, $status)
     {
@@ -131,42 +131,48 @@ Route::get('/check/{sbu}', function ($sbu) {
         DB::select($sql);
     }
 
-    $path = public_path('data utilisasi.xlsx');
-    $reader = new Xlsx();
-    $spreadsheet = $reader->load($path);
-    $sheet = $spreadsheet->getSheetByName($sbu);
-    $totalRows = $sheet->getHighestRow();
+    $sbu_name = array('sumbagut', 'sumbagteng', 'sumbagsel', 'jakarta', 'jabar', 'jateng', 'jatim', 'balnus', 'kalimantan', 'sulawesi');
 
-    // new array to merge
-    $merge = array();
+    foreach ($sbu_name as $sbu) {
+        $path = public_path('data utilisasi.xlsx');
+        $reader = new Xlsx();
+        $spreadsheet = $reader->load($path);
+        $sheet = $spreadsheet->getSheetByName($sbu);
+        $totalRows = $sheet->getHighestRow();
 
-    for ($row = 2; $row <= $totalRows; $row++) {
-        if (!empty($sheet->getCell("B{$row}")->getValue())) {
-            $ring = $sheet->getCell("A{$row}")->getValue();
-            $org = $sheet->getCell("B{$row}")->getValue();
-            $interface_name = $sheet->getCell("C{$row}")->getValue();
-            $trm = $sheet->getCell("D{$row}")->getValue();
-            $status = $sheet->getCell("E{$row}")->getValue();
-            $capacity = $sheet->getCell("F{$row}")->getValue();
+        // new array to merge
+        $merge = array();
 
-            if ($status != 1) {
-                $sql = "SELECT * FROM hosts WHERE ring = $ring AND host_name = '$org'";
-                $data = DB::select($sql);
+        for ($row = 2; $row <= $totalRows; $row++) {
+            if (!empty($sheet->getCell("B{$row}")->getValue())) {
+                $ring = $sheet->getCell("A{$row}")->getValue();
+                $org = $sheet->getCell("B{$row}")->getValue();
+                $interface_name = $sheet->getCell("C{$row}")->getValue();
+                $trm = $sheet->getCell("D{$row}")->getValue();
+                $status = $sheet->getCell("E{$row}")->getValue();
+                $capacity = $sheet->getCell("F{$row}")->getValue();
 
-                if (count($data) > 0) {
-                    #langsung insert interface
-                    insertInterface($data[0]->hostid, $interface_name, $trm, $capacity * 1000000000, 0);
-                } else {
-                    // buat host terus buat interface
-                    $sql = "INSERT INTO hosts (sbu_name, ring, host_name) VALUES ('$sbu', $ring, '$org')";
-                    DB::select($sql);
-                    // ambil id terakhir
-                    $hostid = DB::select('SELECT max(hostid) as hostid from hosts');
-                    insertInterface($hostid[0]->hostid, $interface_name, $trm, $capacity * 1000000000, 0);
+                if ($status != 1) {
+                    $sql = "SELECT * FROM hosts WHERE ring = $ring AND host_name = '$org'";
+                    $data = DB::select($sql);
+
+                    if (count($data) > 0) {
+                        #langsung insert interface
+                        insertInterface($data[0]->hostid, $interface_name, $trm, $capacity * 1000000000, 0);
+                    } else {
+                        // buat host terus buat interface
+                        $sql = "INSERT INTO hosts (sbu_name, ring, host_name) VALUES ('$sbu', $ring, '$org')";
+                        DB::select($sql);
+                        // ambil id terakhir
+                        $hostid = DB::select('SELECT max(hostid) as hostid from hosts');
+                        insertInterface($hostid[0]->hostid, $interface_name, $trm, $capacity * 1000000000, 0);
+                    }
                 }
             }
         }
     }
 
-    return $sbu;
+
+
+    return $sbu_name;
 });
