@@ -9,6 +9,7 @@ use App\Http\Controllers\MasterController;
 use App\Http\Controllers\RingController;
 use App\Http\Controllers\TrendController;
 use App\Http\Controllers\UtilisationController;
+use App\Models\ApiModel;
 use App\Models\Host;
 use App\Models\Marker;
 use Illuminate\Support\Facades\DB;
@@ -120,8 +121,52 @@ use Ramsey\Uuid\Uuid;
 //     // echo 'Fuad Hamdi Bahar';
 // });
 
-// Route::get('/tes', function () {
-//     return bcrypt('Adm1n!c0n');
-// });
 
-// Route::get('/map', [MapController::class, 'index']);
+// untuk menambahkan hostname terminating dari excel
+// Route::get('/check/{sbu}', function ($sbu) {
+//     ini_set('max_execution_time', 600);
+//     function insertInterface($hostid, $interface_name, $description, $capacity, $status)
+//     {
+//         $sql = "INSERT INTO interfaces (hostid, interface_name, description, capacity, status) VALUES ($hostid, '$interface_name', '$description', $capacity, $status)";
+//         DB::select($sql);
+//     }
+
+//     $path = public_path('data utilisasi.xlsx');
+//     $reader = new Xlsx();
+//     $spreadsheet = $reader->load($path);
+//     $sheet = $spreadsheet->getSheetByName($sbu);
+//     $totalRows = $sheet->getHighestRow();
+
+//     // new array to merge
+//     $merge = array();
+
+//     for ($row = 2; $row <= $totalRows; $row++) {
+//         if (!empty($sheet->getCell("B{$row}")->getValue())) {
+//             $ring = $sheet->getCell("A{$row}")->getValue();
+//             $org = $sheet->getCell("B{$row}")->getValue();
+//             $interface_name = $sheet->getCell("C{$row}")->getValue();
+//             $trm = $sheet->getCell("D{$row}")->getValue();
+//             $status = $sheet->getCell("E{$row}")->getValue();
+//             $capacity = $sheet->getCell("F{$row}")->getValue();
+
+//             if ($status != 1) {
+//                 $sql = "SELECT * FROM hosts WHERE ring = $ring AND host_name = '$org'";
+//                 $data = DB::select($sql);
+
+//                 if (count($data) > 0) {
+//                     #langsung insert interface
+//                     insertInterface($data[0]->hostid, $interface_name, $trm, $capacity * 1000000000, 0);
+//                 } else {
+//                     // buat host terus buat interface
+//                     $sql = "INSERT INTO hosts (sbu_name, ring, host_name) VALUES ('$sbu', $ring, '$org')";
+//                     DB::select($sql);
+//                     // ambil id terakhir
+//                     $hostid = DB::select('SELECT max(hostid) as hostid from hosts');
+//                     insertInterface($hostid[0]->hostid, $interface_name, $trm, $capacity * 1000000000, 0);
+//                 }
+//             }
+//         }
+//     }
+
+//     return $sbu;
+// });
