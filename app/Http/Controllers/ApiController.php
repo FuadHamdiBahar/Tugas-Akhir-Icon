@@ -596,8 +596,8 @@ class ApiController extends Controller
 
         $sql = "select 
             h.sbu_name, h.ring, h.host_name, i.interface_name, i.description 
-        from hosts h 
-        join interfaces i on h.hostid = i.hostid 
+        from myapp.hosts h 
+        join myapp.interfaces i on h.hostid = i.hostid 
         where h.sbu_name = '$sbu'";
         $data = DB::select($sql);
 
