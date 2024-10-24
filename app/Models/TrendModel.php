@@ -215,9 +215,8 @@ class TrendModel
         from(
             select 
                 h.ring, it.interface_name, max(wt.traffic) as traffic
-            from myapp.items i 
-            join myapp.hosts h on h.hostid = i.hostid 
-            join myapp.interfaces it on it.interfaceid = i.interfaceid 
+            from myapp.hosts h  
+            join myapp.interfaces it on it.hostid = h.hostid 
             join myapp.weekly_trends wt on it.interfaceid = wt.interfaceid 
             where h.sbu_name = '$sbu'
             and wt.month = '$month'
@@ -256,9 +255,8 @@ class TrendModel
             from(
                 select 
                     h.ring, it.interface_name, wt.month, max(wt.traffic) as traffic
-                from myapp.items i 
-                join myapp.hosts h on h.hostid = i.hostid 
-                join myapp.interfaces it on it.interfaceid = i.interfaceid 
+                from myapp.hosts h 
+                join myapp.interfaces it on it.hostid = h.hostid 
                 join (select * from myapp.weekly_trends wt order by wt.month, wt.week_number) wt on it.interfaceid = wt.interfaceid 
                 where h.sbu_name = '$sbu'
                 group by h.ring, it.interface_name, wt.month 
@@ -325,9 +323,8 @@ class TrendModel
                         h.ring, h.host_name, it.interface_name, 
                         round(it.capacity / 1000000000, 1) as capacity, 
                         round(max(wt.traffic) / 1000000000, 1) as traffic
-                    from myapp.items i 
-                    join myapp.hosts h on h.hostid = i.hostid 
-                    join myapp.interfaces it on it.interfaceid = i.interfaceid 
+                    from myapp.hosts h
+                    join myapp.interfaces it on it.hostid = h.hostid 
                     join myapp.weekly_trends wt on it.interfaceid = wt.interfaceid 
                     where h.sbu_name = '$sbu_name'
                     and it.interface_name != 'TIDAK ADA'
@@ -346,9 +343,8 @@ class TrendModel
             h.ring, h.host_name, it.interface_name,
             round(it.capacity / 1000000000, 1) as capacity, 
             round(max(wt.traffic) / 1000000000, 1) as traffic
-        from myapp.items i 
-        join myapp.hosts h on h.hostid = i.hostid 
-        join myapp.interfaces it on it.interfaceid = i.interfaceid 
+        from myapp.hosts h 
+        join myapp.interfaces it on it.hostid = h.hostid 
         join myapp.weekly_trends wt on it.interfaceid = wt.interfaceid 
         where h.sbu_name = '$sbu'
         and wt.`month` = MONTH(CURRENT_DATE()) 
@@ -376,23 +372,6 @@ class TrendModel
 
     public static function getWeeklyTrend($sbu, $fw, $cw)
     {
-        // $sql = "
-        // select 
-        //     raw.ring as name, group_concat(raw.traffic) as data
-        // from (
-        //     select 
-        //         h.ring, wt.week_number, round(sum(wt.traffic) / 1000000000, 1) as traffic
-        //     from myapp.items i 
-        //     join myapp.hosts h on h.hostid = i.hostid 
-        //     join myapp.interfaces it on it.interfaceid = i.interfaceid 
-        //     join myapp.weekly_trends wt on it.interfaceid = wt.interfaceid 
-        //     where h.sbu_name = '$sbu'
-        //     and wt.week_number >= $fw
-        //     and wt.week_number <= $cw
-        //     group by h.ring, wt.week_number
-        //     order by h.ring, wt.week_number 
-        // ) raw group by raw.ring";
-
         $sql = "select 
                     res.ring as name, group_concat(res.traffic order by res.week_number asc) as data
                 from (
@@ -402,8 +381,7 @@ class TrendModel
                         select 
                             h.sbu_name, h.ring, h.host_name, i2.interface_name, i2.description, wt.week_number, count(*) as jumlah, max(wt.id) as wtid
                         from myapp.hosts h 
-                        join myapp.items i on h.hostid = i.hostid 
-                        join myapp.interfaces i2 on i2.interfaceid = i.interfaceid 
+                        join myapp.interfaces i2 on i2.hostid = h.hostid
                         join myapp.weekly_trends wt on wt.interfaceid = i2.interfaceid
                         where h.sbu_name = '$sbu'
                         and wt.week_number >= $fw

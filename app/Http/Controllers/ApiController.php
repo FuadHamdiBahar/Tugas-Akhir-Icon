@@ -46,9 +46,8 @@ class ApiController extends Controller
                         h.hostid, h.ring, h.host_name, it.interface_name, it.description,
                         round(it.capacity / 1000000000, 1) as capacity, 
                         round(max(wt.traffic) / 1000000000, 1) as traffic
-                    from myapp.items i 
-                    join myapp.hosts h on h.hostid = i.hostid 
-                    join myapp.interfaces it on it.interfaceid = i.interfaceid 
+                    from myapp.hosts h
+                    join myapp.interfaces it on it.hostid = h.hostid 
                     join myapp.weekly_trends wt on it.interfaceid = wt.interfaceid 
                     where h.sbu_name = '$sbu'
                     and wt.`month` = MONTH(CURRENT_DATE()) 
