@@ -7,21 +7,21 @@ use DateTime;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
-class UpdateCron extends Command
+class SecondUpdateCron extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'update:cron';
+    protected $signature = 'app:second-update-cron';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Update weekly trends database';
+    protected $description = 'Command description';
 
     /**
      * Execute the console command.
@@ -48,26 +48,12 @@ class UpdateCron extends Command
                         it.description as terminating
                     from myapp.hosts h  
                     join myapp.interfaces it on it.hostid = h.hostid
-                    where it.status = 1
+                    where it.status = 0
                     order by ring";
         $hosts = DB::select($query);
 
         // long process
         foreach ($hosts as $h) {
-            // find the interface id
-            $sql = "
-                select 
-                    it.interfaceid
-                from myapp.items i 
-                join myapp.hosts h on h.hostid = i.hostid 
-                join myapp.interfaces it on it.interfaceid = i.interfaceid 
-                where h.host_name = '$h->origin'
-                and it.description = '$h->terminating'
-                and it.interface_name = '$h->interface'
-                and h.ring = $h->ring";
-
-            $interfaceid = DB::select($sql)[0]->interfaceid;
-
             // get the latest weekly traffic
             $sql = "
             select 
@@ -94,7 +80,7 @@ class UpdateCron extends Command
             // insert the traffic to local database
             foreach ($data as $d) {
                 $sql = "insert into myapp.weekly_trends (interfaceid, year, `month`, week_number, traffic)
-                    values ($interfaceid, '$year', '$m', $d->week_number, $d->traffic)";
+                    values ($h->interfaceid, '$year', '$m', $d->week_number, $d->traffic)";
                 DB::select($sql);
             }
         }
