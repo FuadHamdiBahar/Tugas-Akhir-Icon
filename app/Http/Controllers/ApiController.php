@@ -91,11 +91,11 @@ class ApiController extends Controller
                 $temp .= "<br>$idx." . $h->info;
             }
 
-            if (count($hosts) > 1) {
-                $m->info = $temp;
-            } else {
-                $m->info = '';
-            }
+            // if (count($hosts) > 1) {
+            $m->info = $temp;
+            // } else {
+            // $m->info = '';
+            // }
             # code...
         }
         return $marker;
