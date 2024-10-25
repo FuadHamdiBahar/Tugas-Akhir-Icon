@@ -589,41 +589,55 @@ class ApiController extends Controller
     // sbu
     public static function listOfMaxTrafficEachSourceToDestination($sbu, $month)
     {
-        ini_set('max_execution_time', 60);
-
-        // new array to merge
-        $merge = array();
-
         $sql = "select 
-            h.sbu_name, h.ring, h.host_name, i.interface_name, i.description 
-        from myapp.hosts h 
-        join myapp.interfaces i on h.hostid = i.hostid 
-        where h.sbu_name = '$sbu'";
-        $data = DB::select($sql);
+                h.ring, h.host_name as origin, it.interface_name as interface, it.description as terminating,
+                round(it.capacity / 1000000000, 1) as capacity, 
+                round(max(wt.traffic) / 1000000000, 1) as traffic
+            from myapp.hosts h 
+            join myapp.interfaces it on it.hostid = h.hostid 
+            join myapp.weekly_trends wt on it.interfaceid = wt.interfaceid 
+            where h.sbu_name = '$sbu'
+            and wt.`month` = MONTH(CURRENT_DATE())
+            group by h.host_name, it.interface_name, h.ring, it.capacity, it.description
+            order by ring";
 
-        foreach ($data as $d) {
-            $data = ApiModel::queryMaxTrafficEachSourceToDestination(
-                $d->host_name,
-                $d->description,
-                $d->ring,
-                $month,
-            );
-            array_push($merge, $data);
-        }
+        return DB::select($sql);
 
-        $flat = array();
-        foreach ($merge as $hosts) {
-            foreach ($hosts as $h) {
-                $flat[] = $h;
-            }
-        }
+        // ini_set('max_execution_time', 60);
 
-        $result = array(
-            'sbu' => $sbu,
-            'data' => $flat,
-            'month' => date('F', strtotime(date('d-m-Y')))
-        );
-        return $result;
+        // // new array to merge
+        // $merge = array();
+
+        // $sql = "select 
+        //     h.sbu_name, h.ring, h.host_name, i.interface_name, i.description 
+        // from myapp.hosts h 
+        // join myapp.interfaces i on h.hostid = i.hostid 
+        // where h.sbu_name = '$sbu'";
+        // $data = DB::select($sql);
+
+        // foreach ($data as $d) {
+        //     $data = ApiModel::queryMaxTrafficEachSourceToDestination(
+        //         $d->host_name,
+        //         $d->description,
+        //         $d->ring,
+        //         $month,
+        //     );
+        //     array_push($merge, $data);
+        // }
+
+        // $flat = array();
+        // foreach ($merge as $hosts) {
+        //     foreach ($hosts as $h) {
+        //         $flat[] = $h;
+        //     }
+        // }
+
+        // $result = array(
+        //     'sbu' => $sbu,
+        //     'data' => $flat,
+        //     'month' => date('F', strtotime(date('d-m-Y')))
+        // );
+        // return $result;
     }
 
     public function listTrafficMonth($origin, $terminating)

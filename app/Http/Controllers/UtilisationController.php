@@ -12,6 +12,11 @@ class UtilisationController extends Controller
         $month = RingController::convertNumToTextMonth($m);
         $data = ApiController::listOfMaxTrafficEachSourceToDestination($sbu, $month);
         // return $data;
+        $data = array(
+            'sbu' => $sbu,
+            'data' => $data,
+            'month' => date('F', strtotime(date('d-m-Y')))
+        );
         return view('utilisation', $data);
     }
 

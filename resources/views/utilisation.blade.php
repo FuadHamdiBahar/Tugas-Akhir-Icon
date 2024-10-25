@@ -38,8 +38,8 @@
                                         <td>{{ $d->origin }}</td>
                                         <td>{{ $d->interface }}</td>
                                         <td>{{ $d->terminating }}</td>
-                                        <td>{{ number_format($d->capacity / 1000000000, 0) }}</td>
-                                        <td class="text-end">{{ number_format($d->traffic / 1000000000, 1) }}</td>
+                                        <td>{{ number_format($d->capacity, 0) }}</td>
+                                        <td class="text-end">{{ number_format($d->traffic, 1) }}</td>
                                         <td>
                                             <div class="d-flex align-items-center list-action">
                                                 <a class="badge badge-info mr-2" data-toggle="tooltip" data-placement="top"
