@@ -87,7 +87,8 @@ class ApiController extends Controller
             $hosts = DB::select($sql);
             $temp = '';
             foreach ($hosts as $i => $h) {
-                $temp .= "<br>($i + 1)." . $h->info;
+                $idx = $i + 1;
+                $temp .= "<br>$idx." . $h->info;
             }
             $m->info = $temp;
             # code...
