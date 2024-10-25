@@ -14,7 +14,7 @@ class SecondUpdateCron extends Command
      *
      * @var string
      */
-    protected $signature = 'app:second-update-cron';
+    protected $signature = 'update:secondCron';
 
     /**
      * The console command description.
@@ -85,6 +85,6 @@ class SecondUpdateCron extends Command
             }
         }
 
-        echo 'Successfully update: ' . count($hosts) . ' devices at ' . $date->format('Y-m-d H:i:s') . "\n";
+        echo 'Successfully update second cron: ' . count($hosts) . ' devices at ' . $date->format('Y-m-d H:i:s') . "\n";
     }
 }

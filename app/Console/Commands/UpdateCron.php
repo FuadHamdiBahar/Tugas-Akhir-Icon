@@ -55,18 +55,18 @@ class UpdateCron extends Command
         // long process
         foreach ($hosts as $h) {
             // find the interface id
-            $sql = "
-                select 
-                    it.interfaceid
-                from myapp.items i 
-                join myapp.hosts h on h.hostid = i.hostid 
-                join myapp.interfaces it on it.interfaceid = i.interfaceid 
-                where h.host_name = '$h->origin'
-                and it.description = '$h->terminating'
-                and it.interface_name = '$h->interface'
-                and h.ring = $h->ring";
+            // $sql = "
+            //     select 
+            //         it.interfaceid
+            //     from myapp.items i 
+            //     join myapp.hosts h on h.hostid = i.hostid 
+            //     join myapp.interfaces it on it.interfaceid = i.interfaceid 
+            //     where h.host_name = '$h->origin'
+            //     and it.description = '$h->terminating'
+            //     and it.interface_name = '$h->interface'
+            //     and h.ring = $h->ring";
 
-            $interfaceid = DB::select($sql)[0]->interfaceid;
+            // $interfaceid = DB::select($sql)[0]->interfaceid;
 
             // get the latest weekly traffic
             $sql = "
@@ -94,7 +94,7 @@ class UpdateCron extends Command
             // insert the traffic to local database
             foreach ($data as $d) {
                 $sql = "insert into myapp.weekly_trends (interfaceid, year, `month`, week_number, traffic)
-                    values ($interfaceid, '$year', '$m', $d->week_number, $d->traffic)";
+                    values ($h->interfaceid, '$year', '$m', $d->week_number, $d->traffic)";
                 DB::select($sql);
             }
         }
