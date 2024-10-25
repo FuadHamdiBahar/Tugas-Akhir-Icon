@@ -219,6 +219,7 @@ class TrendModel
             join myapp.interfaces it on it.hostid = h.hostid 
             join myapp.weekly_trends wt on it.interfaceid = wt.interfaceid 
             where h.sbu_name = '$sbu'
+            and it.status = 1
             and wt.month = '$month'
             group by h.ring, it.interface_name 
         ) raw group by raw.ring
@@ -259,6 +260,7 @@ class TrendModel
                 join myapp.interfaces it on it.hostid = h.hostid 
                 join (select * from myapp.weekly_trends wt order by wt.month, wt.week_number) wt on it.interfaceid = wt.interfaceid 
                 where h.sbu_name = '$sbu'
+                and it.status = 1
                 group by h.ring, it.interface_name, wt.month 
             ) raw group by raw.ring, raw.month
             order by raw.ring, raw.month
@@ -384,6 +386,7 @@ class TrendModel
                         join myapp.interfaces i2 on i2.hostid = h.hostid
                         join myapp.weekly_trends wt on wt.interfaceid = i2.interfaceid
                         where h.sbu_name = '$sbu'
+                        and i2.status = 1
                         and wt.week_number >= $fw
                         and wt.week_number <= $cw
                         group by h.sbu_name, h.ring, h.host_name, i2.interface_name, i2.description, wt.week_number
