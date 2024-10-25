@@ -4,17 +4,11 @@ use App\Http\Controllers\ApiController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeviceController;
-use App\Http\Controllers\MapController;
 use App\Http\Controllers\MasterController;
 use App\Http\Controllers\RingController;
-use App\Http\Controllers\TrendController;
 use App\Http\Controllers\UtilisationController;
-use App\Models\ApiModel;
-use App\Models\Host;
-use App\Models\Marker;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
-use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 
 Route::middleware('auth')->group(function () {
     Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
@@ -83,10 +77,10 @@ Route::middleware('auth')->group(function () {
     });
 });
 
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use Ramsey\Uuid\Uuid;
 
 // Gunakan route ini untuk pairing pop dengan perangkat
+// use PhpOffice\PhpSpreadsheet\IOFactory;
+// use Ramsey\Uuid\Uuid;
 // Route::get('/pairing', function () {
 //     $reader = IOFactory::createReader("Xlsx");
 //     $spreadsheet = $reader->load("D:\Code\myapp\public\marker host.xlsx");

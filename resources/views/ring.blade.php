@@ -126,9 +126,9 @@
         </div>
     </div>
 
-    <div class="col-lg-12">
+    {{-- <div class="col-lg-12">
         <small>*Click this link to update data <a href="/updateweeklytrend/{{ $sbu }}">Update.</a></small>
-    </div>
+    </div> --}}
 @endsection
 
 
