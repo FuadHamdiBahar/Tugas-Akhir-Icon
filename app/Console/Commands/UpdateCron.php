@@ -48,7 +48,6 @@ class UpdateCron extends Command
                         it.description as terminating
                     from myapp.hosts h  
                     join myapp.interfaces it on it.hostid = h.hostid
-                    where it.status = 1
                     order by ring";
         $hosts = DB::select($query);
 
