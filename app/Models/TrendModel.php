@@ -285,6 +285,7 @@ class TrendModel
             join myapp.interfaces it on it.hostid = h.hostid 
             join myapp.weekly_trends wt on it.interfaceid = wt.interfaceid 
             where it.interface_name != 'TIDAK ADA'
+            and it.status = 1
             and wt.year = '2024'
             group by h.host_name, it.interface_name, h.ring, it.capacity, wt.`month`  
             order by h.host_name, wt.month
@@ -438,6 +439,7 @@ class TrendModel
                 JOIN myapp.interfaces it ON h.hostid = it.hostid 
                 JOIN myapp.weekly_trends wt ON it.interfaceid = wt.interfaceid 
                 WHERE it.interface_name != 'TIDAK ADA'
+                AND it.status = 1
                 AND wt.`month` = $month
                 GROUP BY h.ring, it.interface_name, wt.month, h.sbu_name 
             ) raw 
@@ -475,6 +477,7 @@ class TrendModel
                 JOIN myapp.interfaces it ON it.hostid = h.hostid 
                 JOIN myapp.weekly_trends wt ON it.interfaceid = wt.interfaceid 
                 WHERE it.interface_name != 'TIDAK ADA'
+                AND it.status = 1
                 AND wt.`month` = $month
                 GROUP BY h.ring, it.interface_name, wt.month, h.sbu_name 
             ) raw 
@@ -506,6 +509,7 @@ class TrendModel
                         from myapp.hosts h 
                         join myapp.interfaces it on it.hostid = h.hostid 
                         join myapp.weekly_trends wt on it.interfaceid = wt.interfaceid 
+                        where it.status = 1
                     ) raw group by raw.month, raw.interface_name, raw.host_name, raw.ring, raw.sbu_name
                 ) res group by res.sbu_name, res.ring, res.month
                 order by res.month
