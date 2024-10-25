@@ -70,7 +70,7 @@ class ApiController extends Controller
                 join myapp.points p on m.markerid = p.refid
                 left join myapp.marker_hosts mh on mh.markerid = m.markerid
             ) temp 
-            left join (
+            join (
                 select 
                     h.hostid, h.ring, h.host_name, it.interface_name, it.description,
                     round(it.capacity / 1000000000, 1) as capacity, 
