@@ -67,7 +67,8 @@
                 success: function(data) {
                     var marker = L.marker([data['lng'], data['lat']], {
                         icon: greenIcon
-                    }).addTo(map).bindPopup(data['marker_name']);
+                    }).addTo(map).bindPopup('<b>' + data['marker_name'] + '</b><br>Latitude: ' + data[
+                        'lat'] + ' Longitude: ' + data['lng']);
                     console.log(data);
                     map.flyTo(marker.getLatLng(), 10)
                 }

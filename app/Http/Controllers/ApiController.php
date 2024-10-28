@@ -12,9 +12,27 @@ use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Trends;
 use PhpOffice\PhpSpreadsheet\Shared\Trend\Trend;
 use PhpOption\None;
+use Ramsey\Uuid\Uuid;
 
 class ApiController extends Controller
 {
+    public function createMarker(Request $request)
+    {
+        // insert marker
+        $sbu_name = $request->post('sbuname');
+        $marker_name = $request->post('markername');
+        $markerid = Uuid::uuid4()->toString();
+        // $sql = "INSERT INTO markers (markerid, sbu_name, marker_name) VALUES ('$markerid', '$sbu_name', '$marker_name')";
+        // DB::select($sql);
+        // return [$sbu_name, $marker_name, $markerid];
+        // insert point
+        $lat = $request->post('lat');
+        $lng = $request->post('lng');
+        $pointid = Uuid::uuid4()->toString();
+        $sql = "INSERT INTO points (pointid, refid, lat, lng) VALUES ('$pointid', '741fb01a-3a2e-4bc6-b8da-4dce8ebb831f', $lat, $lng)";
+        DB::select($sql);
+        return DB::select("SELECT * FROM markers JOIN points on markerid = refid WHERE markerid = '$markerid'");
+    }
     public function retrieveSingleMarker($markerid)
     {
         $data = DB::select("SELECT * FROM markers m JOIN points p on m.markerid = p.refid WHERE m.markerid = '$markerid'");

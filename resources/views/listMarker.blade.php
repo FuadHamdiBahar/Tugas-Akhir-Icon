@@ -36,7 +36,7 @@
             <div class="modal-content">
                 <div class="modal-body">
                     <div class="popup text-left">
-                        <h4 class="mb-3">Add Host</h4>
+                        <h4 class="mb-3">Add Marker</h4>
                         <div class="content create-workform bg-body">
                             <form id="addForm" name="addForm">
                                 @csrf
@@ -45,12 +45,16 @@
                                     <input name="sbuname" id="sbuname"type="text" class="form-control">
                                 </div>
                                 <div class="pb-3">
-                                    <label class="mb-2">Ring</label>
-                                    <input name="idring" id="idring"type="number" class="form-control">
+                                    <label class="mb-2">Marker Name</label>
+                                    <input name="markername" id="markername"type="text" class="form-control">
                                 </div>
                                 <div class="pb-3">
-                                    <label class="mb-2">Hostname</label>
-                                    <input name="hostname" id="hostname"type="text" class="form-control">
+                                    <label class="mb-2">Latitude</label>
+                                    <input name="lat" id="lat"type="number" step=any class="form-control">
+                                </div>
+                                <div class="pb-3">
+                                    <label class="mb-2">Longitude</label>
+                                    <input name="lng" id="lng"type="number" step=any class="form-control">
                                 </div>
                                 <div class="col-lg-12 mt-4">
                                     <div class="d-flex flex-wrap align-items-ceter justify-content-center">
@@ -123,15 +127,17 @@
             var form = $(this).serialize()
 
             $.ajax({
-                url: '/api/host',
+                url: '/api/marker',
                 type: 'POST',
                 dataType: 'json',
                 data: form,
                 success: function(data) {
+                    console.log(data);
+
                     $('#add').modal('hide')
-                    $('#sbuname').val('')
-                    $('#idring').val('')
-                    $('#hostname').val('')
+                    // $('#sbuname').val('')
+                    // $('#idring').val('')
+                    // $('#hostname').val('')
                     table.ajax.reload()
                     Swal.fire({
                         icon: "success",

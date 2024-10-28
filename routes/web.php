@@ -67,6 +67,7 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/marker', [ApiController::class, 'retrieveMarker']);
         Route::get('/marker/{markerid}', [ApiController::class, 'retrieveSingleMarker']);
+        Route::post('/marker', [ApiController::class, 'createMarker']);
 
         Route::get('/sbumarker/{sbu}', [ApiController::class, 'sbuMarker'])->name('sbuMarker');
 
