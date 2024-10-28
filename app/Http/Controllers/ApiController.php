@@ -22,14 +22,14 @@ class ApiController extends Controller
         $sbu_name = $request->post('sbuname');
         $marker_name = $request->post('markername');
         $markerid = Uuid::uuid4()->toString();
-        // $sql = "INSERT INTO markers (markerid, sbu_name, marker_name) VALUES ('$markerid', '$sbu_name', '$marker_name')";
-        // DB::select($sql);
-        // return [$sbu_name, $marker_name, $markerid];
+        $sql = "INSERT INTO markers (markerid, sbu_name, marker_name) VALUES ('$markerid', '$sbu_name', '$marker_name')";
+        DB::select($sql);
+
         // insert point
         $lat = $request->post('lat');
         $lng = $request->post('lng');
         $pointid = Uuid::uuid4()->toString();
-        $sql = "INSERT INTO points (pointid, refid, lat, lng) VALUES ('$pointid', '741fb01a-3a2e-4bc6-b8da-4dce8ebb831f', $lat, $lng)";
+        $sql = "INSERT INTO points (pointid, refid, lat, lng) VALUES ('$pointid', '$markerid', $lat, $lng)";
         DB::select($sql);
         return DB::select("SELECT * FROM markers JOIN points on markerid = refid WHERE markerid = '$markerid'");
     }
