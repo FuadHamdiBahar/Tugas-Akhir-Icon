@@ -4,6 +4,7 @@ use App\Http\Controllers\ApiController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeviceController;
+use App\Http\Controllers\MarkerController;
 use App\Http\Controllers\MasterController;
 use App\Http\Controllers\RingController;
 use App\Http\Controllers\UtilisationController;
@@ -23,7 +24,13 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/documentation', [DashboardController::class, 'documentation'])->name('documentation');
 
-    Route::get('/master', [MasterController::class, 'master'])->name('master')->middleware('is_admin');
+    Route::prefix('/master')->group(function () {
+        Route::get('/hosts', [MasterController::class, 'master'])->name('master')->middleware('is_admin');
+
+        Route::get('/markers', [MarkerController::class, 'list'])->name('marker')->middleware('is_admin');
+
+        Route::get('/markers/{markerid}', [MarkerController::class, 'detail'])->name('markerDetail')->middleware('is_admin');
+    });
 
     Route::get('/interface/{hostid}', [MasterController::class, 'interface'])->name('interface')->middleware('is_admin');
 
@@ -58,7 +65,10 @@ Route::middleware('auth')->group(function () {
         Route::put('/interface', [ApiController::class, 'updateInterface']);
         Route::delete('/interface/{interfaceid}', [ApiController::class, 'deleteInterface']);
 
-        Route::get('/marker/{sbu}', [ApiController::class, 'retrieveMarker'])->name('retrieveMarker');
+        Route::get('/marker', [ApiController::class, 'retrieveMarker']);
+        Route::get('/marker/{markerid}', [ApiController::class, 'retrieveSingleMarker']);
+
+        Route::get('/sbumarker/{sbu}', [ApiController::class, 'sbuMarker'])->name('sbuMarker');
 
         Route::get('/polygon/{sbu}', [ApiController::class, 'retrievePolygon'])->name('retrievePolygon');
 

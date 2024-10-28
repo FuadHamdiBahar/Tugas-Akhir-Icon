@@ -563,7 +563,7 @@
             var markerGroup = L.layerGroup().addTo(map);
             $.ajax({
                 type: 'GET',
-                url: '/api/marker/' + sbu,
+                url: '/api/sbumarker/' + sbu,
                 success: function(data) {
                     console.log(data);
 

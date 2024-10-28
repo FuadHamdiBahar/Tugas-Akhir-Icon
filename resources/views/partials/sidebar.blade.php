@@ -51,7 +51,7 @@
                                 @foreach ($submenu as $s)
                                     <li
                                         class="{{ str_contains(Request::path(), $m->nama_menu) ? (str_contains(Request::path(), $s->nama_submenu) ? 'active' : '') : '' }}">
-                                        <a href="{{ route($m->nama_menu, $s->nama_submenu) }}">
+                                        <a href="/{{ $m->nama_menu }}/{{ $s->nama_submenu }}">
                                             <i class="las la-minus"></i><span>{{ $s->nama_submenu }}</span>
                                         </a>
                                     </li>

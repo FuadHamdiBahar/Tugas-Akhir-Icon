@@ -9,4 +9,6 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 class Marker extends Model
 {
     use HasUuids;
+
+    protected $primaryKey = "markerid";
 }

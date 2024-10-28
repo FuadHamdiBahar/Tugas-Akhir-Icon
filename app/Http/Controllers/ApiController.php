@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ApiModel;
+use App\Models\Marker;
 use App\Models\TrendModel;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use DateTime;
@@ -10,9 +11,24 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Trends;
 use PhpOffice\PhpSpreadsheet\Shared\Trend\Trend;
+use PhpOption\None;
 
 class ApiController extends Controller
 {
+    public function retrieveSingleMarker($markerid)
+    {
+        $data = DB::select("SELECT * FROM markers m JOIN points p on m.markerid = p.refid WHERE m.markerid = '$markerid'");
+        if (count($data) > 0) {
+            return $data[0];
+        }
+        return null;
+    }
+
+    public function retrieveMarker()
+    {
+        return ['data' => Marker::all()];
+    }
+
     public function retrievePolygon($sbu)
     {
         $polyid = DB::select("SELECT p.polygonid FROM polygons p WHERE p.sbu_name = '$sbu'");
@@ -29,7 +45,7 @@ class ApiController extends Controller
         return $result;
     }
 
-    public function retrieveMarker($sbu)
+    public function sbuMarker($sbu)
     {
         // $sql = "select 
         //             temp.*, concat(traffic.host_name, ' -> ', traffic.description, ' : ', traffic.traffic, ' Gbps') as info 
