@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ApiModel;
 use App\Models\Marker;
 use App\Models\Point;
+use App\Models\Polygon;
 use App\Models\TrendModel;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use DateTime;
@@ -17,6 +18,16 @@ use Ramsey\Uuid\Uuid;
 
 class ApiController extends Controller
 {
+    public function retrieveSinglePolygon($polygonid)
+    {
+        return Polygon::getPolygon($polygonid);
+    }
+
+    public function retrievePolygon()
+    {
+        return ['data' => Polygon::all()];
+    }
+
     public function deleteMarker($markerid)
     {
         return Marker::deleteMarker($markerid);
@@ -92,7 +103,7 @@ class ApiController extends Controller
         return ['data' => Marker::all()];
     }
 
-    public function retrievePolygon($sbu)
+    public function sbuPolygon($sbu)
     {
         $polyid = DB::select("SELECT p.polygonid FROM polygons p WHERE p.sbu_name = '$sbu'");
 

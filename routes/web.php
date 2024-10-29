@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\MarkerController;
 use App\Http\Controllers\MasterController;
+use App\Http\Controllers\PolygonController;
 use App\Http\Controllers\RingController;
 use App\Http\Controllers\UtilisationController;
 use Illuminate\Support\Facades\DB;
@@ -30,6 +31,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/markers', [MarkerController::class, 'list'])->name('marker')->middleware('is_admin');
 
         Route::get('/markers/{markerid}', [MarkerController::class, 'detail'])->name('markerDetail')->middleware('is_admin');
+
+        Route::get('/polygons', [PolygonController::class, 'list'])->name('polygon')->middleware('is_admin');
+
+        Route::get('/polygons/{polygonid}', [PolygonController::class, 'detail'])->name('polygonDetail')->middleware('is_admin');
     });
 
     Route::get('/interface/{hostid}', [MasterController::class, 'interface'])->name('interface')->middleware('is_admin');
@@ -71,9 +76,15 @@ Route::middleware('auth')->group(function () {
         Route::put('/marker', [ApiController::class, 'updateMarker']);
         Route::delete('/marker/{markerid}', [ApiController::class, 'deleteMarker']);
 
+        Route::get('/polygon', [ApiController::class, 'retrievePolygon']);
+        Route::get('/polygon/{polygonid}', [ApiController::class, 'retrieveSinglePolygon']);
+        Route::post('/polygon', [ApiController::class, 'createPolygon']);
+        Route::put('/polygon', [ApiController::class, 'updatePolygon']);
+        Route::delete('/polygon/{polygonid}', [ApiController::class, 'deletePolygon']);
+
         Route::get('/sbumarker/{sbu}', [ApiController::class, 'sbuMarker'])->name('sbuMarker');
 
-        Route::get('/polygon/{sbu}', [ApiController::class, 'retrievePolygon'])->name('retrievePolygon');
+        Route::get('/sbupolygon/{sbu}', [ApiController::class, 'sbuPolygon'])->name('retrievePolygon');
 
         // Route::put('/master', [ApiController::class, 'updateMaster']);
         // Route::get('/master', [ApiController::class, 'getMaster']);

@@ -545,7 +545,7 @@
             var polyLineGroup = L.layerGroup().addTo(map);
             $.ajax({
                 type: 'GET',
-                url: '/api/polygon/' + sbu,
+                url: '/api/sbupolygon/' + sbu,
                 success: function(data) {
                     console.log(data);
 
@@ -574,9 +574,6 @@
                             .bindPopup("<b>" + element['marker_name'] + "</b><br>" + element['info']);
                         markerGroup.addLayer(marker)
                     });
-                    // for (var i = 0; i < locations.length; i++) {
-
-                    // }
                 }
             })
 
