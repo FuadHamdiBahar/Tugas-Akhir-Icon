@@ -20,6 +20,7 @@
     <div class="row">
         <div class="col-lg-12 mb-4">
             <div id="map"></div>
+            <div id="info"></div>
         </div>
     </div>
 @endsection
@@ -69,8 +70,10 @@
                         icon: greenIcon
                     }).addTo(map).bindPopup('<b>' + data['marker_name'] + '</b><br>Latitude: ' + data[
                         'lat'] + ' Longitude: ' + data['lng']);
-                    console.log(data);
                     map.flyTo(marker.getLatLng(), 10)
+
+                    $('#info').append('<b>' + data['marker_name'] + '</b> Latitude: ' + data[
+                        'lat'] + ' Longitude: ' + data['lng'])
                 }
             })
         }
