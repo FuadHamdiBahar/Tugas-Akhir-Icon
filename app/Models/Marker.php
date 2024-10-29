@@ -22,9 +22,7 @@ class Marker extends Model
 
     public static function deleteMarker($markerid)
     {
-        Marker::destroy($markerid);
-        $p = Point::where('refid', $markerid)->delete();
-        return $p;
+        return Marker::destroy($markerid);
     }
 
     public static function updateMarker($markerid, $data)

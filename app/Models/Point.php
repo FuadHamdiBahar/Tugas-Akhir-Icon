@@ -15,6 +15,11 @@ class Point extends Model
 
     protected $fillable = ['pointid', 'refid', 'lat', 'lng', 'created_by'];
 
+    public static function deletePoint($refid)
+    {
+        return Point::where('refid', $refid)->delete();
+    }
+
     public static function createPoint($data)
     {
         return Point::create($data);

@@ -18,6 +18,14 @@ use Ramsey\Uuid\Uuid;
 
 class ApiController extends Controller
 {
+    public function deletePolygon($polygonid)
+    {
+        // hapus point
+        Point::deletePoint($polygonid);
+        // hapus polygon
+        return Polygon::deletePolygon($polygonid);
+    }
+
     public function retrieveSinglePolygon($polygonid)
     {
         return Polygon::getPolygon($polygonid);
@@ -30,6 +38,9 @@ class ApiController extends Controller
 
     public function deleteMarker($markerid)
     {
+        // hapus point
+        Point::deletePoint($markerid);
+        // hapus marker
         return Marker::deleteMarker($markerid);
     }
 

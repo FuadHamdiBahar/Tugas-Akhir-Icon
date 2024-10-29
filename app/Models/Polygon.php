@@ -14,6 +14,11 @@ class Polygon extends Model
 
     protected $primaryKey = "polygonid";
 
+    public static function deletePolygon($polygonid)
+    {
+        return Polygon::where('polygonid', $polygonid)->delete();
+    }
+
     public static function getPolygon($polygonid)
     {
         $polygon = Polygon::where('polygonid', $polygonid)->first();

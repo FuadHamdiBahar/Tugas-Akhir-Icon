@@ -198,7 +198,7 @@
             })
         }
 
-        function hapus(markerid) {
+        function hapus(polygonid) {
             Swal.fire({
                 title: "Are you sure?",
                 text: "You won't be able to revert this!",
@@ -211,12 +211,14 @@
                 if (result.isConfirmed) {
                     $.ajax({
                         type: 'DELETE',
-                        url: '/api/marker/' + markerid,
+                        url: '/api/polygon/' + polygonid,
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
                         success: function(data) {
                             console.log(data);
+                            console.log(polygonid);
+
 
                             Swal.fire({
                                 title: "Deleted!",
