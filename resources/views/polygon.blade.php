@@ -6,7 +6,7 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between">
                     <div class="header-title">
-                        <h4 class="card-title">Daftar Hostname</h4>
+                        <h4 class="card-title">Daftar Polygon</h4>
                     </div>
                     <div class="card-header-toolbar d-flex align-items-center">
                         <button class="btn btn-success" type="button" onclick="add()">+Add</button>
@@ -36,7 +36,7 @@
             <div class="modal-content">
                 <div class="modal-body">
                     <div class="popup text-left">
-                        <h4 class="mb-3">Add Marker</h4>
+                        <h4 class="mb-3">Add Polygon</h4>
                         <div class="content create-workform bg-body">
                             <form id="addForm" name="addForm">
                                 @csrf
@@ -88,7 +88,7 @@
             <div class="modal-content">
                 <div class="modal-body">
                     <div class="popup text-left">
-                        <h4 class="mb-3">Edit Host</h4>
+                        <h4 class="mb-3">Edit Polygon</h4>
                         <div class="content create-workform bg-body">
                             <form id="editForm" name="editForm">
                                 @csrf

@@ -61,9 +61,9 @@
                 url: '/api/polygon/' + markerid,
                 success: function(data) {
                     console.log(data);
-                    var polygon = L.polygon(data, {
+                    var polygon = L.polygon(data['points'], {
                         color: 'red'
-                    }).addTo(map);
+                    }).addTo(map).bindPopup('<b>' + data['info'] + '</b>');
                     map.flyToBounds(polygon.getBounds());
 
                 }

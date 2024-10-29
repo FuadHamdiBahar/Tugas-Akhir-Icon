@@ -12,8 +12,11 @@ class Polygon extends Model
 
     protected $fillable = ['sbu_name'];
 
+    protected $primaryKey = "polygonid";
+
     public static function getPolygon($polygonid)
     {
+        $polygon = Polygon::where('polygonid', $polygonid)->first();
         $points = Point::where('refid', $polygonid)->get(['lat', 'lng']);
 
         $result = [];
@@ -21,6 +24,9 @@ class Polygon extends Model
             array_push($result, [$p->lng, $p->lat]);
         }
 
-        return $result;
+        return [
+            'info' => $polygon->polygon_name,
+            'points' => $result
+        ];
     }
 }
