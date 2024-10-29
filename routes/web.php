@@ -55,8 +55,8 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/host', [ApiController::class, 'retrieveHost']);
         Route::get('/host/{host}', [ApiController::class, 'retrieveSingleHost']);
-        Route::put('/host', [ApiController::class, 'updateHost']);
         Route::post('/host', [ApiController::class, 'createHost']);
+        Route::put('/host', [ApiController::class, 'updateHost']);
         Route::delete('/host/{hostid}', [ApiController::class, 'deleteHost']);
 
         Route::get('/interface/{hostid}', [ApiController::class, 'retrieveInterface']);
@@ -68,6 +68,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/marker', [ApiController::class, 'retrieveMarker']);
         Route::get('/marker/{markerid}', [ApiController::class, 'retrieveSingleMarker']);
         Route::post('/marker', [ApiController::class, 'createMarker']);
+        Route::put('/marker', [ApiController::class, 'updateMarker']);
+        Route::delete('/marker/{markerid}', [ApiController::class, 'deleteMarker']);
 
         Route::get('/sbumarker/{sbu}', [ApiController::class, 'sbuMarker'])->name('sbuMarker');
 
