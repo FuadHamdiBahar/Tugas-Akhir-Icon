@@ -42,7 +42,18 @@
                                 @csrf
                                 <div class="pb-3">
                                     <label class="mb-2">SBU Name</label>
-                                    <input name="sbuname" id="sbuname"type="text" class="form-control">
+                                    <select name="sbuname" id="sbuname" class="selectpicker form-control"
+                                        data-style="py-0">
+                                        <option value="sumbagut">Sumbagut</option>
+                                        <option value="sumbagteng">Sumbagteng</option>
+                                        <option value="sumbagsel">Sumbagsel</option>
+                                        <option value="jakarta">Jakarta</option>
+                                        <option value="jabar">Jabar</option>
+                                        <option value="jateng">Jateng</option>
+                                        <option value="jatim">Jatim</option>
+                                        <option value="kalimantan">Kalimantan</option>
+                                        <option value="sulawesi">Sulawesi</option>
+                                    </select>
                                 </div>
                                 <div class="pb-3">
                                     <label class="mb-2">Marker Name</label>
@@ -79,20 +90,24 @@
                     <div class="popup text-left">
                         <h4 class="mb-3">Edit Host</h4>
                         <div class="content create-workform bg-body">
-                            <form id="myForm" name="myForm">
+                            <form id="editForm" name="editForm">
                                 @csrf
-                                <input type="text" name="hid" id="hid" hidden>
+                                <input type="text" name="markerid" id="markerid" hidden>
                                 <div class="pb-3">
                                     <label class="mb-2">SBU Name</label>
                                     <input name="sbuname" id="sbuname"type="text" class="form-control">
                                 </div>
                                 <div class="pb-3">
-                                    <label class="mb-2">Ring</label>
-                                    <input name="idring" id="idring"type="text" class="form-control">
+                                    <label class="mb-2">Marker Name</label>
+                                    <input name="markername" id="markername"type="text" class="form-control">
                                 </div>
                                 <div class="pb-3">
-                                    <label class="mb-2">Hostname</label>
-                                    <input name="hostname" id="hostname"type="text" class="form-control">
+                                    <label class="mb-2">Latitude</label>
+                                    <input name="lat" id="lat"type="number" step=any class="form-control">
+                                </div>
+                                <div class="pb-3">
+                                    <label class="mb-2">Longitude</label>
+                                    <input name="lng" id="lng"type="number" step=any class="form-control">
                                 </div>
                                 <div class="col-lg-12 mt-4">
                                     <div class="d-flex flex-wrap align-items-ceter justify-content-center">
@@ -135,9 +150,10 @@
                     console.log(data);
 
                     $('#add').modal('hide')
-                    // $('#sbuname').val('')
-                    // $('#idring').val('')
-                    // $('#hostname').val('')
+                    $('#add #sbuname').val('')
+                    $('#add #markername').val('')
+                    $('#add #lat').val('')
+                    $('#add #lng').val('')
                     table.ajax.reload()
                     Swal.fire({
                         icon: "success",
@@ -170,9 +186,9 @@
                         width: '15%',
                         render: function(data) {
                             return `<a class='btn btn-small btn-primary' href='/master/markers/` + data + `'><i class="ri-eye-line"></i></a> 
-                            <button class='btn btn-small btn-warning' type='button' onclick='edit(` + data + `)'><i class="ri-pencil-line"></i></button> 
-                            <button class='btn btn-small btn-danger' type='button' onclick="hapus(` + data +
-                                `)"><i class="ri-delete-bin-7-line"></i></button>`
+                            <button class='btn btn-small btn-warning' type='button' onclick="edit('` + data + `')"><i class="ri-pencil-line"></i></button> 
+                            <button class='btn btn-small btn-danger' type='button' onclick="hapus('` + data +
+                                `')"><i class="ri-delete-bin-7-line"></i></button>`
                         }
                     }
                 ],
@@ -182,7 +198,7 @@
             })
         }
 
-        function hapus(hid) {
+        function hapus(markerid) {
             Swal.fire({
                 title: "Are you sure?",
                 text: "You won't be able to revert this!",
@@ -195,11 +211,13 @@
                 if (result.isConfirmed) {
                     $.ajax({
                         type: 'DELETE',
-                        url: '/api/host/' + hid,
+                        url: '/api/marker/' + markerid,
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
                         success: function(data) {
+                            console.log(data);
+
                             Swal.fire({
                                 title: "Deleted!",
                                 text: "Your file has been deleted.",
@@ -212,37 +230,39 @@
             });
         }
 
-        function edit(hid) {
+        function edit(markerid) {
 
             $('#edit').modal('show')
             $.ajax({
-                url: '/api/host/' + hid,
+                url: '/api/marker/' + markerid,
                 type: 'GET',
                 success: function(data) {
-                    console.log(hid);
-                    $('#hid').val(hid)
+                    console.log(markerid);
+                    $('#markerid').val(markerid)
                     $('#edit #sbuname').val(data['sbu_name'])
-                    $('#edit #idring').val(data['ring'])
-                    $('#edit #hostname').val(data['host_name'])
+                    $('#edit #markername').val(data['marker_name'])
+                    $('#edit #lat').val(data['lat'])
+                    $('#edit #lng').val(data['lng'])
                 }
             })
         }
 
         function closeModal() {
             $('#edit').modal('hide')
-            $('#hid').val('')
-            $('#sbuname').val('')
-            $('#idring').val('')
-            $('#hostname').val('')
+            $('#edit #markerid').val('')
+            $('#edit #sbuname').val('')
+            $('#edit #markername').val('')
+            $('#edit #lat').val('')
+            $('#edit #lng').val('')
         }
 
-        $("#myForm").submit(function(e) {
+        $("#editForm").submit(function(e) {
             e.preventDefault(); // avoid to execute the actual submit of the form.
 
             var form = $(this).serialize();
 
             $.ajax({
-                url: '/api/host',
+                url: '/api/marker',
                 type: 'PUT',
                 dataType: 'json',
                 data: form,
