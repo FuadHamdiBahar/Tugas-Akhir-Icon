@@ -82,6 +82,11 @@ Route::middleware('auth')->group(function () {
         Route::put('/polygon', [ApiController::class, 'updatePolygon']);
         Route::delete('/polygon/{polygonid}', [ApiController::class, 'deletePolygon']);
 
+        Route::get('/point/{pointid}', [ApiController::class, 'retrieveSinglePoint']);
+        Route::post('/point', [ApiController::class, 'createPoint']);
+        Route::put('/point', [ApiController::class, 'updatePoint']);
+        Route::delete('/point/{pointid}', [ApiController::class, 'deletePoint']);
+
         Route::get('/sbumarker/{sbu}', [ApiController::class, 'sbuMarker'])->name('sbuMarker');
 
         Route::get('/sbupolygon/{sbu}', [ApiController::class, 'sbuPolygon'])->name('retrievePolygon');

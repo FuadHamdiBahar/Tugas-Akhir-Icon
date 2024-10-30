@@ -10,9 +10,19 @@ class Polygon extends Model
 {
     use HasUuids;
 
-    protected $fillable = ['sbu_name'];
+    protected $fillable = ['sbu_name', 'polygon_name', 'created_by', 'updated_by'];
 
     protected $primaryKey = "polygonid";
+
+    public static function createPolygon($data)
+    {
+        return Polygon::create($data);
+    }
+
+    public static function updatePolygon($polygonid, $data)
+    {
+        Polygon::where('polygonid', $polygonid)->update($data);
+    }
 
     public static function deletePolygon($polygonid)
     {
@@ -22,7 +32,7 @@ class Polygon extends Model
     public static function getPolygon($polygonid)
     {
         $polygon = Polygon::where('polygonid', $polygonid)->first();
-        $points = Point::where('refid', $polygonid)->get(['lat', 'lng']);
+        $points = Point::where('refid', $polygonid)->get();
 
         $result = [];
         foreach ($points as $p) {
@@ -30,8 +40,10 @@ class Polygon extends Model
         }
 
         return [
-            'info' => $polygon->polygon_name,
-            'points' => $result
+            'sbu_name' => $polygon->sbu_name,
+            'polygon_name' => $polygon->polygon_name,
+            'points' => $result,
+            'data' => $points
         ];
     }
 }

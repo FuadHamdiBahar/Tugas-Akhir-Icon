@@ -13,7 +13,7 @@ class Marker extends Model
 
     protected $primaryKey = "markerid";
 
-    protected $fillable = ['markerid', 'sbu_name', 'marker_name', 'created_by'];
+    protected $fillable = ['markerid', 'sbu_name', 'marker_name', 'created_by', 'updated_by'];
 
     public static function createMarker($data)
     {

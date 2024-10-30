@@ -11,13 +11,69 @@ use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Trends;
-use PhpOffice\PhpSpreadsheet\Shared\Trend\Trend;
-use PhpOption\None;
-use Ramsey\Uuid\Uuid;
 
 class ApiController extends Controller
 {
+    public function deletePoint($pointid)
+    {
+        return Point::deletePoint($pointid);
+    }
+
+    public function updatePoint(Request $request)
+    {
+        $pointid = $request->input('pointid');
+        $email = session('email');
+        $data = [
+            'lat' => $request->input('lat'),
+            'lng' => $request->input('lng'),
+            'updated_by' => $email,
+        ];
+
+        return Point::updatePoint($pointid, $data);
+    }
+
+    public function createPoint(Request $request)
+    {
+        $email = session('email');
+        $data = [
+            'refid' => $request->post('refid'),
+            'lat' => $request->post('lat'),
+            'lng' => $request->post('lng'),
+            'created_by' => $email,
+            'updated_by' => $email
+        ];
+
+        return Point::createPoint($data);
+    }
+
+    public function retrieveSinglePoint($pointid)
+    {
+        return Point::getPoint($pointid);
+    }
+
+    public function createPolygon(Request $request)
+    {
+        $email = session('email');
+        $data = [
+            'sbu_name' => $request->post('sbuname'),
+            'polygon_name' => $request->post('polygonname'),
+            'created_by' => $email,
+            'updated_by' => $email,
+        ];
+
+        return Polygon::createPolygon($data);
+    }
+
+    public function updatePolygon(Request $request)
+    {
+        $polygonid = $request->input('polygonid');
+        $data = [
+            'sbu_name' => $request->input('sbuname'),
+            'polygon_name' => $request->input('polygonname'),
+        ];
+        Polygon::updatePolygon($polygonid, $data);
+        return $request;
+    }
     public function deletePolygon($polygonid)
     {
         // hapus point
@@ -39,7 +95,7 @@ class ApiController extends Controller
     public function deleteMarker($markerid)
     {
         // hapus point
-        Point::deletePoint($markerid);
+        Point::deletePointByRefId($markerid);
         // hapus marker
         return Marker::deleteMarker($markerid);
     }
@@ -64,7 +120,7 @@ class ApiController extends Controller
             'lng' => $request->post('lng'),
             'updated_by' => $email
         ];
-        Point::updatePoint($markerid, $data);
+        Point::updatePointByRefId($markerid, $data);
         return $request;
     }
 
@@ -73,23 +129,19 @@ class ApiController extends Controller
         // email
         $email = session('email');
 
-        // create marker id
-        $markerid = Uuid::uuid4()->toString();
-
         // create marker array data
         $data = [
-            'markerid' => $markerid,
             'sbu_name' => $request->post('sbuname'),
             'marker_name' => $request->post('markername'),
-            'created_by' => $email
+            'created_by' => $email,
+            'updated_by' => $email,
         ];
 
-        Marker::createMarker($data);
+        $newMarker = Marker::createMarker($data);
 
         // create point array data
         $data = [
-            'pointid' => Uuid::uuid4()->toString(),
-            'refid' => $markerid,
+            'refid' => $newMarker->markerid,
             'lat' => $request->post('lat'),
             'lng' => $request->post('lng'),
             'created_by' => $email

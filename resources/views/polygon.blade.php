@@ -44,6 +44,7 @@
                                     <label class="mb-2">SBU Name</label>
                                     <select name="sbuname" id="sbuname" class="selectpicker form-control"
                                         data-style="py-0">
+                                        <option value="" selected>-PILIH SBU-</option>
                                         <option value="sumbagut">Sumbagut</option>
                                         <option value="sumbagteng">Sumbagteng</option>
                                         <option value="sumbagsel">Sumbagsel</option>
@@ -56,16 +57,8 @@
                                     </select>
                                 </div>
                                 <div class="pb-3">
-                                    <label class="mb-2">Marker Name</label>
-                                    <input name="markername" id="markername"type="text" class="form-control">
-                                </div>
-                                <div class="pb-3">
-                                    <label class="mb-2">Latitude</label>
-                                    <input name="lat" id="lat"type="number" step=any class="form-control">
-                                </div>
-                                <div class="pb-3">
-                                    <label class="mb-2">Longitude</label>
-                                    <input name="lng" id="lng"type="number" step=any class="form-control">
+                                    <label class="mb-2">Polygon Name</label>
+                                    <input name="polygonname" id="polygonname"type="text" class="form-control">
                                 </div>
                                 <div class="col-lg-12 mt-4">
                                     <div class="d-flex flex-wrap align-items-ceter justify-content-center">
@@ -92,23 +85,28 @@
                         <div class="content create-workform bg-body">
                             <form id="editForm" name="editForm">
                                 @csrf
-                                <input type="text" name="markerid" id="markerid" hidden>
+                                <input type="text" name="polygonid" id="polygonid" hidden>
                                 <div class="pb-3">
                                     <label class="mb-2">SBU Name</label>
-                                    <input name="sbuname" id="sbuname"type="text" class="form-control">
+                                    <select name="sbuname" id="sbuname" class="selectpicker form-control"
+                                        data-style="py-0">
+                                        <option value="" selected>-PILIH SBU-</option>
+                                        <option value="sumbagut">Sumbagut</option>
+                                        <option value="sumbagteng">Sumbagteng</option>
+                                        <option value="sumbagsel">Sumbagsel</option>
+                                        <option value="jakarta">Jakarta</option>
+                                        <option value="jabar">Jabar</option>
+                                        <option value="jateng">Jateng</option>
+                                        <option value="jatim">Jatim</option>
+                                        <option value="kalimantan">Kalimantan</option>
+                                        <option value="sulawesi">Sulawesi</option>
+                                    </select>
                                 </div>
                                 <div class="pb-3">
-                                    <label class="mb-2">Marker Name</label>
-                                    <input name="markername" id="markername"type="text" class="form-control">
+                                    <label class="mb-2">Polygon Name</label>
+                                    <input name="polygonname" id="polygonname"type="text" class="form-control">
                                 </div>
-                                <div class="pb-3">
-                                    <label class="mb-2">Latitude</label>
-                                    <input name="lat" id="lat"type="number" step=any class="form-control">
-                                </div>
-                                <div class="pb-3">
-                                    <label class="mb-2">Longitude</label>
-                                    <input name="lng" id="lng"type="number" step=any class="form-control">
-                                </div>
+
                                 <div class="col-lg-12 mt-4">
                                     <div class="d-flex flex-wrap align-items-ceter justify-content-center">
                                         <button class="btn btn-primary mr-4" data-dismiss="modal" type="button"
@@ -142,7 +140,7 @@
             var form = $(this).serialize()
 
             $.ajax({
-                url: '/api/marker',
+                url: '/api/polygon',
                 type: 'POST',
                 dataType: 'json',
                 data: form,
@@ -151,9 +149,7 @@
 
                     $('#add').modal('hide')
                     $('#add #sbuname').val('')
-                    $('#add #markername').val('')
-                    $('#add #lat').val('')
-                    $('#add #lng').val('')
+                    $('#add #polygonname').val('')
                     table.ajax.reload()
                     Swal.fire({
                         icon: "success",
@@ -232,28 +228,26 @@
             });
         }
 
-        function edit(markerid) {
+        function edit(polygonid) {
 
             $('#edit').modal('show')
             $.ajax({
-                url: '/api/marker/' + markerid,
+                url: '/api/polygon/' + polygonid,
                 type: 'GET',
                 success: function(data) {
-                    console.log(markerid);
-                    $('#markerid').val(markerid)
-                    $('#edit #sbuname').val(data['sbu_name'])
-                    $('#edit #markername').val(data['marker_name'])
-                    $('#edit #lat').val(data['lat'])
-                    $('#edit #lng').val(data['lng'])
+                    console.log(data);
+                    $('#polygonid').val(polygonid)
+                    $("#editForm #sbuname").val(data['sbu_name']).change();
+                    $('#edit #polygonname').val(data['polygon_name'])
                 }
             })
         }
 
         function closeModal() {
             $('#edit').modal('hide')
-            $('#edit #markerid').val('')
+            $('#edit #polygonid').val('')
             $('#edit #sbuname').val('')
-            $('#edit #markername').val('')
+            $('#edit #polygonname').val('')
             $('#edit #lat').val('')
             $('#edit #lng').val('')
         }
@@ -264,7 +258,7 @@
             var form = $(this).serialize();
 
             $.ajax({
-                url: '/api/marker',
+                url: '/api/polygon',
                 type: 'PUT',
                 dataType: 'json',
                 data: form,

@@ -44,6 +44,7 @@
                                     <label class="mb-2">SBU Name</label>
                                     <select name="sbuname" id="sbuname" class="selectpicker form-control"
                                         data-style="py-0">
+                                        <option value="">-PILIH SBU-</option>
                                         <option value="sumbagut">Sumbagut</option>
                                         <option value="sumbagteng">Sumbagteng</option>
                                         <option value="sumbagsel">Sumbagsel</option>
@@ -95,7 +96,19 @@
                                 <input type="text" name="markerid" id="markerid" hidden>
                                 <div class="pb-3">
                                     <label class="mb-2">SBU Name</label>
-                                    <input name="sbuname" id="sbuname"type="text" class="form-control">
+                                    <select name="sbuname" id="sbuname" class="selectpicker form-control"
+                                        data-style="py-0">
+                                        <option value="">-PILIH SBU-</option>
+                                        <option value="sumbagut">Sumbagut</option>
+                                        <option value="sumbagteng">Sumbagteng</option>
+                                        <option value="sumbagsel">Sumbagsel</option>
+                                        <option value="jakarta">Jakarta</option>
+                                        <option value="jabar">Jabar</option>
+                                        <option value="jateng">Jateng</option>
+                                        <option value="jatim">Jatim</option>
+                                        <option value="kalimantan">Kalimantan</option>
+                                        <option value="sulawesi">Sulawesi</option>
+                                    </select>
                                 </div>
                                 <div class="pb-3">
                                     <label class="mb-2">Marker Name</label>
@@ -237,9 +250,9 @@
                 url: '/api/marker/' + markerid,
                 type: 'GET',
                 success: function(data) {
-                    console.log(markerid);
+                    console.log(data['sbu_name']);
                     $('#markerid').val(markerid)
-                    $('#edit #sbuname').val(data['sbu_name'])
+                    $("#editForm #sbuname").val(data['sbu_name']).change();
                     $('#edit #markername').val(data['marker_name'])
                     $('#edit #lat').val(data['lat'])
                     $('#edit #lng').val(data['lng'])
