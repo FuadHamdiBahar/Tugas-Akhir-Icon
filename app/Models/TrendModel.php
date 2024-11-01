@@ -221,6 +221,7 @@ class TrendModel
             where h.sbu_name = '$sbu'
             and it.status = 1
             and wt.month = '$month'
+            and wt.year = year(now())
             group by h.ring, it.interface_name 
         ) raw group by raw.ring
         order by name";
@@ -261,6 +262,7 @@ class TrendModel
                 join (select * from myapp.weekly_trends wt order by wt.month, wt.week_number) wt on it.interfaceid = wt.interfaceid 
                 where h.sbu_name = '$sbu'
                 and it.status = 1
+                and wt.year = YEAR(NOW())
                 group by h.ring, it.interface_name, wt.month 
             ) raw group by raw.ring, raw.month
             order by raw.ring, raw.month
@@ -350,7 +352,7 @@ class TrendModel
         join myapp.interfaces it on it.hostid = h.hostid 
         join myapp.weekly_trends wt on it.interfaceid = wt.interfaceid 
         where h.sbu_name = '$sbu'
-        and wt.`month` = MONTH(CURRENT_DATE()) and it.status = 1
+        and wt.`month` = MONTH(CURRENT_DATE()) and it.status = 1 and wt.year = year(now())
         group by h.host_name, it.interface_name, h.ring, it.capacity
         order by ring";
 
@@ -390,6 +392,7 @@ class TrendModel
                         and i2.status = 1
                         and wt.week_number >= $fw
                         and wt.week_number <= $cw
+                        and wt.year = YEAR(NOW())
                         group by h.sbu_name, h.ring, h.host_name, i2.interface_name, i2.description, wt.week_number
                     ) raw join myapp.weekly_trends wt on raw.wtid = wt.id 
                     group by raw.ring, wt.week_number
