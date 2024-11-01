@@ -146,7 +146,7 @@ Route::middleware('auth')->group(function () {
 
 
 // untuk menambahkan hostname terminating dari excel
-// Route::get('/check', function () {
+// Route::get('/addhosterm', function () {
 //     ini_set('max_execution_time', 600);
 //     function insertInterface($hostid, $interface_name, $description, $capacity, $status)
 //     {
@@ -199,3 +199,7 @@ Route::middleware('auth')->group(function () {
 
 //     return $sbu_name;
 // });
+
+Route::get('/makepass', function () {
+    return bcrypt('hari.haryono');
+});

@@ -37,7 +37,7 @@ class UpdateCron extends Command
         $year = $date->format('Y');
 
         // get latest weekly trend
-        $query = "delete from weekly_trends wt where wt.week_number = $weeknumber";
+        $query = "delete from weekly_trends wt where wt.week_number = $weeknumber and wt.year = $year";
         DB::select($query);
 
         // get hostlist
@@ -70,10 +70,10 @@ class UpdateCron extends Command
             // get the latest weekly traffic
             $sql = "
             select 
-                raw.week_number, MAX(raw.value_max) as traffic
+                raw.week_number, MAX(raw.value_max) as traffic, raw.year
             from (
                 select 
-                    to_char(to_timestamp(t.clock), 'IW') as week_number, t.value_max, t.clock 
+                    to_char(to_timestamp(t.clock), 'IW') as week_number, t.value_max, to_char(to_timestamp(t.clock), 'YYYY') as year
                 from hosts h 
                 join (
                     select 
@@ -85,8 +85,8 @@ class UpdateCron extends Command
                 where h.name like '%$h->origin%'
                 AND i.name like '%$h->terminating%'
                 and i.name like '%$h->interface%'
-            ) raw where raw.week_number = '$weeknumber'
-            group by raw.week_number";
+            ) raw where raw.week_number = '$weeknumber' and raw.year = '$year'
+            group by raw.week_number, raw.year";
 
             $data = DB::connection('second_db')->select($sql);
 
