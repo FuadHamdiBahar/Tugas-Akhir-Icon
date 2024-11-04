@@ -345,7 +345,7 @@
                         resulttag += "<td>" + element.host_name + "</td>"
                         resulttag += "<td>" + element.interface_name + "</td>"
                         resulttag += "<td>" + element.description + "</td>"
-                        resulttag += "<td>" + element.traffic + "/" + element.capacity "</td>"
+                        resulttag += "<td>" + element.traffic + "/" + element.capacity + "</td>"
                         resulttag += "</tr>"
                     });
 
