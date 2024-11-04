@@ -101,6 +101,7 @@
                         <th>Ring</th>
                         <th>Hostname</th>
                         <th>Interface</th>
+                        <th>Terminating</th>
                         <th>Utilisation (Gbps)</th>
                         <th>Capacity (Gbps)</th>
                     </tr>
@@ -344,6 +345,7 @@
                         resulttag += "<td>" + element.ring + "</td>"
                         resulttag += "<td>" + element.host_name + "</td>"
                         resulttag += "<td>" + element.interface_name + "</td>"
+                        resulttag += "<td>" + element.description + "</td>"
                         resulttag += "<td>" + element.traffic + "</td>"
                         resulttag += "<td>" + element.capacity + "</td>"
                         resulttag += "</tr>"

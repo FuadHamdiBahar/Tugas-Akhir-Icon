@@ -288,7 +288,7 @@ class TrendModel
             join myapp.weekly_trends wt on it.interfaceid = wt.interfaceid 
             where it.interface_name != 'TIDAK ADA'
             and it.status = 1
-            and wt.year = '2024'
+            and wt.year = year(now())
             group by h.host_name, it.interface_name, h.ring, it.capacity, wt.`month`  
             order by h.host_name, wt.month
         ) res group by res.month order by res.month";
@@ -335,7 +335,7 @@ class TrendModel
                     and it.interface_name != 'TIDAK ADA'
                     and it.status = 1
                     and wt.month = $month
-                    and wt.year = '$year'
+                    and wt.year = year(now())
                     group by h.host_name, it.interface_name, h.ring, it.capacity 
                 ) raw";
         return DB::select($sql);
@@ -345,7 +345,7 @@ class TrendModel
     {
         $sql = "
         select 
-            h.ring, h.host_name, it.interface_name,
+            h.ring, h.host_name, it.interface_name, it.description,
             round(it.capacity / 1000000000, 1) as capacity, 
             round(max(wt.traffic) / 1000000000, 1) as traffic
         from myapp.hosts h 
@@ -353,7 +353,7 @@ class TrendModel
         join myapp.weekly_trends wt on it.interfaceid = wt.interfaceid 
         where h.sbu_name = '$sbu'
         and wt.`month` = MONTH(CURRENT_DATE()) and it.status = 1 and wt.year = year(now())
-        group by h.host_name, it.interface_name, h.ring, it.capacity
+        group by h.host_name, it.interface_name, h.ring, it.capacity, it.description
         order by ring";
 
         return DB::select($sql);
@@ -415,6 +415,7 @@ class TrendModel
             where h.sbu_name = '$sbu_name'
             and h.ring = '$ring'
             and wt.`month` = $before
+            and wt.year = year(now())
             group by h.sbu_name, h.ring, h.host_name, it.interface_name, wt.`month`
         ) res group by res.sbu_name, res.ring
         ";
@@ -444,6 +445,7 @@ class TrendModel
                 WHERE it.interface_name != 'TIDAK ADA'
                 AND it.status = 1
                 AND wt.`month` = $month
+                AND wt.year = year(now())
                 GROUP BY h.ring, it.interface_name, wt.month, h.sbu_name 
             ) raw 
             GROUP BY raw.ring, raw.month, raw.sbu_name
@@ -482,6 +484,7 @@ class TrendModel
                 WHERE it.interface_name != 'TIDAK ADA'
                 AND it.status = 1
                 AND wt.`month` = $month
+                AND wt.year = YEAR(NOW())
                 GROUP BY h.ring, it.interface_name, wt.month, h.sbu_name 
             ) raw 
             GROUP BY raw.ring, raw.month, raw.sbu_name
@@ -513,6 +516,7 @@ class TrendModel
                         join myapp.interfaces it on it.hostid = h.hostid 
                         join myapp.weekly_trends wt on it.interfaceid = wt.interfaceid 
                         where it.status = 1
+                        and wt.year = year(now())
                     ) raw group by raw.month, raw.interface_name, raw.host_name, raw.ring, raw.sbu_name
                 ) res group by res.sbu_name, res.ring, res.month
                 order by res.month
