@@ -102,8 +102,7 @@
                         <th>Hostname</th>
                         <th>Interface</th>
                         <th>Terminating</th>
-                        <th>Utilisation (Gbps)</th>
-                        <th>Capacity (Gbps)</th>
+                        <th>U / C (Gbps)</th>
                     </tr>
                 </thead>
                 <tbody class="ligth-body">
@@ -346,8 +345,7 @@
                         resulttag += "<td>" + element.host_name + "</td>"
                         resulttag += "<td>" + element.interface_name + "</td>"
                         resulttag += "<td>" + element.description + "</td>"
-                        resulttag += "<td>" + element.traffic + "</td>"
-                        resulttag += "<td>" + element.capacity + "</td>"
+                        resulttag += "<td>" + element.traffic + "/" + element.capacity "</td>"
                         resulttag += "</tr>"
                     });
 
