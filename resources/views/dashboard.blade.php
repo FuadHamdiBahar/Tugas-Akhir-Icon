@@ -132,7 +132,7 @@
 
 
 @section('script')
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    {{-- <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script> --}}
     <script>
         $(document).ready(function() {
             var month = "{{ date('m') }}"
@@ -493,11 +493,12 @@
         }
 
         function topFive(month) {
-
             $.ajax({
                 type: 'GET',
                 url: '/api/top',
                 success: function(data) {
+                    console.log(data);
+
                     var options = {
                         series: [{
                             name: 'Actual',
