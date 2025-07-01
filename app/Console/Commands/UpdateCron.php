@@ -42,13 +42,13 @@ class UpdateCron extends Command
 
         // get hostlist
         $query = "
-                    select 
-                        h.ring, h.host_name as origin, 
-                        it.interfaceid, it.interface_name as interface, 
-                        it.description as terminating
-                    from myapp.hosts h  
-                    join myapp.interfaces it on it.hostid = h.hostid
-                    order by ring";
+                        select 
+                            h.ring, h.host_name as origin, 
+                            it.interfaceid, it.interface_name as interface, 
+                            it.description as terminating
+                        from myapp.hosts h  
+                        join myapp.interfaces it on it.hostid = h.hostid
+                        order by ring";
         $hosts = DB::select($query);
 
         // long process
