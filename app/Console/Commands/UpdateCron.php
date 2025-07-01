@@ -51,7 +51,7 @@ class UpdateCron extends Command
                         order by ring";
         $hosts = DB::select($query);
 
-        // long process
+        // long process to submit
         foreach ($hosts as $h) {
             // find the interface id
             // $sql = "
