@@ -527,7 +527,7 @@
         });
 
         var greenIcon = new LeafIcon({
-            iconUrl: '/images/red.png',
+            iconUrl: '/assets/images/red.png',
             // shadowUrl: 'http://leafletjs.com/examples/custom-icons/leaf-shadow.png'
         })
 
