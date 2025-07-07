@@ -4,10 +4,9 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class AdminMiddleware
+class SuperAdminMiddleware
 {
     /**
      * Handle an incoming request.
@@ -16,15 +15,9 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-
-        if (session('usertype') == 'admin') {
-            return $next($request);
-        }
-
         if (session('usertype') == 'superadmin') {
             return $next($request);
         }
-
         abort(401);
     }
 }

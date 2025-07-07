@@ -7,37 +7,40 @@ use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\MarkerController;
 use App\Http\Controllers\MasterController;
 use App\Http\Controllers\PolygonController;
+use App\Http\Controllers\PsSarpenController;
 use App\Http\Controllers\RingController;
 use App\Http\Controllers\UtilisationController;
-use Illuminate\Support\Facades\DB;
+use App\Models\PSSarpen;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth')->group(function () {
-    Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
+    Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard')->middleware('is_admin');
 
-    Route::get('/utilization/{sbu}', [UtilisationController::class, 'utilisation'])->name('utilization');
+    Route::get('/utilization/{sbu}', [UtilisationController::class, 'utilisation'])->name('utilization')->middleware('is_admin');
 
-    Route::get('/{sbu}/ring/{ring}', [UtilisationController::class, 'ringUtilisation'])->name('ringUtilisation');
+    Route::get('/{sbu}/ring/{ring}', [UtilisationController::class, 'ringUtilisation'])->name('ringUtilisation')->middleware('is_admin');
 
-    Route::get('/device/{origin}/{terminating}', [DeviceController::class, 'index'])->name('device');
+    Route::get('/device/{origin}/{terminating}', [DeviceController::class, 'index'])->name('device')->middleware('is_admin');
 
-    Route::get('/summary/{sbu}', [RingController::class, 'ring'])->name('summary');
+    Route::get('/summary/{sbu}', [RingController::class, 'ring'])->name('summary')->middleware('is_admin');
 
     Route::get('/documentation', [DashboardController::class, 'documentation'])->name('documentation');
 
     Route::prefix('/master')->group(function () {
-        Route::get('/hosts', [MasterController::class, 'master'])->name('master')->middleware('is_admin');
+        Route::get('/hosts', [MasterController::class, 'master'])->name('master')->middleware('is_superadmin');
 
-        Route::get('/markers', [MarkerController::class, 'list'])->name('marker')->middleware('is_admin');
+        Route::get('/markers', [MarkerController::class, 'list'])->name('marker')->middleware('is_superadmin');
 
-        Route::get('/markers/{markerid}', [MarkerController::class, 'detail'])->name('markerDetail')->middleware('is_admin');
+        Route::get('/markers/{markerid}', [MarkerController::class, 'detail'])->name('markerDetail')->middleware('is_superadmin');
 
-        Route::get('/polygons', [PolygonController::class, 'list'])->name('polygon')->middleware('is_admin');
+        Route::get('/polygons', [PolygonController::class, 'list'])->name('polygon')->middleware('is_superadmin');
 
-        Route::get('/polygons/{polygonid}', [PolygonController::class, 'detail'])->name('polygonDetail')->middleware('is_admin');
+        Route::get('/polygons/{polygonid}', [PolygonController::class, 'detail'])->name('polygonDetail')->middleware('is_superadmin');
     });
 
     Route::get('/interface/{hostid}', [MasterController::class, 'interface'])->name('interface')->middleware('is_admin');
+
+    Route::get('/improvement/pssarpen', [PsSarpenController::class, 'index'])->middleware('is_admin');
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
@@ -95,7 +98,6 @@ Route::middleware('auth')->group(function () {
         // Route::get('/master', [ApiController::class, 'getMaster']);
         // Route::get('/master/{hid}/{iid}', [ApiController::class, 'getSingleMaster']);
 
-
         Route::get('/top', [ApiController::class, 'top']);
         Route::get('/topSbu', [ApiController::class, 'topEachSBU']);
         Route::get('/topMonth', [ApiController::class, 'topEachMonth']);
@@ -103,6 +105,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/totalUtilization/{year}/{month}', [ApiController::class, 'totalUtilization']);
         Route::get('/totalUtilization/{year}', [ApiController::class, 'totalUtilizationEachMonth']);
         Route::get('/localUtilization/{sbu_name}', [ApiController::class, 'localUtilization']);
+
+        // PS Sarpen
+        Route::get('/pssarpen', [ApiController::class, 'pssarpen'])->name('pssarpen.get');
     });
 });
 

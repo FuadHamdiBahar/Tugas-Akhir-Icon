@@ -6,6 +6,9 @@ use App\Models\ApiModel;
 use App\Models\Marker;
 use App\Models\Point;
 use App\Models\Polygon;
+use App\Models\Pop;
+use App\Models\pssarpen;
+use App\Models\Sbu;
 use App\Models\TrendModel;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use DateTime;
@@ -14,6 +17,12 @@ use Illuminate\Support\Facades\DB;
 
 class ApiController extends Controller
 {
+    public static function pssarpen(Request $request)
+    {
+        $data['data'] = pssarpen::getPsSarpen($request);
+        return $data;
+    }
+
     public function deletePoint($pointid)
     {
         return Point::deletePoint($pointid);
