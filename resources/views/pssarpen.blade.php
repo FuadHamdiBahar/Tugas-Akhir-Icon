@@ -30,14 +30,35 @@
                 </div>
             </div>
         </div>
+
         <div class="col-lg-12 mb-4">
             <div id="map"></div>
         </div>
 
-        <form>
-            <input type="text" name="tahun" id="tahun">
-            <button name="myButton" id="myButton"">Submit</button>
-        </form>
+        <div class="col-lg-12">
+            <form id="myForm">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="sbu">SBU</label>
+                        <input type="text" name="sbu" id="sbu" class="form-control">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="pop_name">POP Name</label>
+                        <input type="text" name="pop_name" id="pop_name" class="form-control">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="perangkat">Device Name</label>
+                        <input type="text" name="perangkat" id="perangkat" class="form-control">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="tahun">Year</label>
+                        <input type="text" name="tahun" id="tahun" class="form-control">
+                    </div>
+                </div>
+                <button name="myButton" id="myButton" class="btn btn-primary mt-2">Submit</button>
+                <button name="resetButton" id="resetButton" class="btn btn-primary mt-2" onclick="reset()">Reset</button>
+            </form>
+        </div>
 
         <div class="card-body">
 
@@ -74,26 +95,36 @@
 @section('script')
     <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
     <script type="text/javascript">
-        $(document).ready(function() {
-            // map('sumbagut')
+        var map = new L.Map('map');
+        map.setView(new L.LatLng(-4.668052508873149, 117.75463251366503), 5);
 
-            let url = '/api/pssarpen'
-            getData(url)
+        $(document).ready(function() {
+            createDataTable('/api/pssarpen')
+            createMap('/api/pssarpen/marker')
         })
 
         $('#myButton').click(function(event) {
             event.preventDefault(); // Prevents the default form submission
-            var tahun = $('#tahun').val();
-            url = '/api/pssarpen?tahun=' + tahun
-            getData(url)
+            var str = $("form").serialize();
+
+            console.log(str);
+
+            tableUrl = '/api/pssarpen?' + str
+            markerUrl = '/api/pssarpen/marker?' + str
+
+            // reset layer 
+            map.eachLayer((layer) => {
+                layer.remove();
+            });
+
+            createDataTable(tableUrl)
+            createMap(markerUrl)
         });
 
-        function getData(url) {
+        function createDataTable(tableUrl) {
             new DataTable('#example', {
-                ajax: url,
-                success: function(data) {
-                    console.log(data);
-                },
+                ajax: tableUrl,
+                // data: data['data'],
                 columns: [{
                         data: 'pop.sbu_id'
                     },
@@ -117,67 +148,20 @@
             });
         }
 
-        function map(sbu) {
-            map = L.map('map', {
-                center: [-5.3777885489077875, 117.28861305443667],
-                zoom: 5
-            });
-
-            var LeafIcon = L.Icon.extend({
-                options: {
-                    iconSize: [20, 20],
-                }
-            });
-
-            var greenIcon = new LeafIcon({
-                iconUrl: '/assets/images/red.png',
-            })
-
+        function createMap(markerUrl) {
             osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 19,
                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            }).addTo(map);
+            })
+
+            map.addLayer(osm)
 
             googleStreets = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
                 maxZoom: 20,
                 subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
-            }).addTo(map)
-
-            // create a red polyline from an array of LatLng points
-            // create a red polyline from an array of arrays of LatLng points
-            var latlngs = null;
-            var polyLineGroup = L.layerGroup().addTo(map);
-            $.ajax({
-                type: 'GET',
-                url: '/api/sbupolygon/' + sbu,
-                success: function(data) {
-
-                    latlngs = data
-                    var polyline = L.polyline(latlngs, {
-                        color: 'red'
-                    });
-                    polyLineGroup.addLayer(polyline)
-                    // zoom the map to the polyline
-                    map.flyToBounds(polyline.getBounds());
-                }
             })
 
-            var locations = []
-            var markerGroup = L.layerGroup().addTo(map);
-            $.ajax({
-                type: 'GET',
-                url: '/api/sbumarker/' + sbu,
-                success: function(data) {
-
-                    data.forEach(element => {
-                        marker = new L.marker([element['lng'], element['lat']], {
-                                icon: greenIcon
-                            })
-                            .bindPopup("<b>" + element['marker_name'] + "</b><br>" + element['info']);
-                        markerGroup.addLayer(marker)
-                    });
-                }
-            })
+            map.addLayer(googleStreets)
 
 
             var baseLayers = {
@@ -185,13 +169,42 @@
                 "GoogleStreet": googleStreets,
             };
 
-            var overlays = {
-                "Marker": markerGroup,
-                "Polyline": polyLineGroup
-            };
+            var LeafIcon = L.Icon.extend({
+                options: {
+                    iconSize: [10, 10],
+                }
+            });
 
-            L.control.layers(baseLayers, overlays).addTo(map);
-            L.Control.geocoder().addTo(map);
+            var greenIcon = new LeafIcon({
+                iconUrl: '/assets/images/red.png',
+            })
+
+            $.ajax({
+                url: markerUrl,
+                success: function(data) {
+                    data.forEach(pop => {
+                        marker = new L.marker([pop.lat, pop.lng], {
+                            icon: greenIcon
+                        }).addTo(map)
+
+                        var teks = "<b>" + pop.pop_name + "</b>"
+                        pop.pssarpen.forEach(sarpen => {
+                            teks += "<br>" + sarpen.perangkat
+                        })
+
+                        marker.bindPopup(teks)
+                    });
+
+                }
+            })
+
+
         }
+
+        $('#resetButton').click(function(event) {
+            event.preventDefault(); // Prevents the default form submission
+            createDataTable('/api/pssarpen')
+            createMap('/api/pssarpen/marker')
+        });
     </script>
 @endsection

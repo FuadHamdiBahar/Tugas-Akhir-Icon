@@ -17,8 +17,14 @@ use Illuminate\Support\Facades\DB;
 
 class ApiController extends Controller
 {
-    public static function pssarpen(Request $request)
+    public function pssarpenMarker(Request $request)
     {
+        return Pop::getPopSarpen($request);
+    }
+
+    public function pssarpen(Request $request)
+    {
+        // return pssarpen::with('pop')->with('sbu')->get();
         $data['data'] = pssarpen::getPsSarpen($request);
         return $data;
     }

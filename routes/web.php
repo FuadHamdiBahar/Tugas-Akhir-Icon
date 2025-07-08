@@ -108,6 +108,7 @@ Route::middleware('auth')->group(function () {
 
         // PS Sarpen
         Route::get('/pssarpen', [ApiController::class, 'pssarpen'])->name('pssarpen.get');
+        Route::get('/pssarpen/marker', [ApiController::class, 'pssarpenMarker']);
     });
 });
 
