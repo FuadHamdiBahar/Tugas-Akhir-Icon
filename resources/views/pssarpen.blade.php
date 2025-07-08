@@ -13,6 +13,36 @@
         #map {
             height: 600px;
         }
+
+        .red-circle {
+            background-color: #e72b2b;
+            border: 1px solid rgb(77, 67, 67);
+            height: 100px;
+            border-radius: 50%;
+            -moz-border-radius: 50%;
+            -webkit-border-radius: 50%;
+            width: 100px;
+        }
+
+        .blue-circle {
+            background-color: #2b38e7;
+            border: 1px solid rgb(77, 67, 67);
+            height: 100px;
+            border-radius: 50%;
+            -moz-border-radius: 50%;
+            -webkit-border-radius: 50%;
+            width: 100px;
+        }
+
+        .green-circle {
+            background-color: #2b38e7;
+            border: 1px solid rgb(77, 67, 67);
+            height: 100px;
+            border-radius: 50%;
+            -moz-border-radius: 50%;
+            -webkit-border-radius: 50%;
+            width: 100px;
+        }
     </style>
 @endsection
 
@@ -179,18 +209,42 @@
                 iconUrl: '/assets/images/red.png',
             })
 
+
+            var myIcon = L.divIcon({
+                className: 'circle'
+            });
+
+
             $.ajax({
                 url: markerUrl,
                 success: function(data) {
                     data.forEach(pop => {
-                        marker = new L.marker([pop.lat, pop.lng], {
-                            icon: greenIcon
-                        }).addTo(map)
-
+                        var year = 0
                         var teks = "<b>" + pop.pop_name + "</b>"
+
                         pop.pssarpen.forEach(sarpen => {
                             teks += "<br>" + sarpen.perangkat
+                            if (sarpen.tahun > year) {
+                                year = sarpen.tahun
+                            }
                         })
+
+                        var className = ''
+
+                        if (year == 2022) {
+                            className = 'red-circle'
+                        } else if (year == 2023) {
+                            className = 'blue-circle'
+                        } else {
+                            className = 'green-circle'
+                        }
+                        console.log(year, className);
+
+                        marker = new L.marker([pop.lat, pop.lng], {
+                            icon: L.divIcon({
+                                className: className
+                            })
+                        }).addTo(map)
 
                         marker.bindPopup(teks)
                     });
