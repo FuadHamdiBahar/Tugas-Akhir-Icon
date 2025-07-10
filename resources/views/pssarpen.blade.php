@@ -156,7 +156,7 @@
                 ajax: tableUrl,
                 // data: data['data'],
                 columns: [{
-                        data: 'pop.sbu_id'
+                        data: 'pop.sbu_name'
                     },
                     {
                         data: 'pop.pop_name'
@@ -231,14 +231,16 @@
 
                         var className = ''
 
-                        if (year == 2022) {
+                        const currentYear = new Date().getFullYear();
+
+                        if (year <= currentYear - 2) {
                             className = 'red-circle'
-                        } else if (year == 2023) {
+                        } else if (year == currentYear - 1) {
                             className = 'blue-circle'
                         } else {
                             className = 'green-circle'
                         }
-                        console.log(year, className);
+
 
                         marker = new L.marker([pop.lat, pop.lng], {
                             icon: L.divIcon({

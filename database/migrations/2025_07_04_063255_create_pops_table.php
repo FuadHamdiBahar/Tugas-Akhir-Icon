@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('pops', function (Blueprint $table) {
             $table->string('pop_id')->primary();
             $table->string('pop_name');
-            $table->integer('sbu_id');
+            $table->string('sbu_name');
             $table->string('pop_type');
             $table->double('lat');
             $table->double('lng');

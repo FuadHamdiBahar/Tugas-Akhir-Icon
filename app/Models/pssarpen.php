@@ -16,12 +16,12 @@ class pssarpen extends Model
 
     public static function getPsSarpen($request)
     {
-        $q = pssarpen::with('pop');
+        $q = pssarpen::has('pop')->with('pop');
         if (count($request->all()) > 0) {
             if ($request->sbu) {
                 $sbu = $request->sbu;
                 $q->whereHas('pop', function (Builder $query) use ($sbu) {
-                    $query->where('sbu_id', '=', "{$sbu}");
+                    $query->where('sbu_name', '=', "{$sbu}");
                 });
             }
 
@@ -40,7 +40,7 @@ class pssarpen extends Model
                 $q->where('tahun', '=', $request->tahun);
             }
         } else {
-            return pssarpen::with('pop')->get();
+            return pssarpen::has('pop')->with('pop')->get();
         }
 
         return $q->get();

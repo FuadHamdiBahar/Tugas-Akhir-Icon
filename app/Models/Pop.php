@@ -17,7 +17,7 @@ class Pop extends Model
         $q = Pop::with('pssarpen')->has('pssarpen');
         if (count($request->all()) > 0) {
             if ($request->sbu) {
-                $q->where('sbu_id', '=', "{$request->sbu}");
+                $q->where('sbu_name', '=', "{$request->sbu}");
             }
 
             if ($request->pop_name) {
