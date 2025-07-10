@@ -2,8 +2,8 @@ import pandas as pd
 import mysql.connector
 import uuid
 
-USER = 'root'
-PASSWORD = 'root'
+USER = 'fuad'
+PASSWORD = 'plnm0b1le'
 
 raw = pd.read_excel('POP.xlsx')[['pop_id', 'pop_name', 'pop_type', 'lat', 'lng', 'SBU_Name']]
 raw.head()
