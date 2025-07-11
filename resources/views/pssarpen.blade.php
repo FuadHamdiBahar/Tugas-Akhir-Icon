@@ -233,12 +233,12 @@
 
                         const currentYear = new Date().getFullYear();
 
-                        if (year <= currentYear - 2) {
-                            className = 'red-circle'
+                        if (year == currentYear) {
+                            className = 'green-circle'
                         } else if (year == currentYear - 1) {
                             className = 'blue-circle'
                         } else {
-                            className = 'green-circle'
+                            className = 'red-circle'
                         }
 
 
