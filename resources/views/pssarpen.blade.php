@@ -237,7 +237,7 @@
                             className = 'green-circle'
                         } else if (year == currentYear - 1) {
                             className = 'blue-circle'
-                        } else {
+                        } else if (year <= currentYear - 2) {
                             className = 'red-circle'
                         }
 
