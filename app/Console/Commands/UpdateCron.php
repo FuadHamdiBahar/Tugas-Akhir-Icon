@@ -42,32 +42,17 @@ class UpdateCron extends Command
 
         // get hostlist
         $query = "
-                        select 
-                            h.ring, h.host_name as origin, 
-                            it.interfaceid, it.interface_name as interface, 
-                            it.description as terminating
-                        from myapp.hosts h  
-                        join myapp.interfaces it on it.hostid = h.hostid
-                        order by ring";
+                select 
+                    h.ring, h.host_name as origin, 
+                    it.interfaceid, it.interface_name as interface, 
+                    it.description as terminating
+                from myapp.hosts h  
+                join myapp.interfaces it on it.hostid = h.hostid
+                order by ring";
         $hosts = DB::select($query);
 
         // long process to submit
         foreach ($hosts as $h) {
-            // find the interface id
-            // $sql = "
-            //     select 
-            //         it.interfaceid
-            //     from myapp.items i 
-            //     join myapp.hosts h on h.hostid = i.hostid 
-            //     join myapp.interfaces it on it.interfaceid = i.interfaceid 
-            //     where h.host_name = '$h->origin'
-            //     and it.description = '$h->terminating'
-            //     and it.interface_name = '$h->interface'
-            //     and h.ring = $h->ring";
-
-            // $interfaceid = DB::select($sql)[0]->interfaceid;
-
-            // get the latest weekly traffic
             $sql = "
             select 
                 raw.week_number, MAX(raw.value_max) as traffic, raw.year
