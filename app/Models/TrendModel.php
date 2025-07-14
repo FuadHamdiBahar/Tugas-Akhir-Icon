@@ -21,12 +21,14 @@ class TrendModel
         $capacity = $request->input('capacity');
         $interfaceid = $request->input('interfaceid');
         $email = session('email');
+        $status = $request->input('status');
 
         $sql = "update interfaces
                 set interface_name = '$interface_name',
                     description = '$description',
                     capacity = '$capacity',
-                    updated_by = '$email'
+                    updated_by = '$email',
+                    status = '$status'
                 where interfaceid = $interfaceid";
         return DB::select($sql);
     }
@@ -119,12 +121,19 @@ class TrendModel
 
     public static function retrieveHost()
     {
-        $sql = "select 
-                h.*, count(*) as jumlah
-                from hosts h 
-                left join interfaces i on h.hostid = i.hostid 
-                group by h.hostid
-                order by h.updated_at desc";
+        $sql = "SELECT 
+                h.hostid,
+                MAX(h.sbu_name) sbu_name,
+                MAX(h.host_name) host_name,
+                MAX(h.updated_at) updated_at,
+                MAX(h.ring) ring,
+                MAX(h.created_by) created_by,
+                MAX(h.updated_by) updated_by,
+                COUNT(*) AS jumlah
+                FROM hosts h
+                LEFT JOIN interfaces i ON h.hostid = i.hostid
+                GROUP BY h.hostid
+                ORDER BY updated_at DESC";
         return DB::select($sql);
     }
 
