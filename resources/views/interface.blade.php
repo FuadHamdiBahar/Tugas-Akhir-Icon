@@ -95,6 +95,10 @@
                                     <label class="mb-2">Capacity</label>
                                     <input name="capacity" id="capacity"type="text" class="form-control">
                                 </div>
+                                <div class="pb-3">
+                                    <label class="mb-2">Status</label>
+                                    <input name="status" id="status" type="text" class="form-control">
+                                </div>
                                 <div class="col-lg-12 mt-4">
                                     <div class="d-flex flex-wrap align-items-ceter justify-content-center">
                                         <button class="btn btn-primary mr-4" data-dismiss="modal" type="button"
@@ -227,6 +231,7 @@
                     $('#edit #interface_name').val(data['interface_name'])
                     $('#edit #description').val(data['description'])
                     $('#edit #capacity').val(data['capacity'])
+                    $('#edit #status').val(data['status'])
                 }
             })
         }
