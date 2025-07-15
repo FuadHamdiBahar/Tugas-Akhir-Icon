@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('interfaces', function (Blueprint $table) {
             $table->id('interfaceid');
             $table->bigInteger('hostid');
+            $table->integer('ring');
             $table->string('interface_name', 100);
             $table->string('description', 100);
             $table->bigInteger('capacity');
-            $table->tinyInteger('status')->default(1);
+            $table->tinyInteger('status')->default(0);
             $table->string('created_by')->default('admin@admin.com');
             $table->string('updated_by')->default('admin@admin.com');
             $table->timestamp('created_at')->useCurrent();

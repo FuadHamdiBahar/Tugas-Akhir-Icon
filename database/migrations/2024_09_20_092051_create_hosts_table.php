@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('hosts', function (Blueprint $table) {
             $table->id('hostid');
             $table->string('sbu_name', 100);
-            $table->integer('ring');
             $table->string('host_name', 100);
             $table->string('created_by')->default('admin@admin.com');
             $table->string('updated_by')->default('admin@admin.com');
