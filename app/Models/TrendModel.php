@@ -223,7 +223,7 @@ class TrendModel
             raw.ring as name, round(sum(raw.traffic) / 1000000000, 1) as data
         from(
             select 
-                h.ring, it.interface_name, max(wt.traffic) as traffic
+                it.ring, it.interface_name, max(wt.traffic) as traffic
             from myapp.hosts h  
             join myapp.interfaces it on it.hostid = h.hostid 
             join myapp.weekly_trends wt on it.interfaceid = wt.interfaceid 
@@ -231,7 +231,7 @@ class TrendModel
             and it.status = 1
             and wt.month = '$month'
             and wt.year = year(now())
-            group by h.ring, it.interface_name 
+            group by it.ring, it.interface_name 
         ) raw group by raw.ring
         order by name";
         return DB::select($sql);
@@ -265,14 +265,14 @@ class TrendModel
                 raw.ring, raw.month, round(sum(raw.traffic) / 1000000000, 1) as traffic
             from(
                 select 
-                    h.ring, it.interface_name, wt.month, max(wt.traffic) as traffic
+                    it.ring, it.interface_name, wt.month, max(wt.traffic) as traffic
                 from myapp.hosts h 
                 join myapp.interfaces it on it.hostid = h.hostid 
                 join (select * from myapp.weekly_trends wt order by wt.month, wt.week_number) wt on it.interfaceid = wt.interfaceid 
                 where h.sbu_name = '$sbu'
                 and it.status = 1
                 and wt.year = YEAR(NOW())
-                group by h.ring, it.interface_name, wt.month 
+                group by it.ring, it.interface_name, wt.month 
             ) raw group by raw.ring, raw.month
             order by raw.ring, raw.month
         ) res group by res.ring";
@@ -334,7 +334,7 @@ class TrendModel
                     sum(raw.traffic) as utilized, sum(raw.capacity) - sum(raw.traffic) as idle, sum(raw.capacity) as capacity 
                 from (
                     select 
-                        h.ring, h.host_name, it.interface_name, 
+                        it.ring, h.host_name, it.interface_name, 
                         round(it.capacity / 1000000000, 1) as capacity, 
                         round(max(wt.traffic) / 1000000000, 1) as traffic
                     from myapp.hosts h
@@ -345,7 +345,7 @@ class TrendModel
                     and it.status = 1
                     and wt.month = $month
                     and wt.year = year(now())
-                    group by h.host_name, it.interface_name, h.ring, it.capacity 
+                    group by h.host_name, it.interface_name, it.ring, it.capacity 
                 ) raw";
         return DB::select($sql);
     }
@@ -354,7 +354,7 @@ class TrendModel
     {
         $sql = "
         select 
-            h.ring, h.host_name, it.interface_name, it.description,
+            it.ring, h.host_name, it.interface_name, it.description,
             round(it.capacity / 1000000000, 1) as capacity, 
             round(max(wt.traffic) / 1000000000, 1) as traffic
         from myapp.hosts h 
@@ -362,7 +362,7 @@ class TrendModel
         join myapp.weekly_trends wt on it.interfaceid = wt.interfaceid 
         where h.sbu_name = '$sbu'
         and wt.`month` = MONTH(CURRENT_DATE()) and it.status = 1 and wt.year = year(now())
-        group by h.host_name, it.interface_name, h.ring, it.capacity, it.description
+        group by h.host_name, it.interface_name, it.ring, it.capacity, it.description
         order by ring";
 
         return DB::select($sql);
@@ -393,7 +393,7 @@ class TrendModel
                         raw.ring, wt.week_number, round(sum(wt.traffic) / 1000000000, 1) as traffic
                     from (
                         select 
-                            h.sbu_name, h.ring, h.host_name, i2.interface_name, i2.description, wt.week_number, count(*) as jumlah, max(wt.id) as wtid
+                            h.sbu_name, i2.ring, h.host_name, i2.interface_name, i2.description, wt.week_number, count(*) as jumlah, max(wt.id) as wtid
                         from myapp.hosts h 
                         join myapp.interfaces i2 on i2.hostid = h.hostid
                         join myapp.weekly_trends wt on wt.interfaceid = i2.interfaceid
@@ -402,7 +402,7 @@ class TrendModel
                         and wt.week_number >= $fw
                         and wt.week_number <= $cw
                         and wt.year = YEAR(NOW())
-                        group by h.sbu_name, h.ring, h.host_name, i2.interface_name, i2.description, wt.week_number
+                        group by h.sbu_name, i2.ring, h.host_name, i2.interface_name, i2.description, wt.week_number
                     ) raw join myapp.weekly_trends wt on raw.wtid = wt.id 
                     group by raw.ring, wt.week_number
                 ) res group by res.ring";

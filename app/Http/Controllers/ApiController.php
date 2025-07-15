@@ -199,31 +199,6 @@ class ApiController extends Controller
 
     public function sbuMarker($sbu)
     {
-        // $sql = "select 
-        //             temp.*, concat(traffic.host_name, ' -> ', traffic.description, ' : ', traffic.traffic, ' Gbps') as info 
-        //         from (
-        //             select 
-        //                 m.sbu_name, m.markerid, m.marker_name, p.lat, p.lng, mh.hostid 
-        //             from myapp.markers m 
-        //             join myapp.points p on m.markerid = p.refid
-        //             left join myapp.marker_hosts mh on mh.markerid = m.markerid
-        //             where m.sbu_name = '$sbu'
-        //         ) temp 
-        //         left join (
-        //             select 
-        //                 h.hostid, h.ring, h.host_name, it.interface_name, it.description,
-        //                 round(it.capacity / 1000000000, 1) as capacity, 
-        //                 round(max(wt.traffic) / 1000000000, 1) as traffic
-        //             from myapp.hosts h
-        //             join myapp.interfaces it on it.hostid = h.hostid 
-        //             join myapp.weekly_trends wt on it.interfaceid = wt.interfaceid 
-        //             where h.sbu_name = '$sbu'
-        //             and wt.`month` = MONTH(CURRENT_DATE()) 
-        //             group by h.host_name, it.interface_name, h.ring, it.capacity, h.hostid, it.description
-        //             order by ring
-        //         ) traffic on temp.hostid = traffic.hostid";
-        // return DB::select($sql);
-
         $sql = "SELECT * FROM markers m JOIN points p ON m.markerid = p.refid WHERE m.sbu_name = '$sbu'";
         $marker = DB::select($sql);
 
@@ -240,14 +215,14 @@ class ApiController extends Controller
             ) temp 
             join (
                 select 
-                    h.hostid, h.ring, h.host_name, it.interface_name, it.description,
+                    h.hostid, it.ring, h.host_name, it.interface_name, it.description,
                     round(it.capacity / 1000000000, 1) as capacity, 
                     round(max(wt.traffic) / 1000000000, 1) as traffic
                 from myapp.hosts h
                 join myapp.interfaces it on it.hostid = h.hostid 
                 join myapp.weekly_trends wt on it.interfaceid = wt.interfaceid 	
                 where wt.`month` = MONTH(CURRENT_DATE()) 
-                group by h.host_name, it.interface_name, h.ring, it.capacity, h.hostid, it.description
+                group by h.host_name, it.interface_name, it.ring, it.capacity, h.hostid, it.description
                 order by ring
             ) traffic on temp.hostid = traffic.hostid
             where temp.markerid = '$m->markerid'";
@@ -802,7 +777,7 @@ class ApiController extends Controller
     public static function listOfMaxTrafficEachSourceToDestination($sbu, $month)
     {
         $sql = "select 
-                h.ring, h.host_name as origin, it.interface_name as interface, it.description as terminating,
+                it.ring, h.host_name as origin, it.interface_name as interface, it.description as terminating,
                 round(it.capacity / 1000000000, 1) as capacity, 
                 round(max(wt.traffic) / 1000000000, 1) as traffic
             from myapp.hosts h 
@@ -810,7 +785,7 @@ class ApiController extends Controller
             join myapp.weekly_trends wt on it.interfaceid = wt.interfaceid 
             where h.sbu_name = '$sbu'
             and wt.`month` = MONTH(CURRENT_DATE())
-            group by h.host_name, it.interface_name, h.ring, it.capacity, it.description
+            group by h.host_name, it.interface_name, it.ring, it.capacity, it.description
             order by ring";
 
         return DB::select($sql);
