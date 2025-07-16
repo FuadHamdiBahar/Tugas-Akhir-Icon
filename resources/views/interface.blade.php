@@ -22,6 +22,7 @@
                         <table id="datatable" class="table data-tables table-striped">
                             <thead>
                                 <tr class="ligth">
+                                    <th>Ring</th>
                                     <th>Interface Name</th>
                                     <th>Description</th>
                                     <th>Capacity</th>
@@ -129,6 +130,9 @@
                 ajax: '/api/interface/' + hostid,
                 bDestroy: true,
                 columns: [{
+                        data: 'ring'
+                    },
+                    {
                         data: 'interface_name'
                     },
                     {
