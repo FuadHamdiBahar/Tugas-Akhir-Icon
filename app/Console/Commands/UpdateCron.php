@@ -53,6 +53,7 @@ class UpdateCron extends Command
                 order by ring";
         $hosts = DB::select($query);
 
+        $dataUpdated = 0;
         // long process to submit
         foreach ($hosts as $h) {
             $sql = "
@@ -77,6 +78,10 @@ class UpdateCron extends Command
 
             $data = DB::connection('second_db')->select($sql);
 
+            if (count($data) > 0) {
+                $dataUpdated += 1;
+            }
+
             // insert the traffic to local database
             foreach ($data as $d) {
                 $sql = "insert into myapp.weekly_trends (interfaceid, year, `month`, week_number, traffic)
@@ -85,6 +90,6 @@ class UpdateCron extends Command
             }
         }
 
-        echo 'Successfully update: ' . count($hosts) . ' devices at ' . $date->format('Y-m-d H:i:s') . "\n";
+        echo 'Successfully update: ' . $dataUpdated . ' pair of Originating Terminating at ' . $date->format('Y-m-d H:i:s') . "\n";
     }
 }
