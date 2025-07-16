@@ -384,10 +384,14 @@ class ApiController extends Controller
         $name = [];
         foreach ($rings as $r) {
             $parts = explode(" ", $r->name, 2);
-            $prev = TrendModel::getPrevious($befm, $parts[0], $parts[1])[0];
-            // return $prev;
+            $prev = TrendModel::getPrevious($befm, $parts[0], $parts[1]);
             array_push($t1, $r->traffic);
-            array_push($t2, $prev->traffic);
+	    if (count($prev) > 0) {
+
+	            array_push($t2, $prev->traffic);
+	    } else {
+	 array_push($t2, 0);
+}
             array_push($name, $r->name);
             // return $prev;
         }
