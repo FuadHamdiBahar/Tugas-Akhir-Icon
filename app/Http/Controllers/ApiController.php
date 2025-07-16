@@ -386,12 +386,11 @@ class ApiController extends Controller
             $parts = explode(" ", $r->name, 2);
             $prev = TrendModel::getPrevious($befm, $parts[0], $parts[1]);
             array_push($t1, $r->traffic);
-	    if (count($prev) > 0) {
-
-	            array_push($t2, $prev->traffic);
-	    } else {
-	 array_push($t2, 0);
-}
+            if (count($prev) > 0) {
+                array_push($t2, $prev[0]->traffic);
+            } else {
+                array_push($t2, 0);
+            }
             array_push($name, $r->name);
             // return $prev;
         }
