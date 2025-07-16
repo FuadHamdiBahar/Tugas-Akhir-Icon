@@ -126,7 +126,7 @@ class TrendModel
                 MAX(h.sbu_name) sbu_name,
                 MAX(h.host_name) host_name,
                 MAX(h.updated_at) updated_at,
-                MAX(h.ring) ring,
+                MAX(i.ring) ring,
                 MAX(h.created_by) created_by,
                 MAX(h.updated_by) updated_by,
                 COUNT(*) AS jumlah
@@ -241,7 +241,7 @@ class TrendModel
     {
         $sql = "
         select 
-            h.ring, h.host_name as origin, 
+            it.ring, h.host_name as origin, 
             it.interfaceid, it.interface_name as interface, 
             it.description as terminating
         from myapp.items i 
@@ -289,7 +289,7 @@ class TrendModel
             sum(res.capacity) as capacity
         from (
             select 
-                h.ring, h.host_name, it.interface_name, wt.month,
+                it.ring, h.host_name, it.interface_name, wt.month,
                 round(it.capacity / 1000000000, 1) as capacity, 
                 round(max(wt.traffic) / 1000000000, 1) as traffic
             from myapp.hosts h  
@@ -298,7 +298,7 @@ class TrendModel
             where it.interface_name != 'TIDAK ADA'
             and it.status = 1
             and wt.year = year(now())
-            group by h.host_name, it.interface_name, h.ring, it.capacity, wt.`month`  
+            group by h.host_name, it.interface_name, it.ring, it.capacity, wt.`month`  
             order by h.host_name, wt.month
         ) res group by res.month order by res.month";
         return DB::select($sql);
@@ -311,7 +311,7 @@ class TrendModel
             sum(raw.traffic) as utilized, sum(raw.capacity) - sum(raw.traffic) as idle, sum(raw.capacity) as capacity 
         from (
             select 
-                h.ring, h.host_name, it.interface_name, 
+                it.ring, h.host_name, it.interface_name, 
                 round(it.capacity / 1000000000, 1) as capacity, 
                 round(max(wt.traffic) / 1000000000, 1) as traffic
             from myapp.hosts h 
@@ -321,7 +321,7 @@ class TrendModel
             and it.status = 1
             and wt.month = $month
             and wt.year = '$year'
-            group by h.host_name, it.interface_name, h.ring, it.capacity 
+            group by h.host_name, it.interface_name, it.ring, it.capacity 
         ) raw
         ";
 
@@ -417,15 +417,15 @@ class TrendModel
             lower(concat(res.sbu_name, ' ', res.ring)) as name, round(sum(res.traffic) / 1000000000, 1) as traffic
         from (
             select 
-                h.sbu_name, h.ring, h.host_name, it.interface_name, wt.`month`, max(wt.traffic) as traffic
+                h.sbu_name, it.ring, h.host_name, it.interface_name, wt.`month`, max(wt.traffic) as traffic
             FROM myapp.hosts h 
             JOIN myapp.interfaces it ON it.hostid = h.hostid 
             JOIN myapp.weekly_trends wt ON it.interfaceid = wt.interfaceid
             where h.sbu_name = '$sbu_name'
-            and h.ring = '$ring'
+            and it.ring = '$ring'
             and wt.`month` = $before
             and wt.year = year(now())
-            group by h.sbu_name, h.ring, h.host_name, it.interface_name, wt.`month`
+            group by h.sbu_name, it.ring, h.host_name, it.interface_name, wt.`month`
         ) res group by res.sbu_name, res.ring
         ";
         return DB::select($sql);
@@ -444,7 +444,7 @@ class TrendModel
             FROM (
                 SELECT 
                     h.sbu_name, 
-                    h.ring, 
+                    it.ring, 
                     it.interface_name, 
                     wt.month, 
                     MAX(wt.traffic) AS traffic
@@ -455,7 +455,7 @@ class TrendModel
                 AND it.status = 1
                 AND wt.`month` = $month
                 AND wt.year = year(now())
-                GROUP BY h.ring, it.interface_name, wt.month, h.sbu_name 
+                GROUP BY it.ring, it.interface_name, wt.month, h.sbu_name 
             ) raw 
             GROUP BY raw.ring, raw.month, raw.sbu_name
         )
@@ -483,7 +483,7 @@ class TrendModel
             FROM (
                 SELECT 
                     h.sbu_name, 
-                    h.ring, 
+                    it.ring, 
                     it.interface_name, 
                     wt.month, 
                     MAX(wt.traffic) AS traffic
@@ -494,7 +494,7 @@ class TrendModel
                 AND it.status = 1
                 AND wt.`month` = $month
                 AND wt.year = YEAR(NOW())
-                GROUP BY h.ring, it.interface_name, wt.month, h.sbu_name 
+                GROUP BY it.ring, it.interface_name, wt.month, h.sbu_name 
             ) raw 
             GROUP BY raw.ring, raw.month, raw.sbu_name
         )
@@ -520,7 +520,7 @@ class TrendModel
                 from (
                     select raw.sbu_name, raw.ring, raw.host_name, raw.interface_name, raw.month,max(raw.traffic) as traffic from(
                         select 
-                            h.sbu_name,  h.host_name, it.interface_name, h.ring, wt.month, wt.week_number, wt.traffic 
+                            h.sbu_name,  h.host_name, it.interface_name, it.ring, wt.month, wt.week_number, wt.traffic 
                         from myapp.hosts h 
                         join myapp.interfaces it on it.hostid = h.hostid 
                         join myapp.weekly_trends wt on it.interfaceid = wt.interfaceid 
