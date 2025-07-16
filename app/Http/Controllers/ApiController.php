@@ -377,7 +377,7 @@ class ApiController extends Controller
         $befm = $curm - 1;
 
         $rings = TrendModel::topEachSBU($curm);
-        return $rings;
+        // return $rings;
 
         $t1 = [];
         $t2 = [];
