@@ -29,7 +29,7 @@ class UpdateCron extends Command
     public function handle()
     {
         // $m = (int) date('m');
-        $m = 7;
+        $m = 6;
         $month = RingController::convertNumToTextMonth($m);
 
         $date = date('Y-m-d H:i:s');
@@ -39,8 +39,8 @@ class UpdateCron extends Command
         $year = $date->format('Y');
 
         // get latest weekly trend
-        // $query = "delete from weekly_trends wt where wt.week_number = $weeknumber and wt.year = $year";
-        // DB::select($query);
+        $query = "delete from weekly_trends wt where wt.week_number = $weeknumber and wt.year = $year";
+        DB::select($query);
 
         // get hostlist
         $query = "
