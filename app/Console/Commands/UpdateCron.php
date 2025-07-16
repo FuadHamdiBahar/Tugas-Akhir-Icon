@@ -35,7 +35,7 @@ class UpdateCron extends Command
         $date = date('Y-m-d H:i:s');
         $date = new DateTime($date);
         // $weeknumber = $date->format("W");
-        $weeknumber = 27;
+        $weeknumber = 26;
         $year = $date->format('Y');
 
         // get latest weekly trend
