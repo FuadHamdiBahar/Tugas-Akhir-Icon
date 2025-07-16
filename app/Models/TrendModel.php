@@ -290,7 +290,7 @@ class TrendModel
         from (
             select 
                 it.ring, h.host_name, it.interface_name, wt.month,
-                round(it.capacity / 1000000000, 1) as capacity, 
+                it.capacity, 
                 round(max(wt.traffic) / 1000000000, 1) as traffic
             from myapp.hosts h  
             join myapp.interfaces it on it.hostid = h.hostid 
@@ -312,7 +312,7 @@ class TrendModel
         from (
             select 
                 it.ring, h.host_name, it.interface_name, 
-                round(it.capacity / 1000000000, 1) as capacity, 
+                it.capacity, 
                 round(max(wt.traffic) / 1000000000, 1) as traffic
             from myapp.hosts h 
             join myapp.interfaces it on it.hostid = h.hostid
@@ -335,7 +335,7 @@ class TrendModel
                 from (
                     select 
                         it.ring, h.host_name, it.interface_name, 
-                        round(it.capacity / 1000000000, 1) as capacity, 
+                        it.capacity, 
                         round(max(wt.traffic) / 1000000000, 1) as traffic
                     from myapp.hosts h
                     join myapp.interfaces it on it.hostid = h.hostid 
