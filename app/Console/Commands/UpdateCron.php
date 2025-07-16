@@ -80,6 +80,8 @@ class UpdateCron extends Command
 
             if (count($data) > 0) {
                 $dataUpdated += 1;
+            } else {
+                echo 'Do not find the pair of Originating Terminating of ' . $h->origin . " " . $h->terminating . " " . $h->interface;
             }
 
             // insert the traffic to local database
