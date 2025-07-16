@@ -19,7 +19,6 @@
                             <thead>
                                 <tr class="ligth">
                                     <th>SBU</th>
-                                    <th>Ring</th>
                                     <th>Hostname</th>
                                     <th>Number of Interfaces</th>
                                     <th>Created by</th>
@@ -151,9 +150,6 @@
                 bDestroy: true,
                 columns: [{
                         data: 'sbu_name'
-                    },
-                    {
-                        data: 'ring'
                     },
                     {
                         data: 'host_name'
