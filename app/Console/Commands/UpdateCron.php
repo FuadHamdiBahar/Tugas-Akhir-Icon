@@ -29,13 +29,13 @@ class UpdateCron extends Command
     public function handle()
     {
         // $m = (int) date('m');
-        $m = 6;
+        $m = 7;
         $month = RingController::convertNumToTextMonth($m);
 
         $date = date('Y-m-d H:i:s');
         $date = new DateTime($date);
         // $weeknumber = $date->format("W");
-        $weeknumber = 26;
+        $weeknumber = 28;
         $year = $date->format('Y');
 
         // get latest weekly trend
