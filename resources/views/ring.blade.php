@@ -512,7 +512,7 @@
 
             var LeafIcon = L.Icon.extend({
                 options: {
-                    iconSize: [20, 20],
+                    iconSize: [10, 10],
                 }
             });
 
