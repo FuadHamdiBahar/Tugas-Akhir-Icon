@@ -85,34 +85,39 @@
         </div> --}}
 
         <div class="col-lg-8">
-            <table class="data-table table mb-0 tbl-server-info" id="table">
-                <thead class="bg-white text-uppercase">
-                    <tr class="ligth ligth-data">
-                        <th>Ring</th>
-                        <th>Hostname</th>
-                        <th>Interface</th>
-                        <th>Terminating</th>
-                        <th>U / C (Gbps)</th>
-                    </tr>
-                </thead>
-                <tbody class="ligth-body">
+            <div class="card car-transparent">
+                <table class="data-table table mb-0 tbl-server-info" id="table">
+                    <thead class="bg-white text-uppercase">
+                        <tr class="ligth ligth-data">
+                            <th>Ring</th>
+                            <th>Hostname</th>
+                            <th>Interface</th>
+                            <th>Terminating</th>
+                            <th>U / C (Gbps)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="ligth-body">
 
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
+
         </div>
 
         <div class="col-lg-12">
-            <table class="table" id="tableLink">
-                <thead>
-                    <tr class="ligth">
-                        <th scope="col">Ring</th>
-                        <th scope="col">Location</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
+            <div class="card car-transparent">
+                <table class="table" id="tableLink">
+                    <thead>
+                        <tr class="ligth">
+                            <th scope="col">Ring</th>
+                            <th scope="col">Location</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 

@@ -62,12 +62,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/trendweek/{origin}/{terminating}', [ApiController::class, 'listTrafficWeek']);
 
         Route::get('/host', [ApiController::class, 'retrieveHost']);
-        Route::get('/host/{host}', [ApiController::class, 'retrieveSingleHost']);
+        Route::get('/host/{host}', [ApiController::class, 'retrieveSingleHost'])->name('host.get');
         Route::post('/host', [ApiController::class, 'createHost']);
         Route::put('/host', [ApiController::class, 'updateHost']);
         Route::delete('/host/{hostid}', [ApiController::class, 'deleteHost']);
 
-        Route::get('/interface/{hostid}', [ApiController::class, 'retrieveInterface']);
+        Route::get('/interface/{hostid}', [ApiController::class, 'retrieveInterface'])->name('hostname.interface');
         Route::get('/interface/detail/{interfaceid}', [ApiController::class, 'retrieveSingleInterface']);
         Route::post('/interface', [ApiController::class, 'createInterface']);
         Route::put('/interface', [ApiController::class, 'updateInterface']);
