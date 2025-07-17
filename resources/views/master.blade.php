@@ -46,10 +46,6 @@
                                     <input name="sbuname" id="sbuname"type="text" class="form-control">
                                 </div>
                                 <div class="pb-3">
-                                    <label class="mb-2">Ring</label>
-                                    <input name="idring" id="idring"type="number" class="form-control">
-                                </div>
-                                <div class="pb-3">
                                     <label class="mb-2">Hostname</label>
                                     <input name="hostname" id="hostname"type="text" class="form-control">
                                 </div>
@@ -82,10 +78,6 @@
                                 <div class="pb-3">
                                     <label class="mb-2">SBU Name</label>
                                     <input name="sbuname" id="sbuname"type="text" class="form-control">
-                                </div>
-                                <div class="pb-3">
-                                    <label class="mb-2">Ring</label>
-                                    <input name="idring" id="idring"type="text" class="form-control">
                                 </div>
                                 <div class="pb-3">
                                     <label class="mb-2">Hostname</label>
@@ -131,7 +123,6 @@
                 success: function(data) {
                     $('#add').modal('hide')
                     $('#sbuname').val('')
-                    $('#idring').val('')
                     $('#hostname').val('')
                     table.ajax.reload()
                     Swal.fire({
@@ -219,7 +210,6 @@
                 success: function(data) {
                     $('#hid').val(hid)
                     $('#edit #sbuname').val(data['sbu_name'])
-                    $('#edit #idring').val(data['ring'])
                     $('#edit #hostname').val(data['host_name'])
                 }
             })
@@ -229,7 +219,6 @@
             $('#edit').modal('hide')
             $('#hid').val('')
             $('#sbuname').val('')
-            $('#idring').val('')
             $('#hostname').val('')
         }
 
