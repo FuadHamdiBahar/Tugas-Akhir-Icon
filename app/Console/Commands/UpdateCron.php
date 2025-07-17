@@ -81,17 +81,17 @@ class UpdateCron extends Command
 
             if (count($data) > 0) {
                 $dataUpdated += 1;
+
+                // insert the traffic to local database
+                foreach ($data as $d) {
+                    $sql = "insert into myapp.weekly_trends (interfaceid, year, `month`, week_number, traffic)
+                    values ($h->interfaceid, '$year', '$m', $d->week_number, $d->traffic)";
+                    DB::select($sql);
+                }
             } else {
                 echo 'Do not find the pair of Originating Terminating of ' . $h->origin . " " . $h->terminating . " " . $h->interface . " " . $h->ring . "\n";
 
                 $dataNotUpdated += 1;
-            }
-
-            // insert the traffic to local database
-            foreach ($data as $d) {
-                $sql = "insert into myapp.weekly_trends (interfaceid, year, `month`, week_number, traffic)
-                    values ($h->interfaceid, '$year', '$m', $d->week_number, $d->traffic)";
-                DB::select($sql);
             }
         }
 
