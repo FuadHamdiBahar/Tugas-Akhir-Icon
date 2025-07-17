@@ -1,42 +1,41 @@
-@extends('layouts.main')
+@extends('layouts.table')
 
 @section('body')
     <div class="row">
-        <div class="col-sm-12">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between">
-                    <div class="header-title">
-                        {{-- <h4 class="card-title">{{ ucfirst($sbu) }} Utilisation Summary</h4> --}}
-                    </div>
-                    <div class="card-header-toolbar d-flex align-items-center">
-                        <button class="btn btn-success" type="button" onclick="add()">+Add</button>
-                    </div>
+        <div class="col-lg-12">
+            <div class="d-flex flex-wrap flex-wrap align-items-center justify-content-between mb-4">
+                <div>
+                    <h4 class="mb-3">Interface List</h4>
+                    {{-- <p class="mb-0">The product list effectively dictates product presentation and
+                        provides space<br> to list your products and offering in the most appealing way.</p> --}}
                 </div>
-                <div class="card-body">
-                    {{-- <p>Images in Bootstrap are made responsive with <code>.img-fluid</code>.
-                <code>max-width: 100%;</code> and <code>height: auto;</code> are applied to the
-                image so that it scales with the parent element.
-            </p> --}}
-
-                    <div class="table-responsive">
-                        <table id="datatable" class="table data-tables table-striped">
-                            <thead>
-                                <tr class="ligth">
-                                    <th>Ring</th>
-                                    <th>Interface Name</th>
-                                    <th>Description</th>
-                                    <th>Capacity</th>
-                                    <th>Status</th>
-                                    <th>Created by</th>
-                                    <th>Updated by</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                        </table>
-                    </div>
-                </div>
+                <button class="btn btn-primary" onclick="add()"><i class="las la-plus mr-3"></i>Add
+                    Interface</button>
             </div>
         </div>
+        <div class="col-lg-12">
+            <div class="table-responsive rounded mb-3">
+                <table class="table mb-0 tbl-server-info" id="myTable">
+                    <thead class="bg-white text-uppercase">
+                        <tr class="ligth ligth-data">
+
+                            <th>Ring</th>
+                            <th>Interface</th>
+                            <th>Description</th>
+                            <th>Capacity</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="ligth-body">
+
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
     </div>
     <div class="modal fade" id="add" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -48,6 +47,10 @@
                             <form id="addForm" name="addForm">
                                 @csrf
                                 <input type="text" name="hostid" type="hostid" hidden value="{{ $hostid }}">
+                                <div class="pb-3">
+                                    <label class="mb-2">Ring</label>
+                                    <input name="ring" id="ring"type="text" class="form-control">
+                                </div>
                                 <div class="pb-3">
                                     <label class="mb-2">Interface Name</label>
                                     <input name="interface_name" id="interface_name"type="text" class="form-control">
@@ -85,6 +88,10 @@
                                 @csrf
                                 <input type="text" name="interfaceid" id="interfaceid" hidden>
                                 <div class="pb-3">
+                                    <label class="mb-2">Ring</label>
+                                    <input name="ring" id="ring"type="text" class="form-control">
+                                </div>
+                                <div class="pb-3">
                                     <label class="mb-2">Interface Name</label>
                                     <input name="interface_name" id="interface_name"type="text" class="form-control">
                                 </div>
@@ -118,17 +125,11 @@
 
 @section('script')
     <script>
+        let table;
         $(document).ready(function() {
             var hostid = '{{ $hostid }}'
-            loadTable(hostid)
-
-            let table = '';
-        });
-
-        function loadTable(hostid) {
-            table = new DataTable('#datatable', {
+            table = $('#myTable').DataTable({
                 ajax: '/api/interface/' + hostid,
-                bDestroy: true,
                 columns: [{
                         data: 'ring'
                     },
@@ -145,23 +146,16 @@
                         data: 'status'
                     },
                     {
-                        data: 'created_by'
-                    },
-                    {
-                        data: 'updated_by'
-                    },
-                    {
                         data: 'interfaceid',
-                        render: function(data) {
-                            return `<button class='btn btn-small btn-warning' type='button' onclick='edit(` +
-                                data + `)'><i class="ri-pencil-line"></i></button> 
-                            <button class='btn btn-small btn-danger' type='button' onclick="hapus(` + data +
-                                `)"><i class="ri-delete-bin-7-line"></i></button>`
+                        render: function(data, type, row) {
+                            return `<a class="badge bg-success mr-2" onclick="edit(${data})"><i class="ri-pencil-line mr-0"></i></a>
+                        <a class="badge bg-warning mr-2" onclick="hapus(${data})"><i class="ri-delete-bin-line mr-0"></i></a>`;
                         }
                     }
                 ]
-            })
-        }
+            });
+        });
+
 
         function add() {
             $('#add').modal('show')
@@ -177,11 +171,10 @@
                 dataType: 'json',
                 data: form,
                 success: function(data) {
+                    console.log(data);
 
                     $('#add').modal('hide')
-                    $('#interface_name').val('')
-                    $('#description').val('')
-                    $('#capacity').val('')
+                    $('#addForm').trigger("reset")
                     table.ajax.reload()
                     Swal.fire({
                         icon: "success",
@@ -189,6 +182,10 @@
                         showConfirmButton: false,
                         timer: 1500
                     });
+                },
+                error: function(xhr, status, error) {
+                    console.log(xhr.responseText);
+
                 }
             })
         });
@@ -230,6 +227,7 @@
                 type: 'GET',
                 success: function(data) {
                     $('#edit #interfaceid').val(iid)
+                    $('#edit #ring').val(data['ring'])
                     $('#edit #interface_name').val(data['interface_name'])
                     $('#edit #description').val(data['description'])
                     $('#edit #capacity').val(data['capacity'])
@@ -240,10 +238,7 @@
 
         function closeModal() {
             $('#edit').modal('hide')
-            $('#interfaceid').val('')
-            $('#edit #interface_name').val('')
-            $('#edit #description').val('')
-            $('#edit #capacity').val('')
+            $('#myForm').trigger("reset")
         }
 
         $("#myForm").submit(function(e) {
