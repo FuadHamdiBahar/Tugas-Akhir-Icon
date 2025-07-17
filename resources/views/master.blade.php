@@ -1,37 +1,35 @@
-@extends('layouts.main')
+@extends('layouts.table')
 
 @section('body')
     <div class="row">
-        <div class="col-sm-12">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between">
-                    <div class="header-title">
-                        <h4 class="card-title">Daftar Hostname</h4>
-                    </div>
-                    <div class="card-header-toolbar d-flex align-items-center">
-                        <button class="btn btn-success" type="button" onclick="add()">+Add</button>
-                        {{-- <h4><span class="badge badge-primary">{{ $month }}</span> </h4> --}}
-                    </div>
+        <div class="col-lg-12">
+            <div class="d-flex flex-wrap flex-wrap align-items-center justify-content-between mb-4">
+                <div>
+                    <h4 class="mb-3">Hostname List</h4>
                 </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table id="datatable" class="table data-tables table-striped">
-                            <thead>
-                                <tr class="ligth">
-                                    <th>SBU</th>
-                                    <th>Hostname</th>
-                                    <th>Number of Interfaces</th>
-                                    <th>Created by</th>
-                                    <th>Updated by</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                        </table>
-                    </div>
-                </div>
+                <button class="btn btn-primary" onclick="add()"><i class="las la-plus mr-3"></i>Add
+                    Hostname</button>
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <div class="table-responsive rounded mb-3">
+                <table class=" table mb-0 tbl-server-info" id="myTable">
+                    <thead class="bg-white text-uppercase">
+                        <tr class="ligth ligth-data">
+                            <th>SBU Name</th>
+                            <th>Hostname</th>
+                            <th>Number of Interfaces</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="ligth-body">
+
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
+
     <div class="modal fade" id="add" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -102,9 +100,29 @@
 
 @section('script')
     <script>
+        let table;
         $(document).ready(function() {
-            let table = '';
-            loadTable()
+            table = $('#myTable').DataTable({
+                ajax: '/api/host',
+                columns: [{
+                        data: 'sbu_name'
+                    },
+                    {
+                        data: 'host_name'
+                    },
+                    {
+                        data: 'jumlah'
+                    },
+                    {
+                        data: 'hostid',
+                        render: function(data, type, row) {
+                            return `<a class="badge badge-info mr-2" href="/interface/${data}"><i class="ri-eye-line mr-0"></i></a>
+                        <a class="badge bg-success mr-2" onclick="edit(${data})"><i class="ri-pencil-line mr-0"></i></a>
+                        <a class="badge bg-warning mr-2" onclick="hapus(${data})"><i class="ri-delete-bin-line mr-0"></i></a>`;
+                        }
+                    }
+                ]
+            });
         });
 
         function add() {
@@ -121,10 +139,10 @@
                 dataType: 'json',
                 data: form,
                 success: function(data) {
+                    table.ajax.reload();
+
                     $('#add').modal('hide')
-                    $('#sbuname').val('')
-                    $('#hostname').val('')
-                    table.ajax.reload()
+                    $('#addForm').trigger('reset');
                     Swal.fire({
                         icon: "success",
                         title: "Your work has been saved",
@@ -134,42 +152,6 @@
                 }
             })
         });
-
-        function loadTable() {
-            table = new DataTable('#datatable', {
-                ajax: '/api/host',
-                bDestroy: true,
-                columns: [{
-                        data: 'sbu_name'
-                    },
-                    {
-                        data: 'host_name'
-                    },
-                    {
-                        data: 'jumlah'
-                    },
-                    {
-                        data: 'created_by'
-                    },
-                    {
-                        data: 'updated_by'
-                    },
-                    {
-                        data: 'hostid',
-                        width: '15%',
-                        render: function(data) {
-                            return `<a class='btn btn-small btn-primary' href='/interface/` + data + `'><i class="ri-eye-line"></i></a> 
-                            <button class='btn btn-small btn-warning' type='button' onclick='edit(` + data + `)'><i class="ri-pencil-line"></i></button> 
-                            <button class='btn btn-small btn-danger' type='button' onclick="hapus(` + data +
-                                `)"><i class="ri-delete-bin-7-line"></i></button>`
-                        }
-                    }
-                ],
-                order: [
-                    ['updated_at', 'desc']
-                ]
-            })
-        }
 
         function hapus(hid) {
             Swal.fire({
@@ -202,7 +184,6 @@
         }
 
         function edit(hid) {
-
             $('#edit').modal('show')
             $.ajax({
                 url: '/api/host/' + hid,
@@ -217,9 +198,7 @@
 
         function closeModal() {
             $('#edit').modal('hide')
-            $('#hid').val('')
-            $('#sbuname').val('')
-            $('#hostname').val('')
+            $('#myForm').trigger('reset');
         }
 
         $("#myForm").submit(function(e) {
@@ -234,13 +213,16 @@
                 data: form,
                 success: function(data) {
                     closeModal()
-                    table.ajax.reload()
+                    table.ajax.reload();
                     Swal.fire({
                         icon: "success",
                         title: "Your work has been saved",
                         showConfirmButton: false,
                         timer: 1500
                     });
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
                 }
             })
         });
