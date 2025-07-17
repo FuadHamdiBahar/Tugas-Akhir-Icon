@@ -177,7 +177,6 @@
                 dataType: 'json',
                 data: form,
                 success: function(data) {
-                    console.log(data);
 
                     $('#add').modal('hide')
                     $('#interface_name').val('')
@@ -230,7 +229,6 @@
                 url: '/api/interface/detail/' + iid,
                 type: 'GET',
                 success: function(data) {
-                    console.log(data);
                     $('#edit #interfaceid').val(iid)
                     $('#edit #interface_name').val(data['interface_name'])
                     $('#edit #description').val(data['description'])
@@ -260,7 +258,6 @@
                 data: form,
                 success: function(data) {
                     closeModal()
-                    console.log(data);
                     table.ajax.reload()
                     Swal.fire({
                         icon: "success",

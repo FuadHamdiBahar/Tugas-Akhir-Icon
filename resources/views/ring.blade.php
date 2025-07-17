@@ -349,8 +349,6 @@
                 type: 'GET',
                 url: '/api/trend/' + sbu,
                 success: function(data) {
-                    console.log('masuk');
-
                     var options = {
                         series: data,
                         chart: {
@@ -539,8 +537,6 @@
                 type: 'GET',
                 url: '/api/sbupolygon/' + sbu,
                 success: function(data) {
-                    console.log(data);
-
                     latlngs = data
                     var polyline = L.polyline(latlngs, {
                         color: 'red'
@@ -557,8 +553,6 @@
                 type: 'GET',
                 url: '/api/sbumarker/' + sbu,
                 success: function(data) {
-                    console.log(data);
-
                     data.forEach(element => {
                         marker = new L.marker([element['lng'], element['lat']], {
                                 icon: greenIcon

@@ -160,7 +160,6 @@
                 dataType: 'json',
                 data: form,
                 success: function(data) {
-                    console.log(data);
 
                     $('#add').modal('hide')
                     $('#add #sbuname').val('')
@@ -229,7 +228,6 @@
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
                         success: function(data) {
-                            console.log(data);
 
                             Swal.fire({
                                 title: "Deleted!",
@@ -250,7 +248,6 @@
                 url: '/api/marker/' + markerid,
                 type: 'GET',
                 success: function(data) {
-                    console.log(data['sbu_name']);
                     $('#markerid').val(markerid)
                     $("#editForm #sbuname").val(data['sbu_name']).change();
                     $('#edit #markername').val(data['marker_name'])
@@ -281,7 +278,6 @@
                 data: form,
                 success: function(data) {
                     closeModal()
-                    console.log(data);
                     table.ajax.reload()
                     Swal.fire({
                         icon: "success",

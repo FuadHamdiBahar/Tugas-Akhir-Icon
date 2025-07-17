@@ -147,8 +147,6 @@
                 dataType: 'json',
                 data: form,
                 success: function(data) {
-                    console.log(data);
-
                     $('#add').modal('hide')
                     $('#add #lat').val('')
                     $('#add #lng').val('')
@@ -253,7 +251,6 @@
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
                         success: function(data) {
-                            console.log(data);
                             Swal.fire({
                                 title: "Deleted!",
                                 text: "Your file has been deleted.",
@@ -274,7 +271,6 @@
                 url: '/api/point/' + pointid,
                 type: 'GET',
                 success: function(data) {
-                    console.log(data);
                     $('#pointid').val(pointid)
                     $('#edit #lat').val(data['lat'])
                     $('#edit #lng').val(data['lng'])
@@ -300,7 +296,6 @@
                 data: form,
                 success: function(data) {
                     closeModal()
-                    console.log(data);
                     table.ajax.reload()
                     Swal.fire({
                         icon: "success",

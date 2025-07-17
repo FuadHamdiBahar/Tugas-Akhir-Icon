@@ -30,7 +30,6 @@
     <script>
         $(document).ready(function() {
             let markerid = '{{ $markerid }}'.toLowerCase()
-            console.log(markerid);
 
             map(markerid)
         })

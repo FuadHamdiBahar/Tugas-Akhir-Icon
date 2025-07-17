@@ -431,7 +431,6 @@
                 type: 'GET',
                 url: '/api/topSbu',
                 success: function(data) {
-                    // console.log(data);
                     var options = {
                         series: data['data'],
                         chart: {
@@ -497,8 +496,6 @@
                 type: 'GET',
                 url: '/api/top',
                 success: function(data) {
-                    console.log(data);
-
                     var options = {
                         series: [{
                             name: 'Actual',

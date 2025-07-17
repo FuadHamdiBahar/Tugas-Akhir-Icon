@@ -145,8 +145,6 @@
                 dataType: 'json',
                 data: form,
                 success: function(data) {
-                    console.log(data);
-
                     $('#add').modal('hide')
                     $('#add #sbuname').val('')
                     $('#add #polygonname').val('')
@@ -212,10 +210,6 @@
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
                         success: function(data) {
-                            console.log(data);
-                            console.log(polygonid);
-
-
                             Swal.fire({
                                 title: "Deleted!",
                                 text: "Your file has been deleted.",
@@ -235,7 +229,6 @@
                 url: '/api/polygon/' + polygonid,
                 type: 'GET',
                 success: function(data) {
-                    console.log(data);
                     $('#polygonid').val(polygonid)
                     $("#editForm #sbuname").val(data['sbu_name']).change();
                     $('#edit #polygonname').val(data['polygon_name'])
@@ -264,7 +257,6 @@
                 data: form,
                 success: function(data) {
                     closeModal()
-                    console.log(data);
                     table.ajax.reload()
                     Swal.fire({
                         icon: "success",

@@ -166,7 +166,6 @@
                 url: '/api/trendweek/' + origin + '/' + terminating,
                 type: 'GET',
                 success: function(data) {
-                    console.log(data);
                     var options = {
                         series: data['data'],
                         chart: {

@@ -137,8 +137,6 @@
             event.preventDefault(); // Prevents the default form submission
             var str = $("form").serialize();
 
-            console.log(str);
-
             tableUrl = '/api/pssarpen?' + str
             markerUrl = '/api/pssarpen/marker?' + str
 

@@ -217,7 +217,6 @@
                 url: '/api/host/' + hid,
                 type: 'GET',
                 success: function(data) {
-                    console.log(hid);
                     $('#hid').val(hid)
                     $('#edit #sbuname').val(data['sbu_name'])
                     $('#edit #idring').val(data['ring'])
@@ -246,7 +245,6 @@
                 data: form,
                 success: function(data) {
                     closeModal()
-                    console.log(data);
                     table.ajax.reload()
                     Swal.fire({
                         icon: "success",
