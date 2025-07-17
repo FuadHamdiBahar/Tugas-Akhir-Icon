@@ -54,6 +54,7 @@ class UpdateCron extends Command
         $hosts = DB::select($query);
 
         $dataUpdated = 0;
+        $dataNotUpdated = 0;
         // long process to submit
         foreach ($hosts as $h) {
             $sql = "
@@ -82,6 +83,8 @@ class UpdateCron extends Command
                 $dataUpdated += 1;
             } else {
                 echo 'Do not find the pair of Originating Terminating of ' . $h->origin . " " . $h->terminating . " " . $h->interface . "\n";
+
+                $dataNotUpdated += 1;
             }
 
             // insert the traffic to local database
@@ -92,6 +95,7 @@ class UpdateCron extends Command
             }
         }
 
+        echo 'Failed to update ' . $dataNotUpdated . ' pair of Originating Terminating' . "\n";
         echo 'Successfully update: ' . $dataUpdated . ' pair of Originating Terminating at ' . $date->format('Y-m-d H:i:s') . "\n";
     }
 }
