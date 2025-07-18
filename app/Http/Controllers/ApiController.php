@@ -604,6 +604,8 @@ class ApiController extends Controller
             $result[$row->ring][$row->week_number] = $row->traffic;
         }
 
+        ksort($result);
+
         $output = [];
         foreach ($result as $ring => $trafficByMonth) {
             $trafficList = [];
