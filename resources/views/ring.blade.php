@@ -12,6 +12,7 @@
     <style>
         #map {
             height: 600px;
+            z-index: 1;
         }
     </style>
 @endsection

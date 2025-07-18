@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="../assets/vendor/@fortawesome/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="../assets/vendor/line-awesome/dist/line-awesome/css/line-awesome.min.css">
     <link rel="stylesheet" href="../assets/vendor/remixicon/fonts/remixicon.css">
+    @yield('header')
 </head>
 
 <body class=" color-light ">

@@ -1,4 +1,4 @@
-@extends('layouts.main')
+@extends('layouts.table')
 
 @section('header')
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -12,6 +12,7 @@
     <style>
         #map {
             height: 600px;
+            z-index: 1;
         }
 
         .red-circle {
@@ -65,7 +66,7 @@
             <div id="map"></div>
         </div>
 
-        <div class="col-lg-12">
+        <div class="col-lg-12 mb-4">
             <form id="myForm">
                 <div class="row">
                     <div class="col-md-4">
@@ -90,7 +91,27 @@
             </form>
         </div>
 
-        <div class="card-body">
+        <div class="col-lg-12">
+            <div class="table-responsive rounded mb-3">
+                <table class=" table mb-0 tbl-server-info" id="myTable">
+                    <thead class="bg-white text-uppercase">
+                        <tr class="ligth ligth-data">
+                            <th>SBU Name</th>
+                            <th>POP Name</th>
+                            <th>Device</th>
+                            <th>Year</th>
+                            <th>Amount</th>
+                            <th>Partner</th>
+                        </tr>
+                    </thead>
+                    <tbody class="ligth-body">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        {{-- <div class="card-body">
 
             <div class="table-responsive">
                 <table id="example" class="table table-striped">
@@ -117,7 +138,7 @@
                 </table>
 
             </div>
-        </div>
+        </div> --}}
     </div>
 @endsection
 
@@ -128,31 +149,10 @@
         var map = new L.Map('map');
         map.setView(new L.LatLng(-4.668052508873149, 117.75463251366503), 5);
 
+        let table;
         $(document).ready(function() {
-            createDataTable('/api/pssarpen')
-            createMap('/api/pssarpen/marker')
-        })
-
-        $('#myButton').click(function(event) {
-            event.preventDefault(); // Prevents the default form submission
-            var str = $("form").serialize();
-
-            tableUrl = '/api/pssarpen?' + str
-            markerUrl = '/api/pssarpen/marker?' + str
-
-            // reset layer 
-            map.eachLayer((layer) => {
-                layer.remove();
-            });
-
-            createDataTable(tableUrl)
-            createMap(markerUrl)
-        });
-
-        function createDataTable(tableUrl) {
-            new DataTable('#example', {
-                ajax: tableUrl,
-                // data: data['data'],
+            table = $('#myTable').DataTable({
+                ajax: '/api/pssarpen',
                 columns: [{
                         data: 'pop.sbu_name'
                     },
@@ -172,9 +172,25 @@
                         data: 'mitra_pelaksana'
                     },
                 ],
-                destroy: true,
             });
-        }
+            createMap('/api/pssarpen/marker')
+        })
+
+        $('#myButton').click(function(event) {
+            event.preventDefault(); // Prevents the default form submission
+            var str = $("form").serialize();
+
+            tableUrl = '/api/pssarpen?' + str
+            markerUrl = '/api/pssarpen/marker?' + str
+
+            // reset layer 
+            map.eachLayer((layer) => {
+                layer.remove();
+            });
+
+            table.ajax.url(tableUrl).load();
+            createMap(markerUrl)
+        });
 
         function createMap(markerUrl) {
             osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -257,7 +273,7 @@
 
         $('#resetButton').click(function(event) {
             event.preventDefault(); // Prevents the default form submission
-            createDataTable('/api/pssarpen')
+            table.ajax.url('/api/pssarpen').load();
             createMap('/api/pssarpen/marker')
         });
     </script>
