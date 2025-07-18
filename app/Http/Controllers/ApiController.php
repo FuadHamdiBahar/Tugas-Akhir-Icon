@@ -516,25 +516,6 @@ class ApiController extends Controller
         $sheet = $spreadsheet->getSheetByName($sbu);
         $totalRows = $sheet->getHighestRow();
 
-        // $merge = array();
-        // $temp = [];
-        // for ($row = 3; $row <= $totalRows; $row++) {
-        //     $current_ring = $sheet->getCell("B{$row}")->getValue();
-        //     $next_row = $row + 1;
-        //     $next_ring = $sheet->getCell("B{$next_row}")->getValue();
-        //     if (!empty($sheet->getCell("E{$row}")->getValue())) {
-        //         $origin = $sheet->getCell("E{$row}")->getValue();
-        //         array_push($temp, $origin);
-        //     }
-        //     if ($current_ring != $next_ring) {
-        //         array_push($merge, [
-        //             'ring' => $current_ring,
-        //             'link' => $temp
-        //         ]);
-        //         $temp = [];
-        //     }
-        // }
-
         $temp = array();
         for ($row = 3; $row <= $totalRows; $row++) {
             $ring = $sheet->getCell("B{$row}")->getValue();
@@ -608,10 +589,34 @@ class ApiController extends Controller
         $cw = (int) date('W');
         $fw = $cw - 3;
         $rings = TrendModel::getWeeklyTrend($sbu, $fw, $cw);
+
+        // Step 1
+        $weesk = [];
         foreach ($rings as $ring) {
-            $ring->data = explode(',', $ring->data);
+            $weeks[$ring->week_number] = true;
         }
-        $res['data'] = $rings;
+        $weeks = array_keys($weeks);
+        sort($weeks);
+
+        // Step 2: Group data by ring and month
+        $result = [];
+        foreach ($rings as $row) {
+            $result[$row->ring][$row->week_number] = $row->traffic;
+        }
+
+        $output = [];
+        foreach ($result as $ring => $trafficByMonth) {
+            $trafficList = [];
+            foreach ($weeks as $week) {
+                $trafficList[] = isset($trafficByMonth[$week]) ? $trafficByMonth[$week] : 0;
+            }
+            $output[] = [
+                'name' => $ring,
+                'data' => $trafficList
+            ];
+        }
+
+        $res['data'] = $output;
 
         $categories = [];
         for ($i = $fw; $i <= $cw; $i++) {
@@ -621,43 +626,6 @@ class ApiController extends Controller
 
         return $res;
     }
-    // public static function weeklyTrend($sbu)
-    // {
-    //     $cw = (int) date('W');
-    //     $fw = $cw - 3;
-
-    //     $ringList = TrendModel::getWeeklyNumberOfRing($sbu);
-
-    //     $merge = [];
-    //     foreach ($ringList as $rl) {
-    //         $query = TrendModel::getWeeklyTrend($sbu, $rl->ring, $fw, $cw);
-    //         array_push($merge, $query);
-    //     }
-
-    //     // return $merge;
-
-    //     $data = [];
-    //     foreach ($merge as $items) {
-    //         $traffic = [];
-    //         $name = '';
-    //         foreach ($items as $i) {
-    //             array_push($traffic, number_format($i->traffic / 1000000000, 1));
-    //             $name = $i->ring;
-    //         }
-    //         $temp['name'] = $name;
-    //         $temp['data'] = $traffic;
-
-    //         array_push($data, $temp);
-    //     }
-
-    //     $categories = [];
-    //     for ($i = $fw; $i <= $cw; $i++) {
-    //         array_push($categories, self::getLastDateOfWeek($i));
-    //     }
-    //     $res['data'] = $data;
-    //     $res['categories'] = $categories;
-    //     return $res;
-    // }
 
     // ring baru
     public static function listOfMaxTrafficEachRing($sbu)
@@ -674,92 +642,6 @@ class ApiController extends Controller
         $query = TrendModel::getRingTrendMonth($sbu, $month);
         return $query;
     }
-    // ring lama
-    // public static function listOfMaxTrafficEachRing($sbu, $month)
-    // {
-    //     ini_set('max_execution_time', 60);
-
-    //     // read file
-    //     $path = public_path('ring utilisasi.xlsx');
-    //     $reader = new Xlsx();
-    //     $spreadsheet = $reader->load($path);
-    //     $sheet = $spreadsheet->getSheetByName($sbu);
-    //     $totalRows = $sheet->getHighestRow();
-
-    //     // new array to merge
-    //     $merge = array();
-
-    //     for ($row = 3; $row <= $totalRows; $row++) {
-    //         if (!empty($sheet->getCell("C{$row}")->getValue())) {
-    //             $data = ApiModel::queryMaxTrafficEachSourceToDestination(
-    //                 $sheet->getCell("C{$row}")->getValue(),
-    //                 $sheet->getCell("D{$row}")->getValue(),
-    //                 $sheet->getCell("B{$row}")->getValue(),
-    //                 $month,
-
-    //             );
-    //             // var_dump($sheet->getCell("C{$row}")->getValue());
-    //             array_push($merge, $data);
-    //         }
-    //     }
-
-    //     $flat = array();
-    //     foreach ($merge as $hosts) {
-    //         foreach ($hosts as $h) {
-    //             $flat[] = $h;
-    //         }
-    //     }
-
-    //     // check missing sbu ring max
-    //     return $flat;
-    // }
-
-    // public static function sumOfMaxTrafficEachRing($sbu, $month)
-    // {
-    //     $flat = self::listOfMaxTrafficEachRing($sbu, $month);
-    // $resume = array();
-    // $val = 0;
-    // for ($r = 0; $r < count($flat); $r++) {
-    //     // n - 1
-    //     if ($r < count($flat) - 1) {
-    //         $current_ring = $flat[$r]->ring;
-    //         $next_ring = $flat[$r + 1]->ring;
-    //         // kalau ring n == n+1 jumlahkan
-    //         // kalau tidak catet terus reset valnya
-    //         if ($current_ring == $next_ring) {
-    //             $val += (int)$flat[$r]->traffic;
-    //         } else {
-    //             $val += (int)$flat[$r]->traffic;
-    //             $resume[] = array(
-    //                 'name' => $current_ring,
-    //                 'data' => $val,
-    //                 // 'utility' => $val
-    //             );
-    //             $val = 0;
-    //         }
-    //     } else {
-    //         $current_ring = $flat[$r]->ring;
-    //         $prev_ring = $flat[$r - 1]->ring;
-    //         if ($current_ring == $prev_ring) {
-    //             $val += (int)$flat[$r]->traffic;
-    //             $resume[] = array(
-    //                 'name' => $current_ring,
-    //                 'data' => $val,
-    //                 // 'utility' => $val
-    //             );
-    //         } else {
-    //             $val = (int)$flat[$r]->traffic;
-    //             $resume[] = array(
-    //                 'name' => $current_ring,
-    //                 'data' => $val,
-    //                 // 'utility' => $val
-    //             );
-    //         }
-    //     }
-    // }
-
-    // return $resume;
-    // }
 
     // sbu
     public static function listOfMaxTrafficEachSourceToDestination($sbu, $month)
@@ -777,42 +659,6 @@ class ApiController extends Controller
             order by ring";
 
         return DB::select($sql);
-
-        // ini_set('max_execution_time', 60);
-
-        // // new array to merge
-        // $merge = array();
-
-        // $sql = "select 
-        //     h.sbu_name, h.ring, h.host_name, i.interface_name, i.description 
-        // from myapp.hosts h 
-        // join myapp.interfaces i on h.hostid = i.hostid 
-        // where h.sbu_name = '$sbu'";
-        // $data = DB::select($sql);
-
-        // foreach ($data as $d) {
-        //     $data = ApiModel::queryMaxTrafficEachSourceToDestination(
-        //         $d->host_name,
-        //         $d->description,
-        //         $d->ring,
-        //         $month,
-        //     );
-        //     array_push($merge, $data);
-        // }
-
-        // $flat = array();
-        // foreach ($merge as $hosts) {
-        //     foreach ($hosts as $h) {
-        //         $flat[] = $h;
-        //     }
-        // }
-
-        // $result = array(
-        //     'sbu' => $sbu,
-        //     'data' => $flat,
-        //     'month' => date('F', strtotime(date('d-m-Y')))
-        // );
-        // return $result;
     }
 
     public function listTrafficMonth($origin, $terminating)

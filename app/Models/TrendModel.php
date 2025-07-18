@@ -403,6 +403,24 @@ class TrendModel
                     group by raw.ring, wt.week_number
                 ) res group by res.ring";
 
+        $sql = "
+                select 
+                    raw.ring, wt.week_number, round(sum(wt.traffic) / 1000000000, 1) as traffic
+                from (
+                    select 
+                        h.sbu_name, i2.ring, h.host_name, i2.interface_name, i2.description, wt.week_number, count(*) as jumlah, max(wt.id) as wtid
+                    from myapp.hosts h 
+                    join myapp.interfaces i2 on i2.hostid = h.hostid
+                    join myapp.weekly_trends wt on wt.interfaceid = i2.interfaceid
+                    where h.sbu_name = '$sbu'
+                    and i2.status = 1
+                    and wt.week_number >= $fw
+                    and wt.week_number <= $cw
+                    and wt.year = YEAR(NOW())
+                    group by h.sbu_name, i2.ring, h.host_name, i2.interface_name, i2.description, wt.week_number
+                ) raw join myapp.weekly_trends wt on raw.wtid = wt.id 
+                group by raw.ring, wt.week_number";
+
         return DB::select($sql);
     }
 
