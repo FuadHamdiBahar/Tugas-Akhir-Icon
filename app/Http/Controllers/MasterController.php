@@ -10,10 +10,6 @@ class MasterController extends Controller
 {
     public function master()
     {
-        // $query = TrendModel::getMaster();
-        // $data = array(
-        //     'data' => $query,
-        // );
         return view('master');
     }
 
@@ -23,6 +19,7 @@ class MasterController extends Controller
         $data = array(
             'hostid' => $hostid,
         );
+
         return view('interface', $data);
     }
 }
