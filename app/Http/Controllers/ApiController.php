@@ -552,57 +552,42 @@ class ApiController extends Controller
     // ring trends
     public static function ringTrend($sbu)
     {
-        $rings = TrendModel::getRingTrend($sbu);
-        foreach ($rings as $ring) {
-            $ring->data = explode(',', $ring->data);
+        $data = TrendModel::getRingTrend($sbu);
+
+        // Step 1: Collect all unique months
+        $months = [];
+        foreach ($data as $row) {
+            $months[$row->month] = true;
+        }
+        $months = array_keys($months);
+        sort($months);
+
+        // Step 2: Group data by ring and month
+        $result = [];
+        foreach ($data as $row) {
+            $ring = $row->ring;
+            $month = $row->month;
+            $traffic = $row->traffic;
+            $result[$ring][$month] = $traffic;
         }
 
-        return $rings;
+        // Step 3: Output in the desired format, filling missing months with 0
+        $output = [];
+        foreach ($result as $ring => $trafficByMonth) {
+            $trafficList = [];
+            foreach ($months as $month) {
+                $trafficList[] = isset($trafficByMonth[$month]) ? $trafficByMonth[$month] : 0;
+            }
+
+            $output[] = [
+                'name' => $ring,
+                'data' => $trafficList
+            ];
+        }
+
+        return $output;
     }
-    // public static function ringTrend($sbu)
-    // {
-    //     $rings = TrendModel::getNumberOfRing($sbu, '2024');
 
-    //     // Iterate over the array and extract the 'ring' values
-    //     $flat = [];
-    //     foreach ($rings as $r) {
-    //         $flat[] = $r->ring;
-    //     }
-
-    //     // return $flat;
-
-    //     // merge
-    //     $merge = array();
-    //     foreach ($flat as $f) {
-    //         $result = TrendModel::getTrendsEachSbu($sbu, '2024', $f);
-    //         array_push($merge, $result);
-    //     }
-
-    //     // return $merge;
-
-    //     // transform
-    //     $transform = array();
-    //     $month = array();
-    //     foreach ($merge as $m) {
-    //         $temp = array();
-    //         $ring = '';
-    //         foreach ($m as $b) {
-    //             $ring = $b->ring;
-    //             array_push($temp, number_format($b->traffic / 1000000000, 1));
-    //         }
-    //         array_push($transform, [
-    //             'name' => $ring,
-    //             'data' => $temp
-    //         ]);
-
-    //         // array_push($month, $m->month);
-    //     }
-
-    //     // $res['data'] = $transform;
-    //     // $res['month'] = $month;
-
-    //     return $transform;
-    // }
 
     public static function getLastDateOfWeek($week)
     {

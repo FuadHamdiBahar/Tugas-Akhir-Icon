@@ -258,24 +258,20 @@ class TrendModel
     public static function getRingTrend($sbu)
     {
         $sql = "
-        select 
-            res.ring as name, group_concat(res.traffic order by res.month asc) as data
-        from (
-            select 
-                raw.ring, raw.month, round(sum(raw.traffic) / 1000000000, 1) as traffic
-            from(
                 select 
-                    it.ring, it.interface_name, wt.month, max(wt.traffic) as traffic
-                from myapp.hosts h 
-                join myapp.interfaces it on it.hostid = h.hostid 
-                join (select * from myapp.weekly_trends wt order by wt.month, wt.week_number) wt on it.interfaceid = wt.interfaceid 
-                where h.sbu_name = '$sbu'
-                and it.status = 1
-                and wt.year = YEAR(NOW())
-                group by it.ring, it.interface_name, wt.month 
-            ) raw group by raw.ring, raw.month
-            order by raw.ring, raw.month
-        ) res group by res.ring";
+                    raw.ring, raw.month, round(sum(raw.traffic) / 1000000000, 1) as traffic
+                from(
+                    select 
+                        it.ring, it.interface_name, wt.month, max(wt.traffic) as traffic
+                    from myapp.hosts h 
+                    join myapp.interfaces it on it.hostid = h.hostid 
+                    join (select * from myapp.weekly_trends wt order by wt.month, wt.week_number) wt on it.interfaceid = wt.interfaceid 
+                    where h.sbu_name = '$sbu'
+                    and it.status = 1
+                    and wt.year = YEAR(NOW())
+                    group by it.ring, it.interface_name, wt.month 
+                ) raw group by raw.ring, raw.month
+                order by raw.ring, raw.month";
 
         return DB::select($sql);
     }
