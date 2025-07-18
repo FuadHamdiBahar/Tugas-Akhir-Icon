@@ -17,6 +17,7 @@ class TrendModel
     public static function updateInterface(Request $request)
     {
         $interface_name = $request->input('interface_name');
+        $ring = $request->input('ring');
         $description = $request->input('description');
         $capacity = $request->input('capacity');
         $interfaceid = $request->input('interfaceid');
@@ -25,6 +26,7 @@ class TrendModel
 
         $sql = "update interfaces
                 set interface_name = '$interface_name',
+                    ring = '$ring',
                     description = '$description',
                     capacity = '$capacity',
                     updated_by = '$email',
@@ -36,14 +38,15 @@ class TrendModel
     public static function createInterface(Request $request)
     {
         $hostid = $request->input('hostid');
+        $ring = $request->input('ring');
         $interface_name = $request->input('interface_name');
         $description = $request->input('description');
         $capacity = $request->input('capacity');
         $email = session('email');
 
         $sql = "insert into
-                interfaces (hostid, interface_name, description, capacity, status, created_by, updated_by)
-                values ($hostid, '$interface_name', '$description', $capacity, 1, '$email', '$email')";
+                interfaces (hostid, ring, interface_name, description, capacity, status, created_by, updated_by)
+                values ($hostid, $ring, '$interface_name', '$description', $capacity, 1, '$email', '$email')";
         return DB::select($sql);
     }
 
@@ -79,12 +82,11 @@ class TrendModel
     public static function createHost(Request $request)
     {
         $sbu_name = $request->input('sbuname');
-        $ring = $request->input('idring');
         $hostname = $request->input('hostname');
         $email = session('email');
         $sql = "insert 
-                into hosts (sbu_name, ring, host_name, created_by, updated_by)
-                values ('$sbu_name', $ring, '$hostname', '$email', '$email')";
+                into hosts (sbu_name, host_name, created_by, updated_by)
+                values ('$sbu_name', '$hostname', '$email', '$email')";
         return DB::select($sql);
     }
 
@@ -95,7 +97,6 @@ class TrendModel
 
         // data
         $sbu_name = $request->input('sbuname');
-        $ring = $request->input('idring');
         $hostname = $request->input('hostname');
         $email = session('email');
 
@@ -103,7 +104,6 @@ class TrendModel
                      hosts 
                  set 
                      sbu_name = '$sbu_name',
-                     ring = $ring,
                      host_name = '$hostname',
                      updated_by = '$email'
                  where hostid = $hid";
