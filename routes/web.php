@@ -112,100 +112,10 @@ Route::middleware('auth')->group(function () {
     });
 });
 
-
-// Gunakan route ini untuk pairing pop dengan perangkat
-// use PhpOffice\PhpSpreadsheet\IOFactory;
-// use Ramsey\Uuid\Uuid;
-// Route::get('/pairing', function () {
-//     $reader = IOFactory::createReader("Xlsx");
-//     $spreadsheet = $reader->load("D:\Code\myapp\public\marker host.xlsx");
-//     $sheet = $spreadsheet->getSheetByName('02. Router 100G sd 2022rev6');
-
-//     // mendapatkan jumlah baris
-//     $totalRows = $sheet->getHighestRow();
-//     // $totalRows = 10;
-
-//     $myLokasi = [];
-//     for ($row = 2; $row <= $totalRows; $row++) {
-//         $lokasi = $sheet->getCell("H{$row}")->getValue();
-//         $pop = $sheet->getCell("I{$row}")->getValue();
-
-//         $hosts = Host::where('host_name', 'LIKE', "%$lokasi%")->get();
-
-//         $marker = Marker::where('marker_name', 'LIKE', "%$pop%")->first();
-
-
-//         if (count($hosts) > 0) {
-//             foreach ($hosts as $h) {
-//                 $myuuid = Uuid::uuid4()->toString();
-//                 DB::select("INSERT INTO marker_hosts (mhid, markerid, hostid) VALUES ('$myuuid', '$marker->markerid', $h->hostid)");
-//             }
-//             array_push($myLokasi, $hosts);
-//         }
-//         // return $lokasi;
-//     }
-
-//     return $myLokasi;
-//     // $sql = "SELECT * FROM hosts WHERE sbu_name = '$sbu'";
-//     // echo 'Fuad Hamdi Bahar';
-// });
-
-
-// untuk menambahkan hostname terminating dari excel
-// Route::get('/addhosterm', function () {
-//     ini_set('max_execution_time', 600);
-//     function insertInterface($hostid, $interface_name, $description, $capacity, $status)
-//     {
-//         $sql = "INSERT INTO interfaces (hostid, interface_name, description, capacity, status) VALUES ($hostid, '$interface_name', '$description', $capacity, $status)";
-//         DB::select($sql);
-//     }
-
-//     $sbu_name = array('sumbagut', 'sumbagteng', 'sumbagsel', 'jakarta', 'jabar', 'jateng', 'jatim', 'balnus', 'kalimantan', 'sulawesi');
-
-//     foreach ($sbu_name as $sbu) {
-//         $path = public_path('data utilisasi.xlsx');
-//         $reader = new Xlsx();
-//         $spreadsheet = $reader->load($path);
-//         $sheet = $spreadsheet->getSheetByName($sbu);
-//         $totalRows = $sheet->getHighestRow();
-
-//         // new array to merge
-//         $merge = array();
-
-//         for ($row = 2; $row <= $totalRows; $row++) {
-//             if (!empty($sheet->getCell("B{$row}")->getValue())) {
-//                 $ring = $sheet->getCell("A{$row}")->getValue();
-//                 $org = $sheet->getCell("B{$row}")->getValue();
-//                 $interface_name = $sheet->getCell("C{$row}")->getValue();
-//                 $trm = $sheet->getCell("D{$row}")->getValue();
-//                 $status = $sheet->getCell("E{$row}")->getValue();
-//                 $capacity = $sheet->getCell("F{$row}")->getValue();
-
-//                 if ($status != 1) {
-//                     $sql = "SELECT * FROM hosts WHERE ring = $ring AND host_name = '$org'";
-//                     $data = DB::select($sql);
-
-//                     if (count($data) > 0) {
-//                         #langsung insert interface
-//                         insertInterface($data[0]->hostid, $interface_name, $trm, $capacity * 1000000000, 0);
-//                     } else {
-//                         // buat host terus buat interface
-//                         $sql = "INSERT INTO hosts (sbu_name, ring, host_name) VALUES ('$sbu', $ring, '$org')";
-//                         DB::select($sql);
-//                         // ambil id terakhir
-//                         $hostid = DB::select('SELECT max(hostid) as hostid from hosts');
-//                         insertInterface($hostid[0]->hostid, $interface_name, $trm, $capacity * 1000000000, 0);
-//                     }
-//                 }
-//             }
-//         }
-//     }
-
-
-
-//     return $sbu_name;
-// });
-
 Route::get('/makepass', function () {
     return bcrypt('hari.haryono');
 });
+
+Route::get('/phpinfo', function () {
+    phpinfo();
+})->name('phpinfo');
