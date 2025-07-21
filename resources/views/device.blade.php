@@ -79,7 +79,6 @@
             <div class="chart" id="week"></div>
         </div>
         <div class="col-lg-12">
-
             <div class="chart" id="month"></div>
         </div>
     </div>
