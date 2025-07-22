@@ -172,6 +172,23 @@
                         data: 'mitra_pelaksana'
                     },
                 ],
+                dom: 'Bfrtip',
+                buttons: [{
+                        extend: 'excelHtml5',
+                        text: 'Export to Excel',
+                        className: 'btn btn-primary'
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        text: 'Export to PDF',
+                        className: 'btn btn-primary'
+                    },
+                    {
+                        extend: 'print',
+                        text: 'Print',
+                        className: 'btn btn-primary'
+                    }
+                ],
             });
             createMap('/api/pssarpen/marker')
         })
