@@ -176,17 +176,17 @@
                 buttons: [{
                         extend: 'excelHtml5',
                         text: 'Export to Excel',
-                        className: 'btn btn-primary'
+                        className: 'btn btn-primary btn-sm'
                     },
                     {
                         extend: 'pdfHtml5',
                         text: 'Export to PDF',
-                        className: 'btn btn-primary'
+                        className: 'btn btn-primary btn-sm',
                     },
                     {
                         extend: 'print',
                         text: 'Print',
-                        className: 'btn btn-primary'
+                        className: 'btn btn-primary btn-sm',
                     }
                 ],
             });
