@@ -172,7 +172,7 @@
                         data: 'mitra_pelaksana'
                     },
                 ],
-                dom: 'Bfrtip',
+                dom: '<"d-flex justify-content-between align-items-center"lfB>rtip',
                 buttons: [{
                         extend: 'excelHtml5',
                         text: 'Export to Excel',
