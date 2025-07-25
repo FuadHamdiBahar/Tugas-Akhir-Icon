@@ -11,6 +11,7 @@ use App\Http\Controllers\PsSarpenController;
 use App\Http\Controllers\RingController;
 use App\Http\Controllers\UtilisationController;
 use App\Models\PSSarpen;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth')->group(function () {
@@ -112,8 +113,14 @@ Route::middleware('auth')->group(function () {
     });
 });
 
-Route::get('/makepass', function () {
-    return bcrypt('hari.haryono');
+Route::get('/makeuser', function () {
+    return User::create(
+        [
+            'name' => 'Heru Kismanto',
+            'email' => 'heru.kismanto@iconpln.co.id',
+            'password' => bcrypt('h3ruK!smanto'),
+        ]
+    );
 });
 
 Route::get('/phpinfo', function () {
