@@ -254,7 +254,7 @@
                         var teks = "<b>" + pop.pop_name + "</b>"
 
                         pop.pssarpen.forEach(sarpen => {
-                            teks += "<br>" + sarpen.perangkat
+                            teks += "<br>" + sarpen.perangkat + " - " + sarpen.tahun
                             if (sarpen.tahun > year) {
                                 year = sarpen.tahun
                             }
